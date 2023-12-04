@@ -1,5 +1,5 @@
 BEGIN TRANSACTION;
-
+ 
 
 DROP TABLE IF EXISTS ingredient, ingredient_type, nutrition, 
 					recipe, recipe_tag, recipe_type, 
@@ -17,7 +17,6 @@ CREATE TABLE ingredient_type(
 
 CREATE TABLE nutrition(
 	nutrition_id serial NOT NULL,
-	description varchar (50) NOT NULL,
 	calories numeric,
 	protein numeric,
 	carb numeric,
@@ -37,13 +36,13 @@ CREATE TABLE ingredient(
 
 CREATE TABLE recipe_tag(
 	recipe_tag_id serial NOT NULL, 
-	recipe_tag varchar (50),
+	recipe_tag_desc varchar (50),
 	CONSTRAINT PK_recipe_tag PRIMARY KEY (recipe_tag_id)
 );
 
 CREATE TABLE recipe_type(
 	recipe_type_id serial NOT NULL, 
-	recipe_type varchar (50),
+	recipe_type_desc varchar (50),
 	CONSTRAINT PK_recipe_type PRIMARY KEY (recipe_type_id)
 );
 
@@ -162,6 +161,7 @@ INSERT INTO recipe_tag (recipe_tag_desc) VALUES ('vegan');
 INSERT INTO recipe_tag (recipe_tag_desc) VALUES ('vegetarian');
 INSERT INTO recipe_tag (recipe_tag_desc) VALUES ('keto');
 INSERT INTO recipe_tag (recipe_tag_desc) VALUES ('paleo');
+INSERT INTO recipe_tag (recipe_tag_desc) VALUES ('gluten-free');
 INSERT INTO recipe_tag (recipe_tag_desc) VALUES ('diabetic friendly');
 INSERT INTO recipe_tag (recipe_tag_desc) VALUES ('nut-free');
 INSERT INTO recipe_tag (recipe_tag_desc) VALUES ('soy-free');
