@@ -18,10 +18,10 @@ CREATE TABLE ingredient_type(
 CREATE TABLE nutrition(
 	nutrition_id serial NOT NULL,
 	description varchar (50) NOT NULL,
-	calories int,
-	protein int,
-	carb int,
-	fat int,
+	calories numeric,
+	protein numeric,
+	carb numeric,
+	fat numeric,
 	CONSTRAINT PK_nutrition PRIMARY KEY (nutrition_id)
 );
 
@@ -61,6 +61,7 @@ CREATE TABLE recipe(
 	picture_path varchar (100), 
 	prep_time int,
 	instruction text,
+	favorited boolean,
 	CONSTRAINT PK_recipe PRIMARY KEY (recipe_id),
 	CONSTRAINT FK_recipe_recipe_type FOREIGN KEY (recipe_type_id) REFERENCES recipe_type (recipe_type_id),
 	CONSTRAINT FK_recipe_recipe_tag FOREIGN KEY (recipe_tag_id) REFERENCES recipe_tag (recipe_tag_id)
@@ -70,7 +71,7 @@ CREATE TABLE recipe_ing(
 	recipe_id int NOT NULL,
 	ing_id int NOT NULL,
 	msm_id int NOT NULL,
-	quantity int NOT NULL,
+	quantity numeric NOT NULL,
 	CONSTRAINT PK_recipe_ing PRIMARY KEY (recipe_id, ing_id, msm_id, quantity),
 	CONSTRAINT FK_recipe_ing_recipe FOREIGN KEY (recipe_id) REFERENCES recipe (recipe_id),
 	CONSTRAINT FK_recipe_ing_ingredient FOREIGN KEY (ing_id) REFERENCES ingredient (ing_id),
