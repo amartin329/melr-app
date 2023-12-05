@@ -1,5 +1,6 @@
 package com.techelevator.service;
 import com.techelevator.model.SpoonacularModels.IngredientAmount;
+import com.techelevator.model.SpoonacularModels.IngredientInformation.IngredientDTO;
 import com.techelevator.model.SpoonacularModels.IngredientInformation.IngredientInformation;
 import com.techelevator.model.SpoonacularModels.SpoonacularModel;
 import com.techelevator.model.SpoonacularModels.Result;
@@ -14,7 +15,7 @@ public interface SpoonacularService {
 
    IngredientAmount getIngredientAmount(int id);
 
-   IngredientInformation getIngredientInformation(int id, String unit, double amount);
+   IngredientDTO getIngredientInformation(int id, String unit, double amount);
 }
 
 

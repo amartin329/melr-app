@@ -13,7 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import com.techelevator.model.SpoonacularModels.Result;
-
+import com.techelevator.model.SpoonacularModels.IngredientInformation.IngredientDTO;
 import java.util.ArrayList;
 
 @Service
@@ -78,7 +78,7 @@ public class SpoonacularServiceImpl implements SpoonacularService{
         return ingredientAmount;
     }
 
-    public IngredientInformation getIngredientInformation(int id, String unit, double amount){
+    public IngredientDTO getIngredientInformation(int id, String unit, double amount){
         HttpHeaders headers = new HttpHeaders();
         headers.set(API_KEY_NAME, API_KEY);
         ResponseEntity<IngredientInformation> responseEntity = restTemplate.exchange(
@@ -91,13 +91,32 @@ public class SpoonacularServiceImpl implements SpoonacularService{
                 amount
         );
         IngredientInformation ingredientInformation = responseEntity.getBody();
-        ArrayList<Nutrient> nutrientList = ingredientInformation.getNutrition().getNutrients();
-        NutritionDTO nutritionDTO = new NutritionDTO();
-        nutritionDTO.nutritionMap(nutrientList);
-        return ingredientInformation;
+
+        IngredientDTO ingredientDTO = apiMapper(ingredientInformation);
+        return ingredientDTO;
     }
 
+public IngredientDTO apiMapper(IngredientInformation apiCall){
+        IngredientDTO result = new IngredientDTO();
 
+        //call NutritionDTO mapper
+        ArrayList<Nutrient> nutrientList = apiCall.getNutrition().getNutrients();
+        NutritionDTO nutritionDTO = new NutritionDTO();
+        nutritionDTO = nutritionDTO.nutritionMap(nutrientList);
+        //setters
+        result.setAmount(apiCall.getAmount());
+        result.setId(apiCall.getId());
+        result.setImage(apiCall.getImage());
+        result.setName(apiCall.getName());
+        result.setNutritionDTO(nutritionDTO);
+        result.setPossibleUnits(apiCall.getPossibleUnits());
+        result.setUnit(apiCall.getUnit());
+        result.setUnitLong(apiCall.getUnitLong());
+        result.setUnitShort(apiCall.getUnitShort());
+
+        return result;
+
+}
 
 
 }

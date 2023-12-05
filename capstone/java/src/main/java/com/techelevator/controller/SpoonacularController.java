@@ -3,6 +3,7 @@ package com.techelevator.controller;
 
 import com.techelevator.exception.DaoException;
 import com.techelevator.model.SpoonacularModels.IngredientAmount;
+import com.techelevator.model.SpoonacularModels.IngredientInformation.IngredientDTO;
 import com.techelevator.model.SpoonacularModels.IngredientInformation.IngredientInformation;
 import com.techelevator.model.SpoonacularModels.Result;
 import com.techelevator.model.SpoonacularModels.SpoonacularModel;
@@ -64,8 +65,8 @@ public class SpoonacularController {
     TODO: Clean up endpoint path
  */
     @GetMapping("/ingredients/{id}/information/{unit}/{amount}")
-    public IngredientInformation getIngredientInformation(@PathVariable int id, @PathVariable String unit, @PathVariable double amount){
-        IngredientInformation ingredientInformation = spoonacularService.getIngredientInformation(id, unit, amount);
+    public IngredientDTO getIngredientInformation(@PathVariable int id, @PathVariable String unit, @PathVariable double amount){
+        IngredientDTO ingredientInformation = spoonacularService.getIngredientInformation(id, unit, amount);
         return ingredientInformation;
     }
 

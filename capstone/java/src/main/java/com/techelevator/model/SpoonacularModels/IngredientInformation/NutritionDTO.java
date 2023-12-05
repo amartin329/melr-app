@@ -11,6 +11,8 @@ public class NutritionDTO {
    private double protein;
    private double fat;
 
+   private String type;
+
     public NutritionDTO() {
     }
 
@@ -46,17 +48,18 @@ public class NutritionDTO {
         this.fat = fat;
     }
 
-    public void nutritionMap(ArrayList<Nutrient> nutrientList){
-        Map<String, Double> nutritionMap = new HashMap<>();
+    public NutritionDTO nutritionMap(ArrayList<Nutrient> nutrientList){
+        NutritionDTO nutritionDTO = new NutritionDTO();
         for(Nutrient nutrient:nutrientList){
-            if(nutrient.getName().equals("calories")){
-                setCalories(nutrient.getAmount());
-            }else if(nutrient.getName().equals("fat")){
-                setFat(nutrient.getAmount());
-            }else if(nutrient.getName().equals("protein")){
-                setProtein(nutrient.getAmount());
+            if(nutrient.getName().equals("Calories")){
+                nutritionDTO.setCalories(nutrient.getAmount());
+            }else if(nutrient.getName().equals("Cat")){
+                nutritionDTO.setFat(nutrient.getAmount());
+            }else if(nutrient.getName().equals("Protein")){
+                nutritionDTO.setProtein(nutrient.getAmount());
             }
         }
+        return nutritionDTO;
 
     }
 }
