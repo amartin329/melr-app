@@ -1,6 +1,7 @@
 package com.techelevator.dao.website;
 
 import com.techelevator.model.website.Meal;
+import com.techelevator.model.website.MealPlan;
 import com.techelevator.model.website.Recipe;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
@@ -13,7 +14,7 @@ public class JdbcMealDAO  implements MealDAO {
     // createMeal()
     // deleteMeal()
     // listRecipeByMealId()
-    // deleteMeal()
+
 
 private JdbcTemplate jdbcTemplate;
 
@@ -52,24 +53,58 @@ public Meal createMeal(Meal meal) {
 
 //listRecipeByMealId() goes here
 
-private List<Recipe> listRecipeByMealId(int recipe_id) {
-    List<Recipe> result = new ArrayList<>();
-    String sql = "SELECT recipe_id, recipe_type_id, recipe_tag_id, recipe_name, picture_path, " +
-            "prep_time, instruction, favorited FROM recipe WHERE recipe_id = ?;";
-    SqlRowSet rowSet = jdbcTemplate.queryForRowSet(sql, recipe_id);
-    while (rowSet.next()) {
-        Recipe recipe = mapRowToRecipe(rowSet);
-        result.add(recipe);
+    //TODO should this be in the Recipe jdbcDAO or the Meal jdbcDAO
+
+
+//private List<Recipe> listRecipeByMealId(int recipe_id) {
+//    List<Recipe> result = new ArrayList<>();
+//    String sql = "SELECT recipe_id, recipe_type_id, recipe_tag_id, recipe_name, picture_path, " +
+//            "prep_time, instruction, favorited FROM recipe WHERE recipe_id = ?;";
+//    SqlRowSet rowSet = jdbcTemplate.queryForRowSet(sql, recipe_id);
+//    while (rowSet.next()) {
+//        Recipe recipe = mapRowToRecipe(rowSet);
+//        result.add(recipe);
+//    }
+//    return result;
+//}
+
+
+    public Meal listMealById(int meal_id) {
+    String sql = "SELECT meal_id, meal_name, meal_type_id FROM meal WHERE meal_id = ?;";
+    SqlRowSet rowSet = jdbcTemplate.queryForRowSet(sql, meal_id);
+    if (rowSet.next()) {
+        Meal meal = mapRowToMeal(rowSet);
+        return meal;
+    } else {
+        return null;
     }
-    return result;
 
-//TODO create a mapRowToRecipe() method
-
-
-}
+    }
 
 
+    private List<Meal> listMealByTypeId(int meal_type_id) {
+        List<Meal> result = new ArrayList<>();
+        String sql = "SELECT meal_id, meal_name, meal_type_id FROM meal WHERE meal_type_id = ?;";
+        SqlRowSet rowSet = jdbcTemplate.queryForRowSet(sql, meal_type_id);
+        if (rowSet.next()) {
+            Meal meal = mapRowToMeal(rowSet);
+            result.add(meal);
+        }
+        return result;
+    }
 
+    //TODO listAllMeals()
+
+    //TODO updateMeal()
+
+
+    private Meal mapRowToMeal(SqlRowSet rowSet) {
+        Meal result = new Meal();
+        result.setMeal_id(rowSet.getInt("meal_id"));
+        result.setMeal_name(rowSet.getString("meal_name"));
+        result.setMeal_type_id(rowSet.getInt("meal_type_id"));
+        return result;
+    }
 }
 
 
