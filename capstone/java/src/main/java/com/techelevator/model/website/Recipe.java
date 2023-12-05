@@ -11,6 +11,8 @@ public class Recipe {
     private String instruction;
     private boolean favorited;
 
+
+
     public int getRecipe_id() {
         return recipe_id;
     }
