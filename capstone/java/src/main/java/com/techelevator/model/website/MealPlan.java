@@ -1,10 +1,13 @@
 package com.techelevator.model.website;
 
+import java.util.List;
+
 public class MealPlan {
 
     private int mealplan_id;
     private String mealplan_name;
     private int mealplan_type_id;
+    private List<Meal> meals;
 
     public int getMealplan_id() {
         return mealplan_id;
@@ -28,5 +31,9 @@ public class MealPlan {
 
     public void setMealplan_type_id(int mealplan_type_id) {
         this.mealplan_type_id = mealplan_type_id;
+    }
+
+    public List<Meal> getMeals() {
+        return meals;
     }
 }
