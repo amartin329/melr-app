@@ -2,6 +2,8 @@ package com.techelevator.service;
 
 import com.techelevator.model.SpoonacularModels.IngredientAmount;
 import com.techelevator.model.SpoonacularModels.IngredientInformation.IngredientInformation;
+import com.techelevator.model.SpoonacularModels.IngredientInformation.Nutrient;
+import com.techelevator.model.SpoonacularModels.IngredientInformation.NutritionDTO;
 import com.techelevator.model.SpoonacularModels.SpoonacularModel;
 import org.apache.coyote.Response;
 import org.springframework.http.HttpEntity;
@@ -11,6 +13,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import com.techelevator.model.SpoonacularModels.Result;
+
+import java.util.ArrayList;
 
 @Service
 public class SpoonacularServiceImpl implements SpoonacularService{
@@ -87,8 +91,12 @@ public class SpoonacularServiceImpl implements SpoonacularService{
                 amount
         );
         IngredientInformation ingredientInformation = responseEntity.getBody();
+        ArrayList<Nutrient> nutrientList = ingredientInformation.getNutrition().getNutrients();
+        NutritionDTO nutritionDTO = new NutritionDTO();
+        nutritionDTO.nutritionMap(nutrientList);
         return ingredientInformation;
     }
+
 
 
 
