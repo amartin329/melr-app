@@ -10,12 +10,12 @@ import org.springframework.jdbc.support.rowset.SqlRowSet;
 import java.util.ArrayList;
 import java.util.List;
 
-public class JdbcMealPlanDAO implements MealPlanDAO {
+public class JdbcMealPlanDao implements MealPlanDao {
 
 
 private JdbcTemplate jdbcTemplate;
 
-public JdbcMealPlanDAO(JdbcTemplate jdbcTemplate){
+public JdbcMealPlanDao(JdbcTemplate jdbcTemplate){
     this.jdbcTemplate = jdbcTemplate;
 }
 

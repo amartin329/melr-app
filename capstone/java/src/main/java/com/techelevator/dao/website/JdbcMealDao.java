@@ -14,9 +14,14 @@ public class JdbcMealDAO implements MealDAO {
 
     private JdbcTemplate jdbcTemplate;
 
-    public JdbcMealDAO(JdbcTemplate jdbcTemplate) {
-        this.jdbcTemplate = jdbcTemplate;
-    }
+
+private JdbcTemplate jdbcTemplate;
+
+public JdbcMealDao(JdbcTemplate jdbcTemplate) {
+    this.jdbcTemplate = jdbcTemplate;
+}
+
+// we need a createRecipe() method
 
     @Override
     public Meal createMeal(Meal meal) {
