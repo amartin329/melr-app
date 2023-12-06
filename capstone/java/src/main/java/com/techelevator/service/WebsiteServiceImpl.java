@@ -3,10 +3,7 @@ package com.techelevator.service;
 import com.techelevator.dao.website.*;
 import com.techelevator.exception.DaoException;
 import com.techelevator.exception.ServiceException;
-import com.techelevator.model.Ingredient;
-import com.techelevator.model.Meal;
-import com.techelevator.model.Recipe;
-import com.techelevator.model.User;
+import com.techelevator.model.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.web.server.ResponseStatusException;
@@ -20,14 +17,14 @@ public class WebsiteServiceImpl implements WebsiteService {
     private WebsiteDao websiteDao;
     private MealDao mealDao;
     private UserDao userDao;
-    private MealPlanDao mealPlanDao;
+    private MealplanDao mealPlanDao;
     private IngredientDao ingredientDao;
     private RecipeDao recipeDao;
 
 
 
     public WebsiteServiceImpl(UserDao userDao, IngredientDao ingredientDao, RecipeDao recipeDao,
-                              WebsiteDao websiteDao,  MealDao mealDao, MealPlanDao mealPlanDao) {
+                              WebsiteDao websiteDao,  MealDao mealDao, MealplanDao mealPlanDao) {
         this.userDao = userDao;
         this.ingredientDao = ingredientDao;
         this.recipeDao = recipeDao;
@@ -122,17 +119,17 @@ public class WebsiteServiceImpl implements WebsiteService {
     }
 
 
-    public List<MealPlan> getMealPlans() throws InterruptedException {
+    public List<Mealplan> getMealPlans() throws InterruptedException {
         Thread.sleep(2000); //Simulated loading time
 
-        return mealPlanDao.getAllMealPlans(); // wait to see the corresponding method in mealPlanDao
+        return mealPlanDao.getAllMealplans(); // wait to see the corresponding method in mealPlanDao
     }
 
 
-    public MealPlan getMealPlan(int id) throws InterruptedException {
+    public Mealplan getMealPlan(int id) throws InterruptedException {
         Thread.sleep(1000); //Simulated loading time
 
-        MealPlan result = mealPlanDao.getMealPlan(id); // wait to see the corresponding method in mealPlanDao
+        Mealplan result = mealPlanDao.getMealplan(id); // wait to see the corresponding method in mealPlanDao
         if (result == null) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No mealPlan with that id.");
         } else {
@@ -152,9 +149,9 @@ public class WebsiteServiceImpl implements WebsiteService {
     }
 
 
-    public MealPlan createMealPlan(MealPlan newMealPlan) {
+    public Mealplan createMealPlan(Mealplan newMealPlan) {
         try {
-            return mealPlanDao.createMealPlan(newMealPlan);
+            return mealPlanDao.createMealplan(newMealPlan);
         } catch (DaoException e) {
             throw new ServiceException("An error has occurred: " + e.getMessage());
         }
@@ -165,7 +162,7 @@ public class WebsiteServiceImpl implements WebsiteService {
     public Meal createMeal(Meal newMeal) {
         Meal myMeal = new Meal();
         try {
-            myMeal = mealDao.createMeal(newMeal.getMealPlanId(), newMeal); // wait to see what's in there in mealDao
+            myMeal = mealDao.createMeal(newMeal.getMealplanId(), newMeal); // wait to see what's in there in mealDao
             return myMeal;
         } catch(DaoException e) {
             throw new ServiceException("An error has occurred: " + e.getMessage());
@@ -182,12 +179,12 @@ public class WebsiteServiceImpl implements WebsiteService {
         }
     }
 
-    public MealPlan updateMealPlan(int id, MealPlan updatedMealPlan) {
-        updatedMealPlan.setMealPlanId(id);
-        if (mealPlanDao.updateMealPlan(updatedMealPlan)) {
+    public Mealplan updateMealPlan(int id, Mealplan updatedMealPlan) {
+        updatedMealPlan.setMealplanId(id);
+        if (mealPlanDao.updateMealplan(updatedMealPlan)) {
             return updatedMealPlan;
         } else {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "MealPlan not found to update.");
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Mealplan not found to update.");
         }
     }
 

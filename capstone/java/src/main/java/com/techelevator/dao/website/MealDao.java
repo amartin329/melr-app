@@ -1,5 +1,7 @@
 package com.techelevator.dao.website;
 
+import com.techelevator.model.Meal;
+
 import java.util.List;
 
 public interface MealDao {

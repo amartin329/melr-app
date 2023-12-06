@@ -2,6 +2,8 @@ package com.techelevator.controller;
 
 import com.techelevator.exception.DaoException;
 import com.techelevator.exception.ServiceException;
+import com.techelevator.model.Ingredient;
+import com.techelevator.model.Mealplan;
 import com.techelevator.model.Recipe;
 import com.techelevator.service.WebsiteService;
 import org.springframework.http.HttpStatus;
@@ -58,9 +60,9 @@ public class WebsiteController {
 
 
     @PutMapping("/mealplans/modify")
-    public MealPlan modifyMealPlan(@Valid @RequestBody MealPlan mealPlan) {
+    public Mealplan modifyMealPlan(@Valid @RequestBody Mealplan mealPlan) {
         try {
-            MealPlan modifiedMealPlan = websiteService.updateMealPlan(mealPlan);
+            Mealplan modifiedMealPlan = websiteService.updateMealplan(mealPlan);
             if (modifiedMealPlan == null) {
                 throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Server error encountered.");
             } else {
