@@ -1,4 +1,4 @@
-package com.techelevator.dao;
+package com.techelevator.dao.website;
 
 import com.techelevator.model.RegisterUserDto;
 import com.techelevator.model.User;

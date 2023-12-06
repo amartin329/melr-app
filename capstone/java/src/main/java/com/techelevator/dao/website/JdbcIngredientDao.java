@@ -1,31 +1,84 @@
-package com.techelevator.dao;
+package com.techelevator.dao.website;
 
 import com.techelevator.exception.DaoException;
 import com.techelevator.model.Ingredient;
 import com.techelevator.model.Nutrition;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.jdbc.CannotGetJdbcConnectionException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
+import org.springframework.stereotype.Component;
 
-import java.security.Principal;
 import java.util.ArrayList;
 import java.util.List;
 
-public class JdbcIngredientDao {
+@Component
+public class JdbcIngredientDao implements IngredientDAO{
     private final JdbcTemplate jdbcTemplate;
 
     public JdbcIngredientDao(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
     }
 
+    @Override
+    public Ingredient createIngredient(Ingredient ingredient) {
+        String sql = "INSERT INTO ingredient (ing_name, ing_type_id, nutrition_id) " +
+                "VALUES (?, ?, ?) RETURNING ing_id;";
+        try {
+            int newId = jdbcTemplate.queryForObject(sql, int.class, ingredient.getIngName(), ingredient.getIngId(), ingredient.getNutritionId());
+            ingredient.setIngId(newId);
+        } catch (CannotGetJdbcConnectionException e) {
+            throw new DaoException("Unable to connect to server or database", e);
+        } catch (DataIntegrityViolationException e) {
+            throw new DaoException("Data integrity violation", e);
+        }
+        return ingredient;
+    }
+
+    //How should we structure an update like this?  What would we like to give the user the ability to update?
+
+//    @Override
+//    public Ingredient updateIngredient(Ingredient ingredient) {
+//        Ingredient updatedIngredient = null;
+//        String sql = "Update ingredient SET ing_name = ?, ing_type_id = ?, nutrition_id = ? WHERE ing_name = ?;";
+//        try {
+//            int rowsAffected = jdbcTemplate.update(sql, ingredient.getIngName(), ingredient.getIngType(), ingredient.getNutritionId());
+//            if(rowsAffected == 0){
+//                throw new DaoException("Zero rows affected, expected at least one");
+//            } else {
+//                updatedIngredient = getIngredientById(ingredient.getIngId());
+//            }
+//        } catch (CannotGetJdbcConnectionException e) {
+//            throw new DaoException("Unable to connect to server or database", e);
+//        } catch (DataIntegrityViolationException e) {
+//            throw new DaoException("Data integrity violation");
+//            }
+//        return updatedIngredient;
+//        }
+
+
+    @Override
+    public int deleteIngredient(int ing_id){
+        int rowsAffected;
+        String sql = "DELETE FROM ingredient WHERE ing_id = ?;";
+        try {
+            rowsAffected = jdbcTemplate.update(sql, ing_id);
+        } catch (CannotGetJdbcConnectionException e) {
+            throw new DaoException("Unable to connect to server or database", e);
+        } catch (DataIntegrityViolationException e) {
+            throw new DaoException("Data integrity violation");
+        }
+        return rowsAffected;
+    }
+
 
     //this method just lists all the ingredients that the logged-in user has in library
+    @Override
     public List<Ingredient> listAllIngredients() {
         List<Ingredient> ingredients = new ArrayList<>();
         String sql = "SELECT i.ing_id, i.ing_name, it.ing_type " +
                 "FROM ingredient i " +
                 "JOIN ingredient_type it ON i.ing_type_id = it.ing_type_id;";
-
         try {
             SqlRowSet results = jdbcTemplate.queryForRowSet(sql);
             while (results.next()) {
@@ -40,6 +93,7 @@ public class JdbcIngredientDao {
     }
 
     // this method will list the details of a particular ingredient by its id
+    @Override
     public Ingredient getIngredientById(int ingId) {
         Ingredient ingredient = null;
         String sql = "SELECT i.ing_name, it.ing_type " +
@@ -47,13 +101,11 @@ public class JdbcIngredientDao {
                 "JOIN ingredient_type it ON i.ing_type_id = it.ing_type_id " +
                 "JOIN nutrition nu ON i.nutrition_id = nu.nutrition_id " +
                 "WHERE i.ing_id = ?;";
-
         try {
             SqlRowSet results = jdbcTemplate.queryForRowSet(sql, ingId);
             if (results.next()) {
                 ingredient = mapRowToIngredient(results);
                 ingredient.setNutrition(getNutritionForIngredient(ingId));
-
             }
         } catch (CannotGetJdbcConnectionException e) {
             throw new DaoException("unable to connect to server or database");
@@ -61,20 +113,17 @@ public class JdbcIngredientDao {
         return ingredient;
     }
 
-
-
+    @Override
     public Nutrition getNutritionForIngredient(int ingId){
         Nutrition ingNutrition = null;
         String sql = "SELECT nu.calories, nu.protein, nu.carb, nu.fat " +
                 "FROM nutrition nu " +
                 "JOIN ingredient i ON i.nutrition_id = nutrition_id " +
                 "WHERE i.ing_id = ?;";
-
         try {
             SqlRowSet results = jdbcTemplate.queryForRowSet(sql, ingId);
             if (results.next()) {
                 ingNutrition = mapRowToNutrition(results);
-
             }
         } catch (CannotGetJdbcConnectionException e) {
             throw new DaoException("unable to connect to server or database");
@@ -82,8 +131,6 @@ public class JdbcIngredientDao {
         return ingNutrition;
 
     }
-
-
 
     public Ingredient mapRowToIngredient(SqlRowSet rs){
         Ingredient ingredient = new Ingredient();
