@@ -1,10 +1,6 @@
 package com.techelevator.service;
 
-import com.techelevator.model.Ingredient;
-import com.techelevator.model.Meal;
-import com.techelevator.model.Recipe;
-import com.techelevator.model.User;
-import com.techelevator.model.website.MealPlan;
+import com.techelevator.model.*;
 
 import java.util.List;
 
@@ -20,10 +16,10 @@ public interface WebsiteService {
 
     Ingredient addIngredient(Ingredient newIng);
 
-    List<MealPlan> getMealPlans() throws InterruptedException;
-    MealPlan getMealPlan(int id) throws InterruptedException;
+    List<Mealplan> getMealplans() throws InterruptedException;
+    Mealplan getMealplan(int id) throws InterruptedException;
 
-    MealPlan createMealPlan(MealPlan newMealPlan);
+    Mealplan createMealplan(Mealplan newMealplan);
     Meal getMeal(int id) throws InterruptedException;
     Meal createMeal(Meal newMeal);
 

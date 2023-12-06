@@ -1,7 +1,9 @@
 package com.techelevator.dao.website;
 
 import com.techelevator.exception.DaoException;
-import com.techelevator.model.website.MealPlan;
+import com.techelevator.model.Meal;
+import com.techelevator.model.Mealplan;
+import com.techelevator.model.Recipe;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.jdbc.CannotGetJdbcConnectionException;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -10,34 +12,43 @@ import org.springframework.jdbc.support.rowset.SqlRowSet;
 import java.util.ArrayList;
 import java.util.List;
 
-public class JdbcMealPlanDao implements MealPlanDao {
+public class JdbcMealplanDao implements MealplanDao {
 
 
-private JdbcTemplate jdbcTemplate;
+private final JdbcTemplate jdbcTemplate;
+private MealDao mealDao;
 
-public JdbcMealPlanDao(JdbcTemplate jdbcTemplate){
+public JdbcMealplanDao(JdbcTemplate jdbcTemplate, MealDao mealDao){
     this.jdbcTemplate = jdbcTemplate;
+    this.mealDao = mealDao;
 }
 
     @Override
-    public MealPlan createMealPlan(MealPlan mealPlan) {
+    public Mealplan createMealplan(Mealplan mealplan) {
     String sql = "INSERT INTO mealplan (mealplan_name, mealplan_type_id) VALUES (?, ?) RETURNING mealplan_id;";
 
     try {
-        int newId = jdbcTemplate.queryForObject(sql, int.class, mealPlan.getMealplan_name(), mealPlan.getMealplan_type_id());
-        mealPlan.setMealplan_id(newId);
+        int newId = jdbcTemplate.queryForObject(sql, int.class, mealplan.getMealplanName(), mealplan.getMealplanTypeId());
+        mealplan.setMealplanId(newId);
+        if(mealplan.getMealList() != null) {
+            for (Meal meal : mealplan.getMealList()) {
+                meal = mealDao.createMeal(mealplan.getMealplanId(), meal);
+                // if we don't have mealplan ID here then this meal list is just there independent
+                // not attaching to any particular mealplan
+            }
+        }
     } catch (CannotGetJdbcConnectionException e) {
         throw new DaoException("Unable to connect to server or database", e);
     } catch (DataIntegrityViolationException e) {
         throw new DaoException("Data integrity violation", e);
     }
-      return mealPlan;
+      return mealplan;
     }
 
     //TODO updateMealPlan() <<<<<<<<<<
 
     @Override
-    public int deleteMealPlan(int mealplan_id) {
+    public int deleteMealplan(int mealplan_id) {
         int rowsAffected;
         String sql = "DELETE FROM mealplan WHERE mealplan_id = ?;";
         try {
@@ -51,12 +62,12 @@ public JdbcMealPlanDao(JdbcTemplate jdbcTemplate){
     }
 
     @Override
-    public List<MealPlan> listMealPlanByTypeId(int mealplan_type_id) {
-    List<MealPlan> result = new ArrayList<>();
+    public List<Mealplan> listMealPlanByTypeId(int mealplan_type_id) {
+    List<Mealplan> result = new ArrayList<>();
     String sql = "SELECT mealplan_id, mealplan_name, mealplan_type_id FROM mealplan WHERE mealplan_type_id = ?;";
     SqlRowSet rowSet = jdbcTemplate.queryForRowSet(sql, mealplan_type_id);
     if (rowSet.next()) {
-        MealPlan mealPlan = mapRowToMealPlan(rowSet);
+        Mealplan mealPlan = mapRowToMealPlan(rowSet);
         result.add(mealPlan);
         }
         return result;
@@ -64,41 +75,41 @@ public JdbcMealPlanDao(JdbcTemplate jdbcTemplate){
     }
 
     @Override
-    public List<MealPlan> listAllMealPlans() {
-    List<MealPlan> mealPlans = new ArrayList<>();
+    public List<Mealplan> listAllMealplans() {
+    List<Mealplan> mealplans = new ArrayList<>();
     String sql = "SELECT mealplan_id, mealplan_name, mealplan_type_id FROM mealplan;";
     try {
         SqlRowSet results = jdbcTemplate.queryForRowSet(sql);
         while (results.next()) {
-            mealPlans.add(mapRowToMealPlan(results));
+            mealplans.add(mapRowToMealPlan(results));
         }
     } catch (CannotGetJdbcConnectionException e){
         throw new DaoException("Unable to connect to server or database", e);
     } catch (DataIntegrityViolationException e) {
         throw new DaoException("Data integrity violation", e);
     }
-    return mealPlans;
+    return mealplans;
     }
 
 
     @Override
-    public MealPlan listMealPlanById(int mealplan_id) {
+    public Mealplan listMealplanById(int mealplan_id) {
     String sql = "SELECT mealplan_id, mealplan_name, mealplan_type_id FROM mealplan WHERE mealplan_id = ?;";
     SqlRowSet rowSet = jdbcTemplate.queryForRowSet(sql, mealplan_id);
     if (rowSet.next()) {
-        MealPlan mealPlan = mapRowToMealPlan(rowSet);
-        return mealPlan;
+        Mealplan mealplan = mapRowToMealPlan(rowSet);
+        return mealplan;
     } else {
         return null;
         }
     }
 
 
-    private MealPlan mapRowToMealPlan(SqlRowSet rowSet) {
-        MealPlan result = new MealPlan();
-        result.setMealplan_id(rowSet.getInt("mealplan_id"));
-        result.setMealplan_name(rowSet.getString("mealplan_name"));
-        result.setMealplan_type_id(rowSet.getInt("mealplan_type_id"));
+    private Mealplan mapRowToMealPlan(SqlRowSet rowSet) {
+        Mealplan result = new Mealplan();
+        result.setMealplanId(rowSet.getInt("mealplan_id"));
+        result.setMealplanName(rowSet.getString("mealplan_name"));
+        result.setMealplanTypeId(rowSet.getInt("mealplan_type_id"));
         return result;
     }
 

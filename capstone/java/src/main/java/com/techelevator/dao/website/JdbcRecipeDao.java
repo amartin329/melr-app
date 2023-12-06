@@ -12,11 +12,13 @@ import org.springframework.jdbc.support.rowset.SqlRowSet;
 import java.util.ArrayList;
 import java.util.List;
 
-public class JdbcRecipeDao implements RecipeDAO{
+public class JdbcRecipeDao implements RecipeDao {
     private final JdbcTemplate jdbcTemplate;
+    private IngredientDao ingredientDao;
 
-    public JdbcRecipeDao(JdbcTemplate jdbcTemplate) {
+    public JdbcRecipeDao(JdbcTemplate jdbcTemplate, IngredientDao ingredientDao) {
         this.jdbcTemplate = jdbcTemplate;
+        this.ingredientDao = ingredientDao;
     }
 
     //I left 'favorited' out of this, since it seems like that would act funny
@@ -29,6 +31,13 @@ public class JdbcRecipeDao implements RecipeDAO{
         try {
             int newId = jdbcTemplate.queryForObject(sql, int.class, recipe.getRecipeType(), recipe.getRecipeTag(), recipe.getRecipeName(),
                     recipe.getPicturePath(), recipe.getPrepTime(), recipe.getInstruction());
+            if(recipe.getIngredientList() != null) {
+                for (Ingredient ingredient : recipe.getIngredientList()) {
+                    ingredient = ingredientDao.createIngredient(recipe.getRecipeId(), ingredient);
+                    // if we don't have recipe ID here then this ing list is just there independent
+                    // not attaching to any particular recipe
+                }
+            }
         } catch (CannotGetJdbcConnectionException e) {
             throw new DaoException("Unable to connect to server or database", e);
         } catch (DataIntegrityViolationException e) {

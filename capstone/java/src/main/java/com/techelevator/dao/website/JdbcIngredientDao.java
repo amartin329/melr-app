@@ -13,7 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Component
-public class JdbcIngredientDao implements IngredientDAO{
+public class JdbcIngredientDao implements IngredientDao {
     private final JdbcTemplate jdbcTemplate;
 
     public JdbcIngredientDao(JdbcTemplate jdbcTemplate) {

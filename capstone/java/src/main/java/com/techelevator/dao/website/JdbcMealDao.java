@@ -1,7 +1,9 @@
 package com.techelevator.dao.website;
 
 import com.techelevator.exception.DaoException;
-import com.techelevator.model.website.Meal;
+import com.techelevator.model.Ingredient;
+import com.techelevator.model.Meal;
+import com.techelevator.model.Recipe;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.jdbc.CannotGetJdbcConnectionException;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -10,25 +12,31 @@ import org.springframework.jdbc.support.rowset.SqlRowSet;
 import java.util.ArrayList;
 import java.util.List;
 
-public class JdbcMealDAO implements MealDAO {
-
+public class JdbcMealDao implements MealDao{
     private JdbcTemplate jdbcTemplate;
+    private RecipeDao recipeDao;
 
 
-private JdbcTemplate jdbcTemplate;
-
-public JdbcMealDao(JdbcTemplate jdbcTemplate) {
-    this.jdbcTemplate = jdbcTemplate;
-}
+    public JdbcMealDao(JdbcTemplate jdbcTemplate, RecipeDao recipeDao) {
+        this.jdbcTemplate = jdbcTemplate;
+        this.recipeDao = recipeDao;
+    }
 
 // we need a createRecipe() method
 
     @Override
     public Meal createMeal(Meal meal) {
-        String sql = "INSERT INTO meal (meal_name, meal_type_id) VALUES (?, ?) RETURNING meal_id;";
+        String sql = "INSERT INTO meal (meal_name, meal_type_id) VALUES (?, ?) RETURNING mealId;";
         try {
-            int newId = jdbcTemplate.queryForObject(sql, int.class, meal.getMeal_name(), meal.getMeal_type_id());
-            meal.setMeal_id(newId);
+            int newId = jdbcTemplate.queryForObject(sql, int.class, meal.getMealName(), meal.getMealTypeId());
+            meal.setMealId(newId);
+            if(meal.getRecipeList() != null) {
+                for (Recipe recipe : meal.getRecipeList()) {
+                    recipe = recipeDao.createRecipe(meal.getMealId(), recipe);
+                    // if we don't have meal ID here then this recipe list is just there independent
+                    // not attaching to any particular meal
+                }
+            }
         } catch (CannotGetJdbcConnectionException e) {
             throw new DaoException("Unable to connect to server or database", e);
         } catch (DataIntegrityViolationException e) {
@@ -100,16 +108,11 @@ public JdbcMealDao(JdbcTemplate jdbcTemplate) {
 
     private Meal mapRowToMeal(SqlRowSet rowSet) {
         Meal result = new Meal();
-        result.setMeal_id(rowSet.getInt("meal_id"));
-        result.setMeal_name(rowSet.getString("meal_name"));
-        result.setMeal_type_id(rowSet.getInt("meal_type_id"));
+        result.setMealId(rowSet.getInt("meal_id"));
+        result.setMealName(rowSet.getString("meal_name"));
+        result.setMealTypeId(rowSet.getInt("meal_type_id"));
         return result;
     }
 
 
 }
-
-
-
-
-
