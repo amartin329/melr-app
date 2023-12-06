@@ -1,7 +1,6 @@
 package com.techelevator.dao.website;
 
 import com.techelevator.model.website.Meal;
-import com.techelevator.model.website.MealPlan;
 import com.techelevator.model.website.Recipe;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
@@ -9,7 +8,7 @@ import org.springframework.jdbc.support.rowset.SqlRowSet;
 import java.util.ArrayList;
 import java.util.List;
 
-public class JdbcMealDAO  implements MealDAO {
+public class JdbcMealDao implements MealDao {
 
     // createMeal()
     // deleteMeal()
@@ -18,7 +17,7 @@ public class JdbcMealDAO  implements MealDAO {
 
 private JdbcTemplate jdbcTemplate;
 
-public JdbcMealDAO(JdbcTemplate jdbcTemplate) {
+public JdbcMealDao(JdbcTemplate jdbcTemplate) {
     this.jdbcTemplate = jdbcTemplate;
 }
 

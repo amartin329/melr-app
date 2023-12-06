@@ -1,7 +1,7 @@
 package com.techelevator.dao.website;
 import com.techelevator.model.website.Meal;
 
-public interface MealDAO {
+public interface MealDao {
 
     Meal createMeal(Meal meal);
 

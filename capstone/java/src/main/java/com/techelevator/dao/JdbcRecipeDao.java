@@ -42,7 +42,7 @@ public class JdbcRecipeDao {
 
     //this method will get the details of a particular recipe by id
 
-    public Recipe getRecipeDetailsById (int recId){
+    public Recipe getRecipeDetailsById(int recId){
         Recipe recipe = new Recipe();
         String sql = "SELECT r.recipe_id, r.recipe_name, ry.recipe_type_desc, ra.recipe_tag_desc, r.picture_path, " +
                 "r.prep_time, r.instruction, r.favorited " +

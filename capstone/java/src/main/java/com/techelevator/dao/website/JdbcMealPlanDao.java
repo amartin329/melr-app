@@ -8,7 +8,7 @@ import org.springframework.jdbc.support.rowset.SqlRowSet;
 import java.util.ArrayList;
 import java.util.List;
 
-public class JdbcMealPlanDAO implements MealPlanDAO {
+public class JdbcMealPlanDao implements MealPlanDao {
 
     // createMealPlan()
     // deleteMealPlan()
@@ -18,7 +18,7 @@ public class JdbcMealPlanDAO implements MealPlanDAO {
 
 private JdbcTemplate jdbcTemplate;
 
-public JdbcMealPlanDAO(JdbcTemplate jdbcTemplate){
+public JdbcMealPlanDao(JdbcTemplate jdbcTemplate){
     this.jdbcTemplate = jdbcTemplate;
 }
 
