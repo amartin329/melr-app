@@ -1,7 +1,9 @@
 package com.techelevator.dao.website;
 
-import com.techelevator.model.website.Meal;
+import com.techelevator.exception.DaoException;
 import com.techelevator.model.website.MealPlan;
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.jdbc.CannotGetJdbcConnectionException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
 
@@ -10,11 +12,6 @@ import java.util.List;
 
 public class JdbcMealPlanDAO implements MealPlanDAO {
 
-    // createMealPlan()
-    // deleteMealPlan()
-    // listRecipeByMealId()
-    // listAllMealPlans()
-    // updateMealPlan()
 
 private JdbcTemplate jdbcTemplate;
 
@@ -22,37 +19,39 @@ public JdbcMealPlanDAO(JdbcTemplate jdbcTemplate){
     this.jdbcTemplate = jdbcTemplate;
 }
 
-//we need a createMeal() method
-@Override
+    @Override
     public MealPlan createMealPlan(MealPlan mealPlan) {
     String sql = "INSERT INTO mealplan (mealplan_name, mealplan_type_id) VALUES (?, ?) RETURNING mealplan_id;";
-    int newId = jdbcTemplate.queryForObject(sql, int.class, mealPlan.getMealplan_name(), mealPlan.getMealplan_type_id());
-    mealPlan.setMealplan_id(newId);
 
-    if(mealPlan.getMeals() != null && mealPlan.getMeals().size() > 0) {
-    for (Meal meal : mealPlan.getMeals()) {
-        meal = createMeal(mealPlan.getId(), meal);
-        }
+    try {
+        int newId = jdbcTemplate.queryForObject(sql, int.class, mealPlan.getMealplan_name(), mealPlan.getMealplan_type_id());
+        mealPlan.setMealplan_id(newId);
+    } catch (CannotGetJdbcConnectionException e) {
+        throw new DaoException("Unable to connect to server or database", e);
+    } catch (DataIntegrityViolationException e) {
+        throw new DaoException("Data integrity violation", e);
     }
-    return mealPlan;
+      return mealPlan;
+    }
+
+    //TODO updateMealPlan() <<<<<<<<<<
+
+    @Override
+    public int deleteMealPlan(int mealplan_id) {
+        int rowsAffected;
+        String sql = "DELETE FROM mealplan WHERE mealplan_id = ?;";
+        try {
+            rowsAffected = jdbcTemplate.update(sql, mealplan_id);
+        } catch (CannotGetJdbcConnectionException e) {
+            throw new DaoException("Unable to connect to server or database", e);
+        } catch (DataIntegrityViolationException e) {
+            throw new DaoException("Data integrity violation", e);
+        }
+        return rowsAffected;
     }
 
     @Override
-    public boolean deleteMealPlan(int mealplan_id){
-    String sql = "DELETE FROM mealplan WHERE mealplan_id = ?;";
-    jdbcTemplate.update(sql, mealplan_id);
-    sql = "DELETE FROM meal_mealplan WHERE mealplan_id = ?;";
-    jdbcTemplate.update(sql, mealplan_id);
-    sql = "DELETE FROM mealplan_schedule WHERE mealplan_id = ?;";
-    jdbcTemplate.update(sql, mealplan_id);
-    int count = jdbcTemplate.update(sql, mealplan_id);
-    return count == 1;
-    }
-
-    //TODO listMealPlanByTypeId()
-    //listMealPlanByTypeId() goes here
-
-    private List<MealPlan> listMealPlanByTypeId(int mealplan_type_id) {
+    public List<MealPlan> listMealPlanByTypeId(int mealplan_type_id) {
     List<MealPlan> result = new ArrayList<>();
     String sql = "SELECT mealplan_id, mealplan_name, mealplan_type_id FROM mealplan WHERE mealplan_type_id = ?;";
     SqlRowSet rowSet = jdbcTemplate.queryForRowSet(sql, mealplan_type_id);
@@ -64,12 +63,25 @@ public JdbcMealPlanDAO(JdbcTemplate jdbcTemplate){
 
     }
 
-    //TODO listAllMealPlans()
+    @Override
+    public List<MealPlan> listAllMealPlans() {
+    List<MealPlan> mealPlans = new ArrayList<>();
+    String sql = "SELECT mealplan_id, mealplan_name, mealplan_type_id FROM mealplan;";
+    try {
+        SqlRowSet results = jdbcTemplate.queryForRowSet(sql);
+        while (results.next()) {
+            mealPlans.add(mapRowToMealPlan(results));
+        }
+    } catch (CannotGetJdbcConnectionException e){
+        throw new DaoException("Unable to connect to server or database", e);
+    } catch (DataIntegrityViolationException e) {
+        throw new DaoException("Data integrity violation", e);
+    }
+    return mealPlans;
+    }
 
 
-    //TODO updateMealPlan()
-
-
+    @Override
     public MealPlan listMealPlanById(int mealplan_id) {
     String sql = "SELECT mealplan_id, mealplan_name, mealplan_type_id FROM mealplan WHERE mealplan_id = ?;";
     SqlRowSet rowSet = jdbcTemplate.queryForRowSet(sql, mealplan_id);
@@ -89,8 +101,5 @@ public JdbcMealPlanDAO(JdbcTemplate jdbcTemplate){
         result.setMealplan_type_id(rowSet.getInt("mealplan_type_id"));
         return result;
     }
-
-
-
 
 }

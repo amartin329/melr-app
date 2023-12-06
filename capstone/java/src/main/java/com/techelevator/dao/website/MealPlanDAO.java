@@ -2,9 +2,17 @@ package com.techelevator.dao.website;
 
 import com.techelevator.model.website.MealPlan;
 
+import java.util.List;
+
 public interface MealPlanDAO {
-    //we need a createMeal() method
+
     MealPlan createMealPlan(MealPlan mealPlan);
 
-    boolean deleteMealPlan(int mealplan_id);
+    int deleteMealPlan(int mealplan_id);
+
+    List<MealPlan> listMealPlanByTypeId(int mealplan_type_id);
+
+    List<MealPlan> listAllMealPlans();
+
+    MealPlan listMealPlanById(int mealplan_id);
 }

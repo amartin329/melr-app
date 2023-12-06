@@ -1,9 +1,10 @@
-package com.techelevator.dao;
+package com.techelevator.dao.website;
 
 import com.techelevator.exception.DaoException;
 import com.techelevator.model.Ingredient;
 import com.techelevator.model.Nutrition;
 import com.techelevator.model.Recipe;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.jdbc.CannotGetJdbcConnectionException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
@@ -11,13 +12,50 @@ import org.springframework.jdbc.support.rowset.SqlRowSet;
 import java.util.ArrayList;
 import java.util.List;
 
-public class JdbcRecipeDao {
+public class JdbcRecipeDao implements RecipeDAO{
     private final JdbcTemplate jdbcTemplate;
 
     public JdbcRecipeDao(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
     }
 
+    //I left 'favorited' out of this, since it seems like that would act funny
+    //TODO talk about this
+
+    @Override
+    public Recipe createRecipe(Recipe recipe){
+        String sql = "INSERT INTO recipe (recipe_type_id, recipe_tag_id, recipe_name, picture_path, prep_time, instruction) "
+                + "VALUES (?, ?, ?, ?, ?, ?, ?) RETURNING recipe_id;";
+        try {
+            int newId = jdbcTemplate.queryForObject(sql, int.class, recipe.getRecipeType(), recipe.getRecipeTag(), recipe.getRecipeName(),
+                    recipe.getPicturePath(), recipe.getPrepTime(), recipe.getInstruction());
+        } catch (CannotGetJdbcConnectionException e) {
+            throw new DaoException("Unable to connect to server or database", e);
+        } catch (DataIntegrityViolationException e) {
+            throw new DaoException("Data integrity violation", e);
+        }
+        return recipe;
+    }
+
+    //TODO updateIngredient() <<<<<<<<<<
+
+    //TODO deleteIngredient() <<<<<<<<<<
+
+    @Override
+    public int deleteRecipe(int recipe_id){
+        int rowsAffected;
+        String sql = "DELETE FROM recipe WHERE meal_id = ?;";
+        try {
+            rowsAffected = jdbcTemplate.update(sql, recipe_id);
+        } catch (CannotGetJdbcConnectionException e) {
+            throw new DaoException("Unable to connect to server or database", e);
+        } catch (DataIntegrityViolationException e) {
+            throw new DaoException("Data integrity violation", e);
+        }
+        return rowsAffected;
+    }
+
+    @Override
     public List<Recipe> listAllRecipes(){
         List<Recipe> allRecipes = new ArrayList<>();
         String sql = "SELECT r.recipe_id, r.recipe_name, ry.recipe_type_desc, ra.recipe_tag_desc, r.picture_path, " +
@@ -25,8 +63,6 @@ public class JdbcRecipeDao {
                 "FROM recipe r " +
                 "JOIN recipe_type ry ON r.recipe_type_id = ry.recipe_type_id " +
                 "JOIN recipe_tag ra ON r.recipe_tag_id = ra.recipe_tag_id;";
-
-
         try {
             SqlRowSet results = jdbcTemplate.queryForRowSet(sql);
             while (results.next()) {
@@ -42,7 +78,8 @@ public class JdbcRecipeDao {
 
     //this method will get the details of a particular recipe by id
 
-    public Recipe getRecipeDetailsById (int recId){
+    @Override
+    public Recipe getRecipeDetailsById(int recId){
         Recipe recipe = new Recipe();
         String sql = "SELECT r.recipe_id, r.recipe_name, ry.recipe_type_desc, ra.recipe_tag_desc, r.picture_path, " +
                 "r.prep_time, r.instruction, r.favorited " +
@@ -50,14 +87,11 @@ public class JdbcRecipeDao {
                 "JOIN recipe_type ry ON r.recipe_type_id = ry.recipe_type_id " +
                 "JOIN recipe_tag ra ON r.recipe_tag_id = ra.recipe_tag_id " +
                 "WHERE r.recipe_id = ?;";
-
-
         try {
             SqlRowSet results = jdbcTemplate.queryForRowSet(sql, recId);
             if (results.next()) {
                 recipe = mapRowToRecipe(results);
                 recipe.setIngredientList(getIngredientListForRecipe(recipe.getRecipeId()));
-
             }
         } catch (CannotGetJdbcConnectionException e) {
             throw new DaoException("unable to connect to server or database");
@@ -66,6 +100,8 @@ public class JdbcRecipeDao {
     }
 
     //this method will list the ingredients in a particular recipe by recipe Id
+
+    @Override
     public List<Ingredient> getIngredientListForRecipe(int recId) {
         List<Ingredient> recIngs = new ArrayList<>();
         String sql = "SELECT i.ing_id, i.ing_name, it.ing_type, ri.quantity, m.msm_unit " +
@@ -75,7 +111,6 @@ public class JdbcRecipeDao {
                 "JOIN measurement m ON ri.msm_id = m.msm_id " +
                 "JOIN recipe r ON r.recipe_id = ri.recipe_id " +
                 "WHERE ri.recipe_id = ?;";
-
         try {
             SqlRowSet results = jdbcTemplate.queryForRowSet(sql, recId);
             while (results.next()) {
@@ -89,27 +124,27 @@ public class JdbcRecipeDao {
         return recIngs;
     }
 
+    @Override
     public Nutrition getNutritionForIngredient(int ingId){
         Nutrition ingNutrition = null;
         String sql = "SELECT nu.calories, nu.protein, nu.carb, nu.fat " +
                 "FROM nutrition nu " +
                 "JOIN ingredient i ON i.nutrition_id = nutrition_id " +
                 "WHERE i.ing_id = ?;";
-
         try {
             SqlRowSet results = jdbcTemplate.queryForRowSet(sql, ingId);
             if (results.next()) {
                 ingNutrition = mapRowToNutrition(results);
-
             }
         } catch (CannotGetJdbcConnectionException e) {
             throw new DaoException("unable to connect to server or database");
         }
         return ingNutrition;
-
     }
 
     //this method will list the total Nutrition of ingredients of a particular recipe by recipe Id
+
+    @Override
     public List<Nutrition> getNutritionForRecipe(int recId){
         List<Nutrition> nutritionList = new ArrayList<>();
         String sql = "SELECT i.ing_id, i.ing_name, it.ing_type, nu.calories, nu.protein, nu.carb, nu.fat, ri.quantity, m.msm_unit " +
@@ -120,20 +155,31 @@ public class JdbcRecipeDao {
                 "JOIN measurement m ON ri.msm_id = m.msm_id" +
                 "JOIN recipe r ON r.recipe_id = ri.recipe_id" +
                 "WHERE ri.recipe_id = ?;";
-
         try {
             SqlRowSet results = jdbcTemplate.queryForRowSet(sql, recId);
             if (results.next()) {
                 Nutrition ingTotalNutrition = mapRowToTotalNutrition(results);
                 nutritionList.add(ingTotalNutrition);
-
             }
         } catch (CannotGetJdbcConnectionException e) {
             throw new DaoException("unable to connect to server or database");
         }
         return nutritionList;
-
     }
+
+    @Override
+    public List<Recipe> listRecipeByMealId(int recipe_id) {
+        List<Recipe> result = new ArrayList<>();
+        String sql = "SELECT recipe_id, recipe_type_id, recipe_tag_id, recipe_name, picture_path, " +
+                "prep_time, instruction, favorited FROM recipe WHERE recipe_id = ?;";
+        SqlRowSet rowSet = jdbcTemplate.queryForRowSet(sql, recipe_id);
+        while (rowSet.next()) {
+            Recipe recipe = mapRowToRecipe(rowSet);
+            result.add(recipe);
+        }
+        return result;
+    }
+
 
     public Ingredient mapRowToIngredient(SqlRowSet rs){
         Ingredient ingredient = new Ingredient();

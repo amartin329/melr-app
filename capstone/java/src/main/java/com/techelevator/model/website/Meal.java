@@ -8,6 +8,7 @@ public class Meal {
     private String meal_name;
     private int meal_type_id;
     private List<Recipe> recipes;
+    private List<Meal> meals;
 
     public int getMeal_id() {
         return meal_id;
@@ -41,6 +42,8 @@ public class Meal {
         this.recipes = recipes;
     }
 
-
+    public List<Meal> getMeals() {
+        return meals;
+    }
 
 }
