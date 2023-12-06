@@ -3,18 +3,30 @@
     <div class="ingredients">
         <h2>Recipe Ingredients</h2>
         <div class="ingredient" v-for="ingredient in recipeIngredients" v-bind:key="ingredient.id">
-            <h3>{{ ingredient.name }}</h3>
+            <p>{{ ingredient.name }}</p>
         </div>
     </div>
-      <h1>NEW INGREDIENT!</h1>
-      <div v-for="(result, name) in userResults" v-bind:key="name">
-        {{ result.name }}
+      <h3>Add ingredient:</h3>
+      <div v-for="(result, name) in userResults" v-bind:key="name" id="ingredientList">
         <img v-bind:src="getImage(result.image)">
+        {{ result.name }}
+        <label for="amount">
+            <input type="text" id="amount" placeholder="amount">
+        </label>
+        <label for="unit">
+            <select name="units" id="units">
+                <option>------</option>
+                <option>ounces</option>
+                <option>grams</option>
+                <option>pounds</option>
+                <option>pieces</option>
+            </select>
+        </label>
         <button v-on:click="addIngredient(result)">Add Ingredient to Recipe</button>
       </div>
       
       <input type="text" v-model="this.userSearch" id="userSearch"/>
-      <button v-on:click="searchResults">SEARCH FOR {{ this.userSearch }}!</button>
+      <button v-on:click="searchResults">Search for ingredient</button>
       
     </div>
   </template>
@@ -26,7 +38,7 @@ import SpoonacularService from '../services/SpoonacularService';
     data(){
      return {
       userSearch: "",
-      results: [],
+      pendingIngredients: [],
       userResults: [],
       result: 
         {
@@ -71,6 +83,12 @@ import SpoonacularService from '../services/SpoonacularService';
       },
       addIngredient(ingredient){
         this.recipeIngredients.push(ingredient);
+      },
+
+      getIngredientInformation(id, unit, amount){
+        SpoonacularService.getIngredientInformation(id, unit, amount).then(response => {
+
+        })
       }
 
      // getIngredientInformation(this.result.id, this.resul){
@@ -92,3 +110,8 @@ import SpoonacularService from '../services/SpoonacularService';
   };
   </script>
   
+  <style scoped>
+    #ingredientList{
+
+    }
+  </style>

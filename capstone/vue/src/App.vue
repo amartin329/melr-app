@@ -18,7 +18,6 @@
     <aside>
       <div class="content">
         Sidebar/Info
-        Graphic design is my passion
       </div>
     </aside>
     <footer>
