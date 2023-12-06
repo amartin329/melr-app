@@ -5,7 +5,7 @@ import com.techelevator.model.Nutrition;
 
 import java.util.List;
 
-public interface IngredientDAO {
+public interface IngredientDao {
     Ingredient createIngredient(Ingredient ingredient);
 
     Ingredient updateIngredient(Ingredient ingredient);

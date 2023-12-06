@@ -1,21 +1,16 @@
 package com.techelevator.service;
 
-import com.techelevator.dao.UserDao;
-import com.techelevator.dao.website.MealDao;
-import com.techelevator.dao.website.MealPlanDao;
-import com.techelevator.dao.website.WebsiteDao;
+import com.techelevator.dao.website.*;
 import com.techelevator.exception.DaoException;
 import com.techelevator.exception.ServiceException;
 import com.techelevator.model.Ingredient;
 import com.techelevator.model.Meal;
 import com.techelevator.model.Recipe;
 import com.techelevator.model.User;
-import com.techelevator.model.website.MealPlan;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.security.Principal;
 import java.util.ArrayList;
 import java.util.List;
 

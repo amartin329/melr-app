@@ -4,7 +4,6 @@ import com.techelevator.model.Ingredient;
 import com.techelevator.model.Meal;
 import com.techelevator.model.Recipe;
 import com.techelevator.model.User;
-import com.techelevator.model.website.MealPlan;
 
 import java.util.List;
 

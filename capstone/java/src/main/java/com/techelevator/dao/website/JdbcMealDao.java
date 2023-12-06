@@ -1,7 +1,6 @@
 package com.techelevator.dao.website;
 
 import com.techelevator.exception.DaoException;
-import com.techelevator.model.website.Meal;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.jdbc.CannotGetJdbcConnectionException;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -10,16 +9,15 @@ import org.springframework.jdbc.support.rowset.SqlRowSet;
 import java.util.ArrayList;
 import java.util.List;
 
-public class JdbcMealDAO implements MealDAO {
-
+public class JdbcMealDao implements MealDao{
     private JdbcTemplate jdbcTemplate;
 
 
-private JdbcTemplate jdbcTemplate;
+    private JdbcTemplate jdbcTemplate;
 
-public JdbcMealDao(JdbcTemplate jdbcTemplate) {
-    this.jdbcTemplate = jdbcTemplate;
-}
+    public JdbcMealDao(JdbcTemplate jdbcTemplate) {
+        this.jdbcTemplate = jdbcTemplate;
+    }
 
 // we need a createRecipe() method
 
@@ -108,8 +106,3 @@ public JdbcMealDao(JdbcTemplate jdbcTemplate) {
 
 
 }
-
-
-
-
-

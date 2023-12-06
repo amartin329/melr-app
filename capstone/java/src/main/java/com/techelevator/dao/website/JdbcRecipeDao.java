@@ -12,7 +12,7 @@ import org.springframework.jdbc.support.rowset.SqlRowSet;
 import java.util.ArrayList;
 import java.util.List;
 
-public class JdbcRecipeDao implements RecipeDAO{
+public class JdbcRecipeDao implements RecipeDao {
     private final JdbcTemplate jdbcTemplate;
 
     public JdbcRecipeDao(JdbcTemplate jdbcTemplate) {

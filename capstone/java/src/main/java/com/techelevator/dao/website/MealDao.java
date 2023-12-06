@@ -1,9 +1,8 @@
 package com.techelevator.dao.website;
-import com.techelevator.model.website.Meal;
 
 import java.util.List;
 
-public interface MealDAO {
+public interface MealDao {
 
     Meal createMeal(Meal meal);
 
