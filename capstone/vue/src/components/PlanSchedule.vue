@@ -3,7 +3,7 @@
       <router-link 
         v-for="plan in plans" 
         v-bind:key="plan.id"
-        v-bind:to="{name: 'MealPlanView', params: {id: plan.id}}">
+        v-bind:to="{name: 'plan-details', params: {id: plan.id}}">
         <div class="meal-plan">
             <h4>{{ plan.day }}</h4>  
             <p>{{ plan.name }}</p>

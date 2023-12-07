@@ -1,3 +1,5 @@
+// NOTE: Edit views may not be needed; could be consolidated with Details views.
+
 import { createRouter as createRouter, createWebHistory } from 'vue-router'
 import { useStore } from 'vuex'
 
@@ -6,9 +8,19 @@ import HomeView from '../views/HomeView.vue';
 import LoginView from '../views/LoginView.vue';
 import LogoutView from '../views/LogoutView.vue';
 import RegisterView from '../views/RegisterView.vue';
+import RecipeListView from '../views/RecipeViews/RecipeListView.vue'
+import RecipeDetailsView from '../views/RecipeViews/RecipeDetailsView.vue'
 import CreateRecipeView from '../views/RecipeViews/CreateRecipeView.vue'
-import MealPlanListVue from '../components/MealPlanList.vue';
-import MealPlanView from '../views/MealPlanView.vue'
+import EditRecipeView from '../views/RecipeViews/EditRecipeView.vue'
+import MealListView from '../views/MealViews/MealListView.vue'
+import MealDetailsView from '../views/MealViews/MealDetailsView.vue'
+import CreateMealView from '../views/MealViews/CreateMealView.vue'
+import EditMealView from '../views/MealViews/EditMealView.vue'
+import MealPlanListView from '../views/MealPlanViews/MealPlanListView.vue'
+import MealPlanDetailsView from '../views/MealPlanViews/MealPlanDetailsView.vue'
+import CreateMealPlanView from '../views/MealPlanViews/CreateMealPlanView.vue'
+import EditMealPlanView from '../views/MealPlanViews/EditMealPlanView.vue'
+import GroceryListView from '../views/GroceryListView.vue'
 
 /**
  * The Vue Router is used to "direct" the browser to render a specific view component
@@ -52,7 +64,23 @@ const routes = [
     }
   },
   {
-    path: '/create-recipe',
+    path: '/recipes',
+    name: 'recipes',
+    component: RecipeListView,
+    meta: {
+      requiresAuth: true
+    }
+  },
+  {
+    path: '/recipes/:id',
+    name: 'recipe-details',
+    component: RecipeDetailsView,
+    meta: {
+      requiresAuth: true
+    }
+  },
+  {
+    path: '/recipes/add',
     name: 'create-recipe',
     component: CreateRecipeView,
     meta: {
@@ -60,13 +88,86 @@ const routes = [
     }
   },
   {
-    path: '/meal-plan/:id',
-    name: 'MealPlanView',
-    component: MealPlanView,
+    path: '/recipes/:id/edit',
+    name: 'edit-recipe',
+    component: EditRecipeView,
+    meta: {
+      requiresAuth: true
+    }
+  },
+  {
+    path: '/meals',
+    name: 'meals',
+    component: MealListView,
+    meta: {
+      requiresAuth: true
+    }
+  },
+  {
+    path: '/meals/:id',
+    name: 'meal-details',
+    component: MealDetailsView,
+    meta: {
+      requiresAuth: true
+    }
+  },
+  {
+    path: '/meals/add',
+    name: 'create-meal',
+    component: CreateMealView,
+    meta: {
+      requiresAuth: true
+    }
+  },
+  {
+    path: '/meals/:id/edit',
+    name: 'edit-meal',
+    component: EditMealView,
+    meta: {
+      requiresAuth: true
+    }
+  },
+  {
+    path: '/plans',
+    name: 'plans',
+    component: MealPlanListView,
+    meta:{
+      requiresAuth: true
+    }
+  },
+  {
+    path: '/plans/:id',
+    name: 'plan-details',
+    component: MealPlanDetailsView,
+    meta: {
+      requiresAuth: true
+    }
+  },
+  {
+    path: '/plans/add',
+    name: 'create-plan',
+    component: CreateMealPlanView,
+    meta: {
+      requiresAuth: false
+    }
+  },
+  {
+    path: '/plans/:id/edit',
+    name: 'edit-plan',
+    component: EditMealPlanView,
+    meta:{
+      requiresAuth: true
+    }
+  },
+  {
+    path: '/grocery-list',
+    name: 'grocery-list',
+    component: GroceryListView,
     meta: {
       requiresAuth: true
     }
   }
+
 ];
 
 // Create the router

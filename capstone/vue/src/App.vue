@@ -5,9 +5,12 @@
     </header>
     <nav>
       <div id="nav" class="content">
-        <router-link v-bind:to="{ name: 'home' }">Home</router-link>&nbsp;|&nbsp;
-        <router-link v-bind:to="{ name: 'logout' }" v-if="$store.state.token != ''">Logout</router-link>&nbsp;|&nbsp;
-        <router-link v-bind:to="{name: 'create-recipe'}">Ingredient Search</router-link>
+        <router-link v-bind:to="{ name: 'home' }">Home</router-link>
+        <router-link v-bind:to="{name: 'recipes'}">My Recipes</router-link>
+        <router-link v-bind:to="{name: 'meals'}">My Meals</router-link>
+        <router-link v-bind:to="{name: 'plans'}">My Meal Plans</router-link>
+        <router-link v-bind:to="{name: 'grocery-list'}">My Grocery List</router-link>
+        <router-link v-bind:to="{ name: 'logout' }" v-if="$store.state.token != ''">Logout</router-link>
       </div>
     </nav>
     <main>
@@ -87,10 +90,17 @@
     background-color: #f69a00;
     }
 
-    nav {
+   #nav {
         grid-area: nav;        
         background-color: #f2ead2;
+        display:flex;
+        flex-direction: column;
+        height: 100%;
     }
+    #nav > a{
+      padding: 10px;
+    }
+
 
     main {
         grid-area: content;

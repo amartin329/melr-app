@@ -1,3 +1,5 @@
+<!-- NOTE: THIS IS A MOCK-UP. 
+    MUCH OF THIS WILL BE CHANGED WHEN DATABASE IS AVAILABLE. -->
 <template>
     <div>
     <div class="ingredients">

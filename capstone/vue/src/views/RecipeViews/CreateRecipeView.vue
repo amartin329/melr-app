@@ -1,4 +1,5 @@
 <template>
+   <router-link v-bind:to="{name: 'recipes'}">Back to My Recipes</router-link>
   <RecipeForm></RecipeForm>
 
 </template>
