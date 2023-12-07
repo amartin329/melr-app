@@ -65,7 +65,7 @@ public class NutritionDTO {
         for(Nutrient nutrient:nutrientList){
             if(nutrient.getName().equals("Calories")){
                 nutritionDTO.setCalories(nutrient.getAmount());
-            }else if(nutrient.getName().equals("Cat")){
+            }else if(nutrient.getName().equals("Fat")){
                 nutritionDTO.setFat(nutrient.getAmount());
             }else if(nutrient.getName().equals("Protein")){
                 nutritionDTO.setProtein(nutrient.getAmount());
