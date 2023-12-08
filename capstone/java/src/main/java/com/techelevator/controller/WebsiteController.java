@@ -35,7 +35,7 @@ public class WebsiteController {
     public Mealplan getMealPlan(int id) throws InterruptedException {
         Thread.sleep(1000); //Simulated loading time
 
-        Mealplan result = websiteService.getMealplan(id); // wait to see the corresponding method in mealplanDao
+        Mealplan result = websiteService.getMealplanById(id); // wait to see the corresponding method in mealplanDao
         if (result == null) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No mealPlan with that id.");
         } else {
@@ -151,7 +151,7 @@ public class WebsiteController {
     public List<Ingredient> getIngredients() {
         List<Ingredient> allIngredients = new ArrayList<>();
         try{
-            allIngredients = websiteService.getIngredients(); // wait to see the corresponding method in ingredient Dao
+            allIngredients = websiteService.getIngredients();
             if (allIngredients == null) {
                 throw new ServiceException("Recipes not found.");
             } else {

@@ -36,29 +36,11 @@ public class JdbcIngredientDao implements IngredientDao {
     }
 
 
-
-
-
-    @Override
-    public int deleteIngredient(int ing_id){
-        int rowsAffected;
-        String sql = "DELETE FROM ingredient WHERE ing_id = ?;";
-        try {
-            rowsAffected = jdbcTemplate.update(sql, ing_id);
-        } catch (CannotGetJdbcConnectionException e) {
-            throw new DaoException("Unable to connect to server or database", e);
-        } catch (DataIntegrityViolationException e) {
-            throw new DaoException("Data integrity violation");
-        }
-        return rowsAffected;
-    }
-
-
     //this method just lists all the ingredients that the logged-in user has in library
     @Override
     public List<Ingredient> listAllIngredients() {
         List<Ingredient> ingredients = new ArrayList<>();
-        String sql = "SELECT i.ing_id, i.ing_name, it.ing_type " +
+        String sql = "SELECT i.ing_id, i.ing_name, i.nutrition_id, it.ing_type " +
                 "FROM ingredient i " +
                 "JOIN ingredient_type it ON i.ing_type_id = it.ing_type_id;";
         try {
@@ -93,6 +75,22 @@ public class JdbcIngredientDao implements IngredientDao {
             throw new DaoException("unable to connect to server or database");
         }
         return ingredient;
+    }
+
+
+
+    @Override
+    public int deleteIngredient(int ing_id){
+        int rowsAffected;
+        String sql = "DELETE FROM ingredient WHERE ing_id = ?;";
+        try {
+            rowsAffected = jdbcTemplate.update(sql, ing_id);
+        } catch (CannotGetJdbcConnectionException e) {
+            throw new DaoException("Unable to connect to server or database", e);
+        } catch (DataIntegrityViolationException e) {
+            throw new DaoException("Data integrity violation");
+        }
+        return rowsAffected;
     }
 
     @Override

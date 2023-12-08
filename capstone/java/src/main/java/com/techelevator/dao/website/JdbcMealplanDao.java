@@ -20,10 +20,12 @@ public class JdbcMealplanDao implements MealplanDao {
 
 private final JdbcTemplate jdbcTemplate;
 private MealDao mealDao;
+private RecipeDao recipeDao;
 
-public JdbcMealplanDao(JdbcTemplate jdbcTemplate, MealDao mealDao){
+public JdbcMealplanDao(JdbcTemplate jdbcTemplate, MealDao mealDao, RecipeDao recipeDao){
     this.jdbcTemplate = jdbcTemplate;
     this.mealDao = mealDao;
+    this.recipeDao = recipeDao;
 }
 
     @Override
@@ -124,18 +126,45 @@ public JdbcMealplanDao(JdbcTemplate jdbcTemplate, MealDao mealDao){
     }
 
 
+    // this get mealplan details by Id can be understood as list all the meals in the mealplan out.
     @Override
-    public Mealplan listMealplanById(int mealplan_id) {
+    public Mealplan listMealplanById(int mealplanId) {
     String sql = "SELECT mealplan_id, mealplan_name, mealplan_type_id FROM mealplan WHERE mealplan_id = ?;";
-    SqlRowSet rowSet = jdbcTemplate.queryForRowSet(sql, mealplan_id);
+    SqlRowSet rowSet = jdbcTemplate.queryForRowSet(sql, mealplanId);
     if (rowSet.next()) {
         Mealplan mealplan = mapRowToMealPlan(rowSet);
+        mealplan.setMealList(getMealsForMealplanId(mealplan.getMealplanId()));
         return mealplan;
     } else {
         return null;
         }
     }
 
+   public List<Meal> getMealsForMealplanId(int mealplanId){
+        List<Meal> result = new ArrayList<>();
+        String sql = "SELECT meal_id, meal_name, meal_type_id FROM meal WHERE meal_id = " +
+                "(SELECT meal_id FROM meal_mealplan WHERE mealplan_id = ?);";
+        SqlRowSet rowSet = jdbcTemplate.queryForRowSet(sql, mealplanId);
+        while (rowSet.next()) {
+           Meal meal = mapRowToMeal(rowSet);
+           meal.setRecipeList(recipeDao.listRecipeByMealId(meal.getMealId()));
+           result.add(meal);
+       }
+       return result;
+   }
+
+
+
+
+
+
+    private Meal mapRowToMeal(SqlRowSet rowSet) {
+        Meal result = new Meal();
+        result.setMealId(rowSet.getInt("meal_id"));
+        result.setMealName(rowSet.getString("meal_name"));
+        result.setMealTypeId(rowSet.getInt("meal_type_id"));
+        return result;
+    }
 
     private Mealplan mapRowToMealPlan(SqlRowSet rowSet) {
         Mealplan result = new Mealplan();
