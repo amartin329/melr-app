@@ -29,7 +29,7 @@ public class JdbcRecipeDao implements RecipeDao {
     @Override
     public Recipe createRecipe(Recipe recipe){
         String sql = "INSERT INTO recipe (recipe_type_id, recipe_tag_id, recipe_name, picture_path, prep_time, instruction) "
-                + "VALUES (?, ?, ?, ?, ?, ?, ?) RETURNING recipe_id;";
+                + "VALUES (?, ?, ?, ?, ?, ?) RETURNING recipe_id;";
         try {
             int newId = jdbcTemplate.queryForObject(sql, int.class, recipe.getRecipeType(), recipe.getRecipeTag(), recipe.getRecipeName(),
                     recipe.getPicturePath(), recipe.getPrepTime(), recipe.getInstruction());

@@ -72,6 +72,20 @@ public class WebsiteServiceImpl implements WebsiteService {
         }
     }
 
+    public Ingredient addIngredient(Ingredient newIng){
+        Ingredient addedIngredient = new Ingredient();
+        try {
+            addedIngredient.setIngType(newIng.getIngType());
+            addedIngredient.setIngName(newIng.getIngName());
+            addedIngredient.setNutritionId(newIng.getNutritionId());
+
+            Ingredient ingredientToAdd = ingredientDao.createIngredient(addedIngredient);
+            return ingredientToAdd;
+        } catch(DaoException e) {
+            throw new ServiceException("An error has occurred: " + e.getMessage());
+        }
+    }
+
 
 
     public List<Recipe> getRecipes() {
@@ -135,19 +149,7 @@ public class WebsiteServiceImpl implements WebsiteService {
         }
     }
 
-    public Ingredient addIngredient(Ingredient newIng){
-        Ingredient addedIngredient = new Ingredient();
-        try {
-            addedIngredient.setIngType(newIng.getIngType());
-            addedIngredient.setIngName(newIng.getIngName());
-            addedIngredient.setNutritionId(newIng.getNutritionId());
 
-            Ingredient ingredientToAdd = ingredientDao.createIngredient(addedIngredient); // wait to see the corresponding method in the ingredientDao
-            return ingredientToAdd;
-        } catch(DaoException e) {
-            throw new ServiceException("An error has occurred: " + e.getMessage());
-        }
-    }
 
 
     public List<Mealplan> getMealplans() throws InterruptedException {
@@ -157,7 +159,7 @@ public class WebsiteServiceImpl implements WebsiteService {
     }
 
 
-    public Mealplan getMealplan(int id) throws InterruptedException {
+    public Mealplan getMealplanById(int id) throws InterruptedException {
         Thread.sleep(1000); //Simulated loading time
 
         Mealplan result = mealplanDao.listMealplanById(id); // wait to see the corresponding method in mealPlanDao

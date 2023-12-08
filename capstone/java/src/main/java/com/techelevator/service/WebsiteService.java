@@ -21,7 +21,7 @@ public interface WebsiteService {
     Ingredient getIngredientById(int id);
 
     List<Mealplan> getMealplans() throws InterruptedException;
-    Mealplan getMealplan(int id) throws InterruptedException;
+    Mealplan getMealplanById(int id) throws InterruptedException;
 
     Mealplan createMealplan(Mealplan newMealplan);
 
