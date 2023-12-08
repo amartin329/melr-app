@@ -3,12 +3,15 @@ package com.techelevator.dao.website;
 import com.techelevator.model.Ingredient;
 import com.techelevator.model.Nutrition;
 
+import com.techelevator.model.Recipe;
 import java.util.List;
 
 public interface IngredientDao {
     Ingredient createIngredient(Ingredient ingredient);
 
-    Ingredient updateIngredient(Ingredient ingredient);
+    //Ingredient updateIngredient(Ingredient ingredient);
+
+
 
     int deleteIngredient(int ing_id);
 

@@ -15,4 +15,7 @@ public interface MealDao {
     List<Meal> listMealByTypeId(int meal_type_id);
 
     List<Meal> listAllMeals();
+
+
+    int addRecipeToMeal(int mealId, int recipeId);
 }

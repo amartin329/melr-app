@@ -17,19 +17,19 @@ public class WebsiteServiceImpl implements WebsiteService {
     private WebsiteDao websiteDao;
     private MealDao mealDao;
     private UserDao userDao;
-    private MealplanDao mealPlanDao;
+    private MealplanDao mealplanDao;
     private IngredientDao ingredientDao;
     private RecipeDao recipeDao;
 
 
 
     public WebsiteServiceImpl(UserDao userDao, IngredientDao ingredientDao, RecipeDao recipeDao,
-                              WebsiteDao websiteDao,  MealDao mealDao, MealplanDao mealPlanDao) {
+                              WebsiteDao websiteDao,  MealDao mealDao, MealplanDao mealplanDao) {
         this.userDao = userDao;
         this.ingredientDao = ingredientDao;
         this.recipeDao = recipeDao;
         this.mealDao = mealDao;
-        this.mealPlanDao = mealPlanDao;
+        this.mealplanDao = mealplanDao;
         this.websiteDao = websiteDao;
     }
 
@@ -83,22 +83,25 @@ public class WebsiteServiceImpl implements WebsiteService {
             addedRecipe.setPrepTime(newRecipe.getPrepTime());
             addedRecipe.setInstruction(newRecipe.getInstruction());
             addedRecipe.setFavorited(newRecipe.isFavorited());
-            Recipe recipeToAdd = recipeDao.addRecipe(addedRecipe); // wait to see the corresponding method in the recipeDao
+            Recipe recipeToAdd = recipeDao.createRecipe(addedRecipe); // wait to see the corresponding method in the recipeDao
             return recipeToAdd;
         } catch(DaoException e) {
             throw new ServiceException("An error has occurred: " + e.getMessage());
         }
 
     }
+    // TODO this method is just for the purpose of creating a modifyRecipe method which only updates the metadata of the Recipe
+    // it doesn't do anything with updating the IngredientList of the data yet. This may call for a different methods with a different
+    // ingredientDto to accomodate the requirements. I don't know how to do it yet!
 
-    public Recipe modifyRecipe(Recipe updateRecipe){
+    public Recipe modifyRecipeInfo(Recipe recipeToUpdate){
         Recipe recipe;
         int recipeId;
         try {
-            recipeId = updateRecipe.getRecipeId();
+            recipeId = recipeToUpdate.getRecipeId();
             recipe = recipeDao.getRecipeDetailsById(recipeId);
-                Recipe recipeToUpdate = recipeDao.updateRecipe(recipe); // wait to see the corresponding method in the recipeDao
-                return recipeToUpdate;
+                Recipe updatedRecipe = recipeDao.updateRecipeInfo(recipe); // wait to see the corresponding method in the recipeDao
+                return updatedRecipe;
         } catch(DaoException e) {
             throw new ServiceException("An error has occurred: " + e.getMessage());
         }
@@ -111,7 +114,7 @@ public class WebsiteServiceImpl implements WebsiteService {
             addedIngredient.setIngName(newIng.getIngName());
             addedIngredient.setNutritionId(newIng.getNutritionId());
 
-            Ingredient ingredientToAdd = ingredientDao.addIngredient(addedIngredient); // wait to see the corresponding method in the ingredientDao
+            Ingredient ingredientToAdd = ingredientDao.createIngredient(addedIngredient); // wait to see the corresponding method in the ingredientDao
             return ingredientToAdd;
         } catch(DaoException e) {
             throw new ServiceException("An error has occurred: " + e.getMessage());
@@ -119,17 +122,17 @@ public class WebsiteServiceImpl implements WebsiteService {
     }
 
 
-    public List<Mealplan> getMealPlans() throws InterruptedException {
+    public List<Mealplan> getMealplans() throws InterruptedException {
         Thread.sleep(2000); //Simulated loading time
 
-        return mealPlanDao.getAllMealplans(); // wait to see the corresponding method in mealPlanDao
+        return mealplanDao.listAllMealplans(); // wait to see the corresponding method in mealPlanDao
     }
 
 
-    public Mealplan getMealPlan(int id) throws InterruptedException {
+    public Mealplan getMealplan(int id) throws InterruptedException {
         Thread.sleep(1000); //Simulated loading time
 
-        Mealplan result = mealPlanDao.getMealplan(id); // wait to see the corresponding method in mealPlanDao
+        Mealplan result = mealplanDao.listMealplanById(id); // wait to see the corresponding method in mealPlanDao
         if (result == null) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No mealPlan with that id.");
         } else {
@@ -140,7 +143,7 @@ public class WebsiteServiceImpl implements WebsiteService {
     public Meal getMeal(int id) throws InterruptedException {
         Thread.sleep(1000); //Simulated loading time
 
-        Meal result = mealDao.getMeal(id);
+        Meal result = mealDao.listMealById(id);
         if (result == null) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No meal with that id.");
         } else {
@@ -149,45 +152,50 @@ public class WebsiteServiceImpl implements WebsiteService {
     }
 
 
-    public Mealplan createMealPlan(Mealplan newMealPlan) {
+    public Mealplan createMealplan(Mealplan newMealPlan) {
         try {
-            return mealPlanDao.createMealplan(newMealPlan);
+            return mealplanDao.createMealplan(newMealPlan);
         } catch (DaoException e) {
             throw new ServiceException("An error has occurred: " + e.getMessage());
         }
     }
 
-
-
-    public Meal createMeal(Meal newMeal) {
-        Meal myMeal = new Meal();
-        try {
-            myMeal = mealDao.createMeal(newMeal.getMealplanId(), newMeal); // wait to see what's in there in mealDao
-            return myMeal;
-        } catch(DaoException e) {
-            throw new ServiceException("An error has occurred: " + e.getMessage());
-        }
-    }
-
-
-    public Meal updateMeal(int id, Meal updatedMeal) {
-        updatedMeal.setMealId(id);
-        if (mealDao.updateMeal(updatedMeal)) {
-            return updatedMeal;
+    // TODO this method is created to have a modifyMealplan method in place to satisfy the MVP.
+    // however should check if updating a mealplan is simply adding or removing meals???
+    // also needs to find a better name for the boolean variable
+    public Mealplan modifyMealplan(int mealplanId, int mealId) {
+        boolean addOrRemove = false;
+        if (addOrRemove) {
+            mealplanDao.addMealToMealplan(mealplanId, mealId);
         } else {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Meal not found to update.");
+            mealplanDao.removeMealFromMealplan(mealplanId, mealId);
         }
+        return mealplanDao.listMealplanById(mealplanId);
     }
 
-    public Mealplan updateMealPlan(int id, Mealplan updatedMealPlan) {
-        updatedMealPlan.setMealplanId(id);
-        if (mealPlanDao.updateMealplan(updatedMealPlan)) {
-            return updatedMealPlan;
-        } else {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Mealplan not found to update.");
-        }
-    }
 
+
+
+
+//    public Meal createMeal(Meal newMeal) {
+//        Meal myMeal = new Meal();
+//        try {
+//            myMeal = mealDao.createMeal(newMeal); // wait to see what's in there in mealDao
+//            return myMeal;
+//        } catch(DaoException e) {
+//            throw new ServiceException("An error has occurred: " + e.getMessage());
+//        }
+//    }
+
+// update meal is either add or remove recipe
+//    public Meal updateMeal(int id, Meal updatedMeal) {
+//        updatedMeal.setMealId(id);
+//        if (mealDao.updateMeal(updatedMeal)) {
+//            return updatedMeal;
+//        } else {
+//            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Meal not found to update.");
+//        }
+//    }
 
 
 
