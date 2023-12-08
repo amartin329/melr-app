@@ -147,6 +147,35 @@ public class WebsiteController {
         }
     }
 
+    @GetMapping("/ingredients")
+    public List<Ingredient> getIngredients() {
+        List<Ingredient> allIngredients = new ArrayList<>();
+        try{
+            allIngredients = websiteService.getIngredients(); // wait to see the corresponding method in ingredient Dao
+            if (allIngredients == null) {
+                throw new ServiceException("Recipes not found.");
+            } else {
+                return allIngredients;
+            }
+        } catch(DaoException e) {
+            throw new ServiceException("An error has occurred: " + e.getMessage());
+        }
+    }
+
+    @GetMapping("/ingredients/{id}")
+    public Ingredient getIngredientById(int id) {
+        try{
+            Ingredient ingredient = websiteService.getIngredientById(id); // wait to see the corresponding method in recipeDao
+            if (ingredient == null) {
+                throw new ServiceException("Recipe id: " + id + " was not found.");
+            } else {
+                return ingredient;
+            }
+        }catch(DaoException e){
+            throw new ServiceException("An error has occurred: " + e.getMessage());
+        }
+    }
+
 
 
 
