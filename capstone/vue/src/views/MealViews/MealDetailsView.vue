@@ -6,7 +6,18 @@
 
 <script>
 export default {
+components: {
 
+},
+data(){
+    return{
+        meal:{
+            name: "",
+            id: 0,
+            recipes: []
+        },
+    }
+}
 }
 </script>
 
