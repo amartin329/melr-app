@@ -131,6 +131,7 @@ public class WebsiteController {
         }
     }
 
+
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("/ingredients")
     public Ingredient addIngredient(@Valid @RequestBody Ingredient ingredient) {

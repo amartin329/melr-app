@@ -6,7 +6,8 @@ export function createStore(currentToken, currentUser) {
   let store = _createStore({
     state: {
       token: currentToken || '',
-      user: currentUser || {}
+      user: currentUser || {},
+      // mealplans: []
     },
     mutations: {
       SET_AUTH_TOKEN(state, token) {
