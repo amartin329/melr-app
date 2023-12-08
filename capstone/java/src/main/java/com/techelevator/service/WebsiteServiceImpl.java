@@ -45,6 +45,35 @@ public class WebsiteServiceImpl implements WebsiteService {
         }
     }
 
+    public List<Ingredient> getIngredients() {
+        List<Ingredient> allIngredients = new ArrayList<>();
+        try{
+            allIngredients = ingredientDao.listAllIngredients(); // wait to see the corresponding method in recipe Dao
+            if (allIngredients == null) {
+                throw new ServiceException("Recipes not found.");
+            } else {
+                return allIngredients;
+            }
+        } catch(DaoException e) {
+            throw new ServiceException("An error has occurred: " + e.getMessage());
+        }
+    }
+
+    public Ingredient getIngredientById(int id) {
+        try{
+            Ingredient ingredient = ingredientDao.getIngredientById(id); // wait to see the corresponding method in recipeDao
+            if (ingredient == null) {
+                throw new ServiceException("Recipe id: " + id + " was not found.");
+            } else {
+                return ingredient;
+            }
+        }catch(DaoException e){
+            throw new ServiceException("An error has occurred: " + e.getMessage());
+        }
+    }
+
+
+
     public List<Recipe> getRecipes() {
         List<Recipe> allRecipes = new ArrayList<>();
         try{

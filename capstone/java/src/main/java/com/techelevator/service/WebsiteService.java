@@ -16,6 +16,10 @@ public interface WebsiteService {
 
     Ingredient addIngredient(Ingredient newIng);
 
+    List<Ingredient> getIngredients();
+
+    Ingredient getIngredientById(int id);
+
     List<Mealplan> getMealplans() throws InterruptedException;
     Mealplan getMealplan(int id) throws InterruptedException;
 
