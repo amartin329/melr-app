@@ -11,14 +11,23 @@ export default {
     components: { MealPlanDetails },
     data(){
       return{
-        mealPlan: {name: '', meals: [
+        mealPlan: {name: 'All-Day Pasta Plan',
+         meals: [
                 {
                 name: 'Fettucini Alfredo and Eggs',
                 id: 1,
                 recipes: [
                     {
                         name: "Fettucini",
-                        id: 1
+                        id: 1,
+                        ingredients: [
+                          {
+                            name: "Noodles",
+                          },
+                          {
+                            name: "Eggs"
+                          }
+                        ]
                     },
                     {
                         name: "Eggs",
