@@ -7,7 +7,6 @@ import com.techelevator.model.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.web.server.ResponseStatusException;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -24,13 +23,13 @@ public class WebsiteServiceImpl implements WebsiteService {
 
 
     public WebsiteServiceImpl(UserDao userDao, IngredientDao ingredientDao, RecipeDao recipeDao,
-                              WebsiteDao websiteDao,  MealDao mealDao, MealplanDao mealplanDao) {
+                              MealDao mealDao, MealplanDao mealplanDao) {
         this.userDao = userDao;
         this.ingredientDao = ingredientDao;
         this.recipeDao = recipeDao;
         this.mealDao = mealDao;
         this.mealplanDao = mealplanDao;
-        this.websiteDao = websiteDao;
+
     }
 
     public List<User> getUsers() {
