@@ -25,5 +25,9 @@ public interface RecipeDao {
 
     List<Recipe> listRecipeByMealId(int recipe_id);
 
+    Recipe updateRecipeInfo(Recipe recipe);
+
+    int addIngredientToRecipe(int recipeId, int ingredientId);
+
 
 }

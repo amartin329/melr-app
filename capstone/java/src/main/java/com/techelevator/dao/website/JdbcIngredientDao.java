@@ -23,9 +23,9 @@ public class JdbcIngredientDao implements IngredientDao {
     @Override
     public Ingredient createIngredient(Ingredient ingredient) {
         String sql = "INSERT INTO ingredient (ing_name, ing_type_id, nutrition_id) " +
-                "VALUES (?, ?, ?) RETURNING ing_id;";
+                "VALUES (?, (SELECT ing_type_id FROM ing_type WHERE ing_type = ?), ?) RETURNING ing_id;";
         try {
-            int newId = jdbcTemplate.queryForObject(sql, int.class, ingredient.getIngName(), ingredient.getIngId(), ingredient.getNutritionId());
+            int newId = jdbcTemplate.queryForObject(sql, int.class, ingredient.getIngName(), ingredient.getIngType(), ingredient.getNutritionId());
             ingredient.setIngId(newId);
         } catch (CannotGetJdbcConnectionException e) {
             throw new DaoException("Unable to connect to server or database", e);
@@ -35,26 +35,8 @@ public class JdbcIngredientDao implements IngredientDao {
         return ingredient;
     }
 
-    //How should we structure an update like this?  What would we like to give the user the ability to update?
 
-//    @Override
-//    public Ingredient updateIngredient(Ingredient ingredient) {
-//        Ingredient updatedIngredient = null;
-//        String sql = "Update ingredient SET ing_name = ?, ing_type_id = ?, nutrition_id = ? WHERE ing_name = ?;";
-//        try {
-//            int rowsAffected = jdbcTemplate.update(sql, ingredient.getIngName(), ingredient.getIngType(), ingredient.getNutritionId());
-//            if(rowsAffected == 0){
-//                throw new DaoException("Zero rows affected, expected at least one");
-//            } else {
-//                updatedIngredient = getIngredientById(ingredient.getIngId());
-//            }
-//        } catch (CannotGetJdbcConnectionException e) {
-//            throw new DaoException("Unable to connect to server or database", e);
-//        } catch (DataIntegrityViolationException e) {
-//            throw new DaoException("Data integrity violation");
-//            }
-//        return updatedIngredient;
-//        }
+
 
 
     @Override

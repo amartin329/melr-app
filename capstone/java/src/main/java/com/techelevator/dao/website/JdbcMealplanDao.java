@@ -32,7 +32,8 @@ public JdbcMealplanDao(JdbcTemplate jdbcTemplate, MealDao mealDao){
         mealplan.setMealplanId(newId);
         if(mealplan.getMealList() != null) {
             for (Meal meal : mealplan.getMealList()) {
-                meal = mealDao.createMeal(mealplan.getMealplanId(), meal);
+                meal = mealDao.createMeal(meal);
+                addMealToMealplan(newId, meal.getMealId());
                 // if we don't have mealplan ID here then this meal list is just there independent
                 // not attaching to any particular mealplan
             }
@@ -45,7 +46,35 @@ public JdbcMealplanDao(JdbcTemplate jdbcTemplate, MealDao mealDao){
       return mealplan;
     }
 
-    //TODO updateMealPlan() <<<<<<<<<<
+    public int addMealToMealplan(int mealplanId, int mealId) {
+        int rowsAffected;
+        String sql = "INSERT INTO meal_mealplan (meal_id, mealplan_id) VALUES (?, ?);";
+        try {
+            rowsAffected = jdbcTemplate.update(sql, mealplanId, mealId);
+        } catch (CannotGetJdbcConnectionException e) {
+            throw new DaoException("Unable to connect to server or database", e);
+        } catch (DataIntegrityViolationException e) {
+            throw new DaoException("Data integrity violation", e);
+        }
+        return rowsAffected;
+    }
+
+    public int removeMealFromMealplan(int mealplanId, int mealId) {
+        int rowsAffected;
+        String sql = "DELETE FROM meal_mealplan WHERE mealplan_id = ? AND meal_id = ?;";
+        try {
+            rowsAffected = jdbcTemplate.update(sql, mealplanId, mealId);
+        } catch (CannotGetJdbcConnectionException e) {
+            throw new DaoException("Unable to connect to server or database", e);
+        } catch (DataIntegrityViolationException e) {
+            throw new DaoException("Data integrity violation", e);
+        }
+        return rowsAffected;
+    }
+
+    //TODO Note for updateMealPlan(): We don't have updateMealplan because when we want to change mealplan, it's when
+    // we either remove meal out of or add meal into mealplan. So I would think we would have a "delete meal" button and
+    // an "add meal" button for a mealplan <<<<<<<<<<
 
     @Override
     public int deleteMealplan(int mealplan_id) {

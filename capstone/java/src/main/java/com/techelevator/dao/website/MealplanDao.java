@@ -15,4 +15,8 @@ public interface MealplanDao {
     List<Mealplan> listAllMealplans();
 
     Mealplan listMealplanById(int mealplan_id);
+
+    int addMealToMealplan(int mealplanId, int mealId);
+
+    int removeMealFromMealplan(int mealplanId, int mealId);
 }

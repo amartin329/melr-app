@@ -32,7 +32,8 @@ public class JdbcMealDao implements MealDao{
             meal.setMealId(newId);
             if(meal.getRecipeList() != null) {
                 for (Recipe recipe : meal.getRecipeList()) {
-                    recipe = recipeDao.createRecipe(meal.getMealId(), recipe);
+                    recipe = recipeDao.createRecipe(recipe);
+                    addRecipeToMeal(newId, recipe.getRecipeId());
                     // if we don't have meal ID here then this recipe list is just there independent
                     // not attaching to any particular meal
                 }
@@ -45,7 +46,24 @@ public class JdbcMealDao implements MealDao{
         return meal;
     }
 
-    //TODO updateMeal() <<<<<<<<<<
+    public int addRecipeToMeal(int mealId, int recipeId) {
+        int rowsAffected;
+        String sql = "INSERT INTO recipe_meal (recipe_id, meal_id) VALUES (?, ?);";
+        try {
+            rowsAffected = jdbcTemplate.update(sql, recipeId, mealId);
+        } catch (CannotGetJdbcConnectionException e) {
+            throw new DaoException("Unable to connect to server or database", e);
+        } catch (DataIntegrityViolationException e) {
+            throw new DaoException("Data integrity violation", e);
+        }
+        return rowsAffected;
+    }
+
+
+
+    // TODO Note for updateMeal(): we don't have updateMeal because if we want to change meal, it would be
+    //  either delete or add recipe to meal. So I would think we would have a "delete recipe" button and
+    //  an "add recipe" button for a meal<<<<<<<<<<
 
     @Override
     public int deleteMeal(int meal_id) {

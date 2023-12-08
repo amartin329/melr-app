@@ -35,7 +35,7 @@ public class WebsiteController {
     public Mealplan getMealPlan(int id) throws InterruptedException {
         Thread.sleep(1000); //Simulated loading time
 
-        Mealplan result = websiteService.getMealplan(id); // wait to see the corresponding method in mealPlanDao
+        Mealplan result = websiteService.getMealplan(id); // wait to see the corresponding method in mealplanDao
         if (result == null) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No mealPlan with that id.");
         } else {
@@ -45,13 +45,13 @@ public class WebsiteController {
 
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("/mealplans")
-    public Mealplan createMealPlan(@Valid @RequestBody Mealplan mealPlan) { //Creates a Send Transfer
+    public Mealplan createMealPlan(@Valid @RequestBody Mealplan mealPlan) {
         try {
-            Mealplan newMealPlan = websiteService.createMealplan(mealPlan);
-            if (newMealPlan == null) {
+            Mealplan newMealplan = websiteService.createMealplan(mealPlan);
+            if (newMealplan == null) {
                 throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Server error encountered.");
             } else {
-                return newMealPlan;
+                return newMealplan;
             }
         } catch(ServiceException e){
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Server error encountered.");
@@ -59,19 +59,19 @@ public class WebsiteController {
     }
 
 
-//    @PutMapping("/mealplans/modify")
-//    public Mealplan modifyMealPlan(@Valid @RequestBody Mealplan mealPlan) {
-//        try {
-//            Mealplan modifiedMealPlan = websiteService.updateMealplan(mealPlan);
-//            if (modifiedMealPlan == null) {
-//                throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Server error encountered.");
-//            } else {
-//                return modifiedMealPlan;
-//            }
-//        }catch(ServiceException e){
-//            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Server error encountered.");
-//        }
-//    }
+    @PutMapping("/mealplans/modify")
+    public Mealplan modifyMealplan(int mealplanId, int mealId) {
+        try {
+            Mealplan modifiedMealplan = websiteService.modifyMealplan(mealplanId, mealId);
+            if (modifiedMealplan == null) {
+                throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Server error encountered.");
+            } else {
+                return modifiedMealplan;
+            }
+        }catch(ServiceException e){
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Server error encountered.");
+        }
+    }
 
     @GetMapping("/recipes")
     public List<Recipe> getRecipes() {
@@ -120,7 +120,7 @@ public class WebsiteController {
     @PutMapping("/recipes/modify")
     public Recipe modifyRecipe(@Valid @RequestBody Recipe recipe) {
         try {
-            Recipe modifiedRecipe = websiteService.modifyRecipe(recipe);
+            Recipe modifiedRecipe = websiteService.modifyRecipeInfo(recipe);
             if (modifiedRecipe == null) {
                 throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Server error encountered.");
             } else {
@@ -131,9 +131,10 @@ public class WebsiteController {
         }
     }
 
+
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("/ingredients")
-    public Ingredient addIngredient(@Valid @RequestBody Ingredient ingredient) { //Creates a Send Transfer
+    public Ingredient addIngredient(@Valid @RequestBody Ingredient ingredient) {
         try {
             Ingredient newIngredient = websiteService.addIngredient(ingredient);
             if (newIngredient == null) {

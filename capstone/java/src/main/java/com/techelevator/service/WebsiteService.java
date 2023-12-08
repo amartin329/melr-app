@@ -12,7 +12,7 @@ public interface WebsiteService {
 
     Recipe addRecipe(Recipe newRecipe);
 
-    Recipe modifyRecipe(Recipe updateRecipe);
+    Recipe modifyRecipeInfo(Recipe updateRecipe);
 
     Ingredient addIngredient(Ingredient newIng);
 
@@ -20,9 +20,13 @@ public interface WebsiteService {
     Mealplan getMealplan(int id) throws InterruptedException;
 
     Mealplan createMealplan(Mealplan newMealplan);
-    Meal getMeal(int id) throws InterruptedException;
-    Meal createMeal(Meal newMeal);
 
-    Meal updateMeal(int id, Meal updatedMeal);
+    Mealplan modifyMealplan(int mealplanId, int mealId);
+    //Meal getMeal(int id) throws InterruptedException;
+    //Meal createMeal(Meal newMeal);
+
+    //Meal updateMeal(int id, Meal updatedMeal);
+
+
 
 }
