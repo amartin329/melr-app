@@ -176,7 +176,7 @@ public class JdbcRecipeDao implements RecipeDao {
         Nutrition ingNutrition = null;
         String sql = "SELECT nu.calories, nu.protein, nu.carb, nu.fat " +
                 "FROM nutrition nu " +
-                "JOIN ingredient i ON i.nutrition_id = nutrition_id " +
+                "JOIN ingredient i ON i.nutrition_id = nu.nutrition_id " +
                 "WHERE i.ing_id = ?;";
         try {
             SqlRowSet results = jdbcTemplate.queryForRowSet(sql, ingId);
@@ -214,18 +214,6 @@ public class JdbcRecipeDao implements RecipeDao {
         return nutritionList;
     }
 
-    @Override
-    public List<Recipe> listRecipeByMealId(int recipe_id) {
-        List<Recipe> result = new ArrayList<>();
-        String sql = "SELECT recipe_id, recipe_type_id, recipe_tag_id, recipe_name, picture_path, " +
-                "prep_time, instruction, favorited FROM recipe WHERE recipe_id = ?;";
-        SqlRowSet rowSet = jdbcTemplate.queryForRowSet(sql, recipe_id);
-        while (rowSet.next()) {
-            Recipe recipe = mapRowToRecipe(rowSet);
-            result.add(recipe);
-        }
-        return result;
-    }
 
 
     public Ingredient mapRowToIngredient(SqlRowSet rs){

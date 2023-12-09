@@ -1,21 +1,29 @@
 package com.techelevator.dao.website;
 
 import com.techelevator.model.Meal;
+import com.techelevator.model.Recipe;
 
 import java.util.List;
 
 public interface MealDao {
 
-    Meal createMeal(Meal meal);
-
-    int deleteMeal(int meal_id);
-
+    List<Meal> listAllMeals();
     Meal listMealById(int meal_id);
+    Meal createMeal(Meal meal);
+    Meal updateMealInfo(Meal meal);
+    int addRecipeToMeal(int mealId, int recipeId);
+    int removeRecipeFromMeal(int mealId, int recipeId);
+    List<Recipe> listRecipesByMealId(int recipe_id);
 
+
+    // may need to clean up these two methods
+    int deleteMeal(int meal_id);
     List<Meal> listMealByTypeId(int meal_type_id);
 
-    List<Meal> listAllMeals();
 
 
-    int addRecipeToMeal(int mealId, int recipeId);
+
+
+
+
 }

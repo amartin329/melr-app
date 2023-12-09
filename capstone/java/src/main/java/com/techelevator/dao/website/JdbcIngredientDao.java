@@ -26,7 +26,7 @@ public class JdbcIngredientDao implements IngredientDao {
                 "VALUES (?, (SELECT ing_type_id FROM ing_type WHERE ing_type = ?), ?) RETURNING ing_id;";
         try {
             int newId = jdbcTemplate.queryForObject(sql, int.class, ingredient.getIngName(), ingredient.getIngType(), ingredient.getNutritionId());
-            ingredient.setIngId(newId);
+            ingredient.setIngId(newId); // TODO add nutrition list
         } catch (CannotGetJdbcConnectionException e) {
             throw new DaoException("Unable to connect to server or database", e);
         } catch (DataIntegrityViolationException e) {
@@ -42,7 +42,8 @@ public class JdbcIngredientDao implements IngredientDao {
         List<Ingredient> ingredients = new ArrayList<>();
         String sql = "SELECT i.ing_id, i.ing_name, i.nutrition_id, it.ing_type " +
                 "FROM ingredient i " +
-                "JOIN ingredient_type it ON i.ing_type_id = it.ing_type_id;";
+                "JOIN ingredient_type it ON i.ing_type_id = it.ing_type_id " +
+                "JOIN nutrition nu ON i.nutrition_id = nu.nutrition_id;";
         try {
             SqlRowSet results = jdbcTemplate.queryForRowSet(sql);
             while (results.next()) {
@@ -98,7 +99,7 @@ public class JdbcIngredientDao implements IngredientDao {
         Nutrition ingNutrition = null;
         String sql = "SELECT nu.calories, nu.protein, nu.carb, nu.fat " +
                 "FROM nutrition nu " +
-                "JOIN ingredient i ON i.nutrition_id = nutrition_id " +
+                "JOIN ingredient i ON i.nutrition_id = nu.nutrition_id " +
                 "WHERE i.ing_id = ?;";
         try {
             SqlRowSet results = jdbcTemplate.queryForRowSet(sql, ingId);

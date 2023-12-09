@@ -23,7 +23,7 @@ public interface RecipeDao {
 
     List<Nutrition> getNutritionForRecipe(int recId);
 
-    List<Recipe> listRecipeByMealId(int recipe_id);
+    //List<Recipe> listRecipesByMealId(int recipe_id);//move to mealDao
 
     Recipe updateRecipeInfo(Recipe recipe);
 
