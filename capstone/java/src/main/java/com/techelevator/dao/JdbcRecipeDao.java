@@ -23,85 +23,6 @@ public class JdbcRecipeDao implements RecipeDao {
         this.ingredientDao = ingredientDao;
     }
 
-    //I left 'favorited' out of this, since it seems like that would act funny
-    //TODO talk about this
-
-    @Override
-    public Recipe createRecipe(Recipe recipe){
-        String sql = "INSERT INTO recipe (recipe_type_id, recipe_tag_id, recipe_name, picture_path, prep_time, instruction) "
-                + "VALUES (?, ?, ?, ?, ?, ?) RETURNING recipe_id;";
-        try {
-            int newId = jdbcTemplate.queryForObject(sql, int.class, recipe.getRecipeType(), recipe.getRecipeTag(), recipe.getRecipeName(),
-                    recipe.getPicturePath(), recipe.getPrepTime(), recipe.getInstruction());
-            if(recipe.getIngredientList() != null) {
-                for (Ingredient ingredient : recipe.getIngredientList()) {
-                    ingredient = ingredientDao.createIngredient(ingredient);
-                    addIngredientToRecipe(newId, ingredient.getIngId());
-                    // if we don't have recipe ID here then this ing list is just there independently
-                    // not attaching to any particular recipe
-                }
-            }
-        } catch (CannotGetJdbcConnectionException e) {
-            throw new DaoException("Unable to connect to server or database", e);
-        } catch (DataIntegrityViolationException e) {
-            throw new DaoException("Data integrity violation", e);
-        }
-        return recipe;
-    }
-    // TODO is there a way to put the quantity and unit right in here and then add this into the createRecipe method up there
-    // TODO without causing a break? Should an ingredientDto be used here? If so how?
-    public int addIngredientToRecipe(int recipeId, int ingredientId) {
-        int rowsAffected;
-        String sql = "INSERT INTO recipe_ing (recipe_id, ing_id) VALUES (?, ?);";
-        try {
-            rowsAffected = jdbcTemplate.update(sql, recipeId, ingredientId);
-        } catch (CannotGetJdbcConnectionException e) {
-            throw new DaoException("Unable to connect to server or database", e);
-        } catch (DataIntegrityViolationException e) {
-            throw new DaoException("Data integrity violation", e);
-        }
-        return rowsAffected;
-    }
-    // TODO this method is only updating the metadata of the recipe, not the actual ingredientList of the recipe.
-    // TODO maybe we need a separate method to handle that and include it in here.
-
-    public Recipe updateRecipeInfo(Recipe recipe){
-        int rowAffected;
-        String sql = "UPDATE recipe " +
-                "SET recipe_type_id, recipe_tag_id, recipe_name, picture_path, prep_time, instruction " +
-                "WHERE recipe_id = ?;";
-        try {
-            rowAffected = jdbcTemplate.update(sql, recipe.getRecipeId());
-            if (rowAffected == 0) {
-                throw new DaoException("Zero rows affected, expected at least one");
-            }
-
-        } catch (CannotGetJdbcConnectionException e) {
-            throw new DaoException("Unable to connect to server or database", e);
-        } catch (DataIntegrityViolationException e) {
-            throw new DaoException("Data integrity violation", e);
-        }
-        return getRecipeDetailsById(recipe.getRecipeId());
-    }
-
-    //TODO updateRecipeIngredient() <<<<<<<<<<
-
-
-
-    @Override
-    public int deleteRecipe(int recipe_id){
-        int rowsAffected;
-        String sql = "DELETE FROM recipe WHERE meal_id = ?;";
-        try {
-            rowsAffected = jdbcTemplate.update(sql, recipe_id);
-        } catch (CannotGetJdbcConnectionException e) {
-            throw new DaoException("Unable to connect to server or database", e);
-        } catch (DataIntegrityViolationException e) {
-            throw new DaoException("Data integrity violation", e);
-        }
-        return rowsAffected;
-    }
-
     @Override
     public List<Recipe> listAllRecipes(){
         List<Recipe> allRecipes = new ArrayList<>();
@@ -145,6 +66,66 @@ public class JdbcRecipeDao implements RecipeDao {
         }
         return recipe;
     }
+
+    @Override
+    public Recipe createRecipe(Recipe recipe){
+        String sql = "INSERT INTO recipe (recipe_type_id, recipe_tag_id, recipe_name, picture_path, prep_time, instruction) "
+                + "VALUES (?, ?, ?, ?, ?, ?) RETURNING recipe_id;";
+        try {
+            int newId = jdbcTemplate.queryForObject(sql, int.class, recipe.getRecipeType(), recipe.getRecipeTag(), recipe.getRecipeName(),
+                    recipe.getPicturePath(), recipe.getPrepTime(), recipe.getInstruction());
+            if(recipe.getIngredientList() != null) {
+                for (Ingredient ingredient : recipe.getIngredientList()) {
+                    ingredient = ingredientDao.createIngredient(ingredient);
+                    addIngredientToRecipe(newId, ingredient.getIngId());
+                    // if we don't have recipe ID here then this ing list is just there independently
+                    // not attaching to any particular recipe
+                }
+            }
+        } catch (CannotGetJdbcConnectionException e) {
+            throw new DaoException("Unable to connect to server or database", e);
+        } catch (DataIntegrityViolationException e) {
+            throw new DaoException("Data integrity violation", e);
+        }
+        return recipe;
+    }
+
+    // TODO is there a way to put the quantity and unit right in here and then add this into the createRecipe method up there
+    // TODO without causing a break? Should an ingredientDto be used here? If so how?
+    public int addIngredientToRecipe(int recipeId, int ingredientId) {
+        int rowsAffected;
+        String sql = "INSERT INTO recipe_ing (recipe_id, ing_id) VALUES (?, ?);";
+        try {
+            rowsAffected = jdbcTemplate.update(sql, recipeId, ingredientId);
+        } catch (CannotGetJdbcConnectionException e) {
+            throw new DaoException("Unable to connect to server or database", e);
+        } catch (DataIntegrityViolationException e) {
+            throw new DaoException("Data integrity violation", e);
+        }
+        return rowsAffected;
+    }
+    // TODO this method is only updating the metadata of the recipe, not the actual ingredientList of the recipe.
+    // TODO maybe we need a separate method to handle that and include it in here.
+
+    public Recipe updateRecipeInfo(Recipe recipe){
+        int rowAffected;
+        String sql = "UPDATE recipe " +
+                "SET recipe_type_id, recipe_tag_id, recipe_name, picture_path, prep_time, instruction " +
+                "WHERE recipe_id = ?;";
+        try {
+            rowAffected = jdbcTemplate.update(sql, recipe.getRecipeId());
+            if (rowAffected == 0) {
+                throw new DaoException("Zero rows affected, expected at least one");
+            }
+
+        } catch (CannotGetJdbcConnectionException e) {
+            throw new DaoException("Unable to connect to server or database", e);
+        } catch (DataIntegrityViolationException e) {
+            throw new DaoException("Data integrity violation", e);
+        }
+        return getRecipeDetailsById(recipe.getRecipeId());
+    }
+
 
     //this method will list the ingredients in a particular recipe by recipe Id
 
@@ -258,5 +239,22 @@ public class JdbcRecipeDao implements RecipeDao {
         recipe.setFavorited(rs.getBoolean("favorited"));
         return recipe;
     }
+
+
+
+    @Override
+    public int deleteRecipe(int recipe_id){
+        int rowsAffected;
+        String sql = "DELETE FROM recipe WHERE meal_id = ?;";
+        try {
+            rowsAffected = jdbcTemplate.update(sql, recipe_id);
+        } catch (CannotGetJdbcConnectionException e) {
+            throw new DaoException("Unable to connect to server or database", e);
+        } catch (DataIntegrityViolationException e) {
+            throw new DaoException("Data integrity violation", e);
+        }
+        return rowsAffected;
+    }
+
 
 }
