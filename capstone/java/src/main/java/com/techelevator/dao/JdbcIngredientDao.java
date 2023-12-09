@@ -26,7 +26,8 @@ public class JdbcIngredientDao implements IngredientDao {
                 "VALUES (?, (SELECT ing_type_id FROM ing_type WHERE ing_type = ?), ?) RETURNING ing_id;";
         try {
             int newId = jdbcTemplate.queryForObject(sql, int.class, ingredient.getIngName(), ingredient.getIngType(), ingredient.getNutritionId());
-            ingredient.setIngId(newId); // TODO add nutrition list
+            ingredient.setIngId(newId);
+            ingredient.setNutrition(getNutritionForIngredient(newId));
         } catch (CannotGetJdbcConnectionException e) {
             throw new DaoException("Unable to connect to server or database", e);
         } catch (DataIntegrityViolationException e) {

@@ -1,10 +1,11 @@
 package com.techelevator.service;
 
 import com.techelevator.dao.*;
-import com.techelevator.dao.website.*;
+import com.techelevator.dao.*;
 import com.techelevator.exception.DaoException;
 import com.techelevator.exception.ServiceException;
 import com.techelevator.model.Ingredient;
+import com.techelevator.model.Recipe;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
@@ -50,6 +51,14 @@ public class IngredientServiceImpl implements IngredientService{
                 return ingredient;
             }
         }catch(DaoException e){
+            throw new ServiceException("An error has occurred: " + e.getMessage());
+        }
+    }
+
+    public Ingredient createIngredient(Ingredient ingredient) {
+        try {
+            return ingredientDao.createIngredient(ingredient);
+        } catch (DaoException e) {
             throw new ServiceException("An error has occurred: " + e.getMessage());
         }
     }
