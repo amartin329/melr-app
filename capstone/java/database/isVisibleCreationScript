@@ -1,0 +1,8 @@
+ALTER TABLE meal_mealplan
+	ADD is_visible boolean;
+	
+ALTER TABLE recipe_meal
+	ADD is_visible boolean;
+	
+ALTER TABLE recipe_ing
+	ADD is_visible boolean;
