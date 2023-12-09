@@ -1,5 +1,6 @@
 package com.techelevator.service;
 
+import com.techelevator.dao.UserDao;
 import com.techelevator.dao.website.*;
 import com.techelevator.exception.DaoException;
 import com.techelevator.exception.ServiceException;

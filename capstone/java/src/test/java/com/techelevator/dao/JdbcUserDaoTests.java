@@ -1,6 +1,5 @@
 package com.techelevator.dao;
 
-import com.techelevator.dao.website.JdbcUserDao;
 import com.techelevator.exception.DaoException;
 import com.techelevator.model.RegisterUserDto;
 import com.techelevator.model.User;

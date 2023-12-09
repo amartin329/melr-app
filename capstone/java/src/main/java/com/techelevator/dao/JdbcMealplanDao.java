@@ -1,9 +1,8 @@
-package com.techelevator.dao.website;
+package com.techelevator.dao;
 
 import com.techelevator.exception.DaoException;
 import com.techelevator.model.Meal;
 import com.techelevator.model.Mealplan;
-import com.techelevator.model.Recipe;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.jdbc.CannotGetJdbcConnectionException;
 import org.springframework.jdbc.core.JdbcTemplate;

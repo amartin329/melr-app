@@ -1,10 +1,10 @@
 package com.techelevator.service;
 
+import com.techelevator.dao.*;
 import com.techelevator.dao.website.*;
 import com.techelevator.exception.DaoException;
 import com.techelevator.exception.ServiceException;
 import com.techelevator.model.Meal;
-import com.techelevator.model.Mealplan;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.web.server.ResponseStatusException;

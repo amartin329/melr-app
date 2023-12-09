@@ -1,4 +1,4 @@
-package com.techelevator.dao.website;
+package com.techelevator.dao;
 
 import com.techelevator.model.Meal;
 import com.techelevator.model.Recipe;
