@@ -32,7 +32,7 @@ public class JdbcIngredientDao implements IngredientDao {
             SqlRowSet results = jdbcTemplate.queryForRowSet(sql);
             while (results.next()) {
                 Ingredient ingredient = mapRowToIngredient(results);
-                ingredient.setNutrition(getNutritionForIngredient(ingredient.getIngId()));
+//                ingredient.setNutrition(getNutritionForIngredient(ingredient.getIngId()));
                 ingredients.add(ingredient);
             }
         } catch (CannotGetJdbcConnectionException e) {

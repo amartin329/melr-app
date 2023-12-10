@@ -1,19 +1,31 @@
 <template>
-  <h1>My meal plan</h1>
-  <h2>{{ name }}</h2>
-  <div class="meals">
-    <div class="meal" v-for="meal in meals" v-bind:key="meal.id">
-        <!-- NOTE: v-on | view meal details on click? hover (for preview)? -->
-        <h3>{{ meal.name }}</h3>
-    </div>
-    
+  <h1>{{ this.$store.state.currentMealPlan.mealplanName}}</h1>
+  <div class="meal" v-for="meal in this.$store.state.currentMealPlan.mealList" v-bind:key="meal.id">
+    <h3>AOAOIH{{meal.mealName}}</h3>
   </div>
+
+  <!--  -->
 </template>
 
 <script>
 export default {
+data(){
+    return{
+        mealPlanId: this.$route.params.id
+    }
+},
 
-    props: ['name', 'meals']
+    methods: {
+         getCurrentMealPlan(mealPlanId){
+            this.$store.dispatch('getMealPlanById', mealPlanId);
+        },
+        getId(){}
+    },
+    created(){
+        console.log(this.$route.params.id)
+        this.$store.dispatch('getMealPlanById', this.$route.params.id);
+    }
+    // props: ['mealPlan']
 }
 </script>
 

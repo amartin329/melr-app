@@ -5,7 +5,7 @@
     <div class="ingredients">
         <h2>Recipe Ingredients</h2>
         <div class="ingredient" v-for="ingredient in recipeIngredients" v-bind:key="ingredient.id">
-            <p>{{ ingredient.name }}</p>
+            <p>{{ ingredient.name }} | {{ ingredient.amount }}</p>
         </div>
     </div>
       <h3>Add ingredient:</h3>
@@ -13,10 +13,10 @@
         <img v-bind:src="getImage(result.image)">
         {{ result.name }}
         <label for="amount">
-            <input type="text" id="amount" placeholder="amount">
+            <input type="text" id="amount" placeholder="amount" v-model="this.result.amount">
         </label>
         <label for="unit">
-            <select name="units" id="units">
+            <select name="units" id="units" v-model="this.result.unit">
                 <option>------</option>
                 <option>ounces</option>
                 <option>grams</option>
@@ -24,7 +24,7 @@
                 <option>pieces</option>
             </select>
         </label>
-        <button v-on:click="addIngredient(result)">Add Ingredient to Recipe</button>
+        <button v-on:click="getIngredientInformation(result)">Add Ingredient to Recipe</button>
       </div>
       
       <input type="text" v-model="this.userSearch" id="userSearch"/>
@@ -46,8 +46,11 @@ import SpoonacularService from '../services/SpoonacularService';
         {
           id: 0,
           image: "",
-          name: ""
+          name: "",
+          amount: 0,
+          unit: ""
         },
+
       recipeIngredients: [],
       ingredient: 
       {
@@ -83,13 +86,14 @@ import SpoonacularService from '../services/SpoonacularService';
       getImage(image){
         return 'https://spoonacular.com/cdn/ingredients_100x100/' + image;
       },
-      addIngredient(ingredient){
-        this.recipeIngredients.push(ingredient);
-      },
+      // addIngredient(ingredient){
+      //   let newIngredient = this.getIngredientInformation(ingredient.id, ingredient.unit, ingredient.amount)
+      //   this.recipeIngredients.push(newIngredient);
+      // },
 
-      getIngredientInformation(id, unit, amount){
-        SpoonacularService.getIngredientInformation(id, unit, amount).then(response => {
-
+      getIngredientInformation(result){
+        SpoonacularService.getIngredientInformation(result.id, result.unit, result.amount).then(response => {
+          this.recipeIngredients.push(response);
         })
       }
 

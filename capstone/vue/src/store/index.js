@@ -1,5 +1,11 @@
 import { createStore as _createStore } from 'vuex';
 import axios from 'axios';
+import mealPlanService from '../services/MealPlanService';
+import mealService from '../services/MealService';
+import recipeService from '../services/RecipeService';
+import spoonacularService from '../services/SpoonacularService';
+
+
 const NOTIFICATION_TIMEOUT = 5000;
 
 export function createStore(currentToken, currentUser) {
@@ -7,7 +13,16 @@ export function createStore(currentToken, currentUser) {
     state: {
       token: currentToken || '',
       user: currentUser || {},
-      // mealplans: []
+      mealPlans: [],
+      meals: [],
+      recipes: [],
+      ingredients: [],
+      currentMealPlan: 
+      {
+      },
+      currentMeal: {},
+      currentRecipe: {},
+      currentIngredient:{}
     },
     mutations: {
       SET_AUTH_TOKEN(state, token) {
@@ -26,6 +41,15 @@ export function createStore(currentToken, currentUser) {
         state.user = {};
         axios.defaults.headers.common = {};
       },
+
+      SET_MEALPLANS(state, mealPlanList){
+        state.mealPlans = mealPlanList;
+      },
+
+      SET_CURRENTMEALPLAN(state, currentMealPlan){
+        state.currentMealPlan = currentMealPlan;
+      },
+
       SET_NOTIFICATION(state, notification){
         if(state.notification) {
           this.commit('CLEAR_NOTIFICATION');
@@ -56,6 +80,24 @@ export function createStore(currentToken, currentUser) {
         state.notification = null;
       },
     },
+    actions: {
+      getMealPlans({commit}){
+        mealPlanService.getMealPlans().then(response => {
+          const mealPlans = response.data;
+          commit('SET_MEALPLANS', mealPlans)
+        }).catch(error => {
+          commit('SET_NOTIFICATION', `Error retrieving meal plans from server.`)
+        })
+      },
+      getMealPlanById({commit, id}){
+        mealPlanService.getMealPlanById(id).then(response => {
+          const responsePlan = response.data;
+          commit('SET_CURRENTMEALPLAN', responsePlan)
+        }).catch(error => {
+          commit('SET_NOTIFICATION', `Whoops!`)
+        })
+      }
+    }
   });
   return store;
 }
