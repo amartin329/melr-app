@@ -49,7 +49,7 @@ public class IngredientServiceImpl implements IngredientService{
         try{
             Ingredient ingredient = ingredientDao.getIngredientById(id);
             if (ingredient == null) {
-                throw new ServiceException("Recipe id: " + id + " was not found.");
+                throw new ServiceException("Ingredient id: " + id + " was not found.");
             } else {
                 return ingredient;
             }
