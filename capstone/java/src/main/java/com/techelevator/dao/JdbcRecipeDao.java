@@ -82,7 +82,7 @@ public class JdbcRecipeDao implements RecipeDao {
         } catch (DataIntegrityViolationException e) {
             throw new DaoException("Data integrity violation", e);
         }
-        return recipe;
+        return getRecipeDetailsById(recipe.getRecipeId());
     }
 
     // TODO this method is only updating the metadata of the recipe, not the actual ingredientList of the recipe.

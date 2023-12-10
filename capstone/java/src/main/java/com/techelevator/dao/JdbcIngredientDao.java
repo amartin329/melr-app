@@ -69,17 +69,17 @@ public class JdbcIngredientDao implements IngredientDao {
         } catch (DataIntegrityViolationException e) {
             throw new DaoException("Data integrity violation", e);
         }
-        return ingredient;
+        return getIngredientById(ingredient.getIngId());
     }
 
     public boolean updateIngredient(Ingredient ingredient){
         int rowAffected;
         String sql = "UPDATE ingredient " +
-                "SET ing_type_id = ?, ing_name = ?, nutrition_id = ?,  " +
+                "SET ing_type_id = ?, ing_name = ?, nutrition_id = ? " +
                 "WHERE ing_id = ?;";
         try {
             rowAffected = jdbcTemplate.update(sql, ingredient.getIngTypeId(), ingredient.getIngName(), ingredient.getNutritionId(), ingredient.getIngId());
-
+            ingredient.setNutrition(getNutritionForIngredient(ingredient.getIngId()));
         } catch (CannotGetJdbcConnectionException e) {
             throw new DaoException("Unable to connect to server or database", e);
         } catch (DataIntegrityViolationException e) {
