@@ -3,6 +3,7 @@ package com.techelevator.dao;
 import com.techelevator.exception.DaoException;
 import com.techelevator.model.Ingredient;
 import com.techelevator.model.Nutrition;
+import com.techelevator.model.Recipe;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.jdbc.CannotGetJdbcConnectionException;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -24,10 +25,9 @@ public class JdbcIngredientDao implements IngredientDao {
     @Override
     public List<Ingredient> listAllIngredients() {
         List<Ingredient> ingredients = new ArrayList<>();
-        String sql = "SELECT i.ing_id, i.ing_name, i.nutrition_id, it.ing_type " +
-                "FROM ingredient i " +
-                "JOIN ingredient_type it ON i.ing_type_id = it.ing_type_id " +
-                "JOIN nutrition nu ON i.nutrition_id = nu.nutrition_id;";
+        String sql = "SELECT i.ing_id, i.ing_name, i.ing_type_id, i.nutrition_id " +
+                "FROM ingredient i;";
+
         try {
             SqlRowSet results = jdbcTemplate.queryForRowSet(sql);
             while (results.next()) {
@@ -45,10 +45,8 @@ public class JdbcIngredientDao implements IngredientDao {
     @Override
     public Ingredient getIngredientById(int ingId) {
         Ingredient ingredient = null;
-        String sql = "SELECT i.ing_name, it.ing_type " +
+        String sql = "SELECT i.ing_name, i.ing_type_id, i.nutrition_id " +
                 "FROM ingredient i " +
-                "JOIN ingredient_type it ON i.ing_type_id = it.ing_type_id " +
-                "JOIN nutrition nu ON i.nutrition_id = nu.nutrition_id " +
                 "WHERE i.ing_id = ?;";
         try {
             SqlRowSet results = jdbcTemplate.queryForRowSet(sql, ingId);
@@ -64,10 +62,10 @@ public class JdbcIngredientDao implements IngredientDao {
 
     @Override
     public Ingredient createIngredient(Ingredient ingredient) {
-        String sql = "INSERT INTO ingredient (ing_name, ing_type_id, nutrition_id) " +
-                "VALUES (?, (SELECT ing_type_id FROM ing_type WHERE ing_type = ?), ?) RETURNING ing_id;";
+        String sql = "INSERT INTO ingredient (ing_type_id, ing_name, nutrition_id) " +
+                "VALUES (?, ?, ?) RETURNING ing_id;";
         try {
-            int newId = jdbcTemplate.queryForObject(sql, int.class, ingredient.getIngName(), ingredient.getIngType(), ingredient.getNutritionId());
+            int newId = jdbcTemplate.queryForObject(sql, int.class, ingredient.getIngTypeId(), ingredient.getIngName(), ingredient.getNutritionId());
             ingredient.setIngId(newId);
             ingredient.setNutrition(getNutritionForIngredient(newId));
         } catch (CannotGetJdbcConnectionException e) {
@@ -76,6 +74,22 @@ public class JdbcIngredientDao implements IngredientDao {
             throw new DaoException("Data integrity violation", e);
         }
         return ingredient;
+    }
+
+    public boolean updateIngredient(Ingredient ingredient){
+        int rowAffected;
+        String sql = "UPDATE ingredient " +
+                "SET ing_type_id = ?, ing_name = ?, nutrition_id = ?,  " +
+                "WHERE ing_id = ?;";
+        try {
+            rowAffected = jdbcTemplate.update(sql, ingredient.getIngTypeId(), ingredient.getIngName(), ingredient.getNutritionId(), ingredient.getIngId());
+            ingredient.setNutrition(getNutritionForIngredient(ingredient.getIngId()));
+        } catch (CannotGetJdbcConnectionException e) {
+            throw new DaoException("Unable to connect to server or database", e);
+        } catch (DataIntegrityViolationException e) {
+            throw new DaoException("Data integrity violation", e);
+        }
+        return rowAffected == 1;
     }
 
 
@@ -92,7 +106,9 @@ public class JdbcIngredientDao implements IngredientDao {
                 ingNutrition = mapRowToNutrition(results);
             }
         } catch (CannotGetJdbcConnectionException e) {
-            throw new DaoException("unable to connect to server or database");
+            throw new DaoException("Unable to connect to server or database", e);
+        } catch (DataIntegrityViolationException e) {
+            throw new DaoException("Data integrity violation", e);
         }
         return ingNutrition;
 
@@ -101,7 +117,7 @@ public class JdbcIngredientDao implements IngredientDao {
     public Ingredient mapRowToIngredient(SqlRowSet rs){
         Ingredient ingredient = new Ingredient();
         ingredient.setIngId(rs.getInt("ing_id"));
-        ingredient.setIngType(rs.getString("ing_type"));
+        ingredient.setIngTypeId(rs.getInt("ing_type_id"));
         ingredient.setIngName(rs.getString("ing_name"));
         ingredient.setNutritionId(rs.getInt("nutrition_id"));
         return ingredient;
@@ -117,7 +133,7 @@ public class JdbcIngredientDao implements IngredientDao {
         return nutrition;
     }
 
-
+    // may not be needed
     @Override
     public int deleteIngredient(int ing_id){
         int rowsAffected;
@@ -131,7 +147,5 @@ public class JdbcIngredientDao implements IngredientDao {
         }
         return rowsAffected;
     }
-
-
 
 }

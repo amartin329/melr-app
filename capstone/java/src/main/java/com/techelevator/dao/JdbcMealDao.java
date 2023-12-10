@@ -138,11 +138,17 @@ public class JdbcMealDao implements MealDao{
         String sql = "SELECT recipe_id, recipe_type_id, recipe_tag_id, recipe_name, picture_path, " +
                 "prep_time, instruction, favorited FROM recipe " +
                 "WHERE recipe_id = (SELECT recipe_id FROM recipe_meal WHERE meal_id = ?);";
-        SqlRowSet rowSet = jdbcTemplate.queryForRowSet(sql, meal_id);
-        while (rowSet.next()) {
-            Recipe recipe = mapRowToRecipe(rowSet);
-            recipe.setIngredientList(recipeDao.getIngredientListForRecipe(recipe.getRecipeId()));
-            result.add(recipe);
+        try {
+            SqlRowSet rowSet = jdbcTemplate.queryForRowSet(sql, meal_id);
+            while (rowSet.next()) {
+                Recipe recipe = mapRowToRecipe(rowSet);
+                recipe.setIngredientList(recipeDao.getIngredientListForRecipe(recipe.getRecipeId()));
+                result.add(recipe);
+            }
+        } catch (CannotGetJdbcConnectionException e) {
+            throw new DaoException("Unable to connect to server or database", e);
+        } catch (DataIntegrityViolationException e) {
+            throw new DaoException("Data integrity violation", e);
         }
         return result;
     }
@@ -159,8 +165,8 @@ public class JdbcMealDao implements MealDao{
     public Recipe mapRowToRecipe(SqlRowSet rs){
         Recipe recipe = new Recipe();
         recipe.setRecipeId(rs.getInt("recipe_id"));
-        recipe.setRecipeType(rs.getString("recipe_type_desc"));
-        recipe.setRecipeTag(rs.getString("recipe_tag_desc"));
+        recipe.setRecipeTypeId(rs.getInt("recipe_type_id"));
+        recipe.setRecipeTagId(rs.getInt("recipe_tag_id"));
         recipe.setRecipeName(rs.getString("recipe_name"));
         recipe.setPicturePath(rs.getString("picture_path"));
         recipe.setPrepTime(rs.getInt("prep_time"));

@@ -5,8 +5,8 @@ import java.util.Objects;
 
 public class Recipe {
     private int recipeId;
-    private String recipeType;
-    private String recipeTag;
+    private int recipeTypeId;
+    private int recipeTagId;
     private String recipeName;
     private String picturePath;
     private int prepTime;
@@ -19,28 +19,17 @@ public class Recipe {
 
     public Recipe(){}
 
-    public Recipe(int recipeId, String recipeType, String recipeTag, String recipeName, String picturePath,
-                  int prepTime, String instruction, boolean isFavorited, List<Ingredient> ingredientList) {
+    public Recipe(int recipeId, int recipeTypeId, int recipeTagId, String recipeName, String picturePath, int prepTime,
+                  String instruction, boolean isFavorited, List<Ingredient> ingredientList) {
         this.recipeId = recipeId;
-        this.recipeType = recipeType;
-        this.recipeTag = recipeTag;
+        this.recipeTypeId = recipeTypeId;
+        this.recipeTagId = recipeTagId;
         this.recipeName = recipeName;
         this.picturePath = picturePath;
         this.prepTime = prepTime;
         this.instruction = instruction;
         this.isFavorited = isFavorited;
         this.ingredientList = ingredientList;
-    }
-
-    public Recipe(int recipeId, String recipeType, String recipeTag, String recipeName, String picturePath, int prepTime, String instruction, boolean isFavorited) {
-        this.recipeId = recipeId;
-        this.recipeType = recipeType;
-        this.recipeTag = recipeTag;
-        this.recipeName = recipeName;
-        this.picturePath = picturePath;
-        this.prepTime = prepTime;
-        this.instruction = instruction;
-        this.isFavorited = isFavorited;
     }
 
     public int getRecipeId() {
@@ -51,20 +40,20 @@ public class Recipe {
         this.recipeId = recipeId;
     }
 
-    public String getRecipeType() {
-        return recipeType;
+    public int getRecipeTypeId() {
+        return recipeTypeId;
     }
 
-    public void setRecipeType(String recipeType) {
-        this.recipeType = recipeType;
+    public void setRecipeTypeId(int recipeTypeId) {
+        this.recipeTypeId = recipeTypeId;
     }
 
-    public String getRecipeTag() {
-        return recipeTag;
+    public int getRecipeTagId() {
+        return recipeTagId;
     }
 
-    public void setRecipeTag(String recipeTag) {
-        this.recipeTag = recipeTag;
+    public void setRecipeTagId(int recipeTagId) {
+        this.recipeTagId = recipeTagId;
     }
 
     public String getRecipeName() {
@@ -120,11 +109,11 @@ public class Recipe {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Recipe recipe = (Recipe) o;
-        return recipeId == recipe.recipeId && prepTime == recipe.prepTime && isFavorited == recipe.isFavorited && Objects.equals(recipeType, recipe.recipeType) && Objects.equals(recipeTag, recipe.recipeTag) && Objects.equals(recipeName, recipe.recipeName) && Objects.equals(picturePath, recipe.picturePath) && Objects.equals(instruction, recipe.instruction) && Objects.equals(ingredientList, recipe.ingredientList);
+        return recipeId == recipe.recipeId && recipeTypeId == recipe.recipeTypeId && recipeTagId == recipe.recipeTagId && prepTime == recipe.prepTime && isFavorited == recipe.isFavorited && Objects.equals(recipeName, recipe.recipeName) && Objects.equals(picturePath, recipe.picturePath) && Objects.equals(instruction, recipe.instruction) && Objects.equals(ingredientList, recipe.ingredientList);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(recipeId, recipeType, recipeTag, recipeName, picturePath, prepTime, instruction, isFavorited, ingredientList);
+        return Objects.hash(recipeId, recipeTypeId, recipeTagId, recipeName, picturePath, prepTime, instruction, isFavorited, ingredientList);
     }
 }

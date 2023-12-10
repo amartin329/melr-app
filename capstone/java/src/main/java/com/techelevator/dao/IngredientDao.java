@@ -7,19 +7,16 @@ import com.techelevator.model.Recipe;
 import java.util.List;
 
 public interface IngredientDao {
-    Ingredient createIngredient(Ingredient ingredient);
-
-    //Ingredient updateIngredient(Ingredient ingredient);
-
-
-
-    int deleteIngredient(int ing_id);
-
-    //this method just lists all the ingredients that the logged-in user has in library
     List<Ingredient> listAllIngredients();
-
-    // this method will list the details of a particular ingredient by its id
     Ingredient getIngredientById(int ingId);
-
+    Ingredient createIngredient(Ingredient ingredient);
+    boolean updateIngredient(Ingredient ingredient);
     Nutrition getNutritionForIngredient(int ingId);
+
+    // may not be needed
+    int deleteIngredient(int ing_id);
+  //Ingredient updateIngredient(Ingredient ingredient);
+
+
+
 }

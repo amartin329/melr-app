@@ -9,4 +9,5 @@ public interface IngredientService {
     List<Ingredient> getIngredients();
     Ingredient getIngredientById(int id);
     Ingredient createIngredient(Ingredient ingredient);
+    Ingredient updateIngredient(int id, Ingredient updatedIngredient);
 }

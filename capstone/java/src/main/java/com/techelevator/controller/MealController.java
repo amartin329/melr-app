@@ -29,7 +29,7 @@ public class MealController {
     }
 
     @GetMapping("/{id}")
-    public Meal getMealById(int id) throws InterruptedException {
+    public Meal getMealById(@PathVariable int id) throws InterruptedException {
         Thread.sleep(1000); //Simulated loading time
         Meal result = mealService.getMealById(id);
         if (result == null) {

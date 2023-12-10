@@ -7,27 +7,24 @@ import com.techelevator.model.Recipe;
 import java.util.List;
 
 public interface RecipeDao {
-    //I left 'favorited' out of this, since it seems like that would act funny
-    //TODO talk about this
-    Recipe createRecipe(Recipe recipe);
-
-    int deleteRecipe(int recipe_id);
-
     List<Recipe> listAllRecipes();
-
     Recipe getRecipeDetailsById(int recId);
-
+    Recipe createRecipe(Recipe recipe);
+    boolean updateRecipeInfo(Recipe recipe);
+    int addIngredientToRecipe(int recipeId, int ingredientId);
+    int removeIngredientFromRecipe(int recipeId, int ingredientId);
     List<Ingredient> getIngredientListForRecipe(int recId);
-
     Nutrition getNutritionForIngredient(int ingId);
 
     List<Nutrition> getNutritionForRecipe(int recId);
 
-    //List<Recipe> listRecipesByMealId(int recipe_id);//move to mealDao
+    // maybe not needed
+    int deleteRecipe(int recipe_id);
 
-    Recipe updateRecipeInfo(Recipe recipe);
 
-    int addIngredientToRecipe(int recipeId, int ingredientId);
+
+
+
 
 
 }

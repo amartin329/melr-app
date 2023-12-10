@@ -30,15 +30,13 @@ public class MealplanServiceImpl implements MealplanService{
     }
 
     public List<Mealplan> getMealplans() throws InterruptedException {
-        Thread.sleep(2000); //Simulated loading time
-
+        Thread.sleep(1000); //Simulated loading time
         return mealplanDao.listAllMealplans();
     }
 
 
     public Mealplan getMealplanById(int id) throws InterruptedException {
         Thread.sleep(1000); //Simulated loading time
-
         Mealplan result = mealplanDao.listMealplanById(id);
         if (result == null) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No mealplan with that id.");
@@ -50,6 +48,31 @@ public class MealplanServiceImpl implements MealplanService{
     public Mealplan createMealplan(Mealplan newMealPlan) {
         try {
             return mealplanDao.createMealplan(newMealPlan);
+        } catch (DaoException e) {
+            throw new ServiceException("An error has occurred: " + e.getMessage());
+        }
+    }
+
+    public Mealplan updateMealplanInfo(int id, Mealplan updatedMealplan) {
+        updatedMealplan.setMealplanId(id);
+            if (mealplanDao.updateMealplanInfo(updatedMealplan)){
+                return updatedMealplan;
+            } else {
+                throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Mealplan not found to update.");
+            }
+    }
+
+    public int addMealToMealplan(int mealplanId, int mealId) {
+        try {
+            return mealplanDao.addMealToMealplan(mealplanId, mealId);
+        } catch (DaoException e) {
+            throw new ServiceException("An error has occurred: " + e.getMessage());
+        }
+    }
+
+    public int removeMealFromMealplan(int mealplanId, int mealId) {
+        try {
+            return mealplanDao.removeMealFromMealplan(mealplanId, mealId);
         } catch (DaoException e) {
             throw new ServiceException("An error has occurred: " + e.getMessage());
         }

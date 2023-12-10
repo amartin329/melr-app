@@ -40,7 +40,7 @@ public class RecipeController {
     }
 
     @GetMapping("/{id}")
-    public Recipe getRecipeById(int id) {
+    public Recipe getRecipeById(@PathVariable int id) {
         try{
             Recipe recipe = recipeService.getRecipeById(id);
             if (recipe == null) {
@@ -68,5 +68,50 @@ public class RecipeController {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Server error encountered.");
         }
     }
+
+
+    @PutMapping("/{id}")
+    public Recipe updateRecipeInfo(@PathVariable int id, @RequestBody Recipe updatedRecipe) {
+            Recipe newRecipe = recipeService.updateRecipeInfo(id, updatedRecipe);
+            if (newRecipe != null) {
+                return newRecipe;
+            } else {
+                throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Recipe not found to update.");
+            }
+    }
+
+
+
+    @ResponseStatus(HttpStatus.CREATED)
+    @PostMapping("/{recipeId}/modify/{ingId}")
+    public int addIngredientToRecipe(@PathVariable int recipeId, int ingId) {
+        int rowAffected;
+        try {
+            rowAffected = recipeService.addIngredientToRecipe(recipeId, ingId);
+            if (rowAffected == 0) {
+                throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "No row change. Expect 1.");
+            } else {
+                return rowAffected;
+            }
+        } catch(ServiceException e){
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Server error encountered.");
+        }
+    }
+
+    @DeleteMapping("/{recipeId}/modify/{ingId}")
+    public int removeIngredientFromRecipe(@PathVariable int recipeId, int ingId) {
+        int rowAffected;
+        try {
+            rowAffected = recipeService.removeIngredientFromRecipe(recipeId, ingId);
+            if (rowAffected == 0) {
+                throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "No row change. Expect 1.");
+            } else {
+                return rowAffected;
+            }
+        } catch(ServiceException e){
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Server error encountered.");
+        }
+    }
+
 
 }

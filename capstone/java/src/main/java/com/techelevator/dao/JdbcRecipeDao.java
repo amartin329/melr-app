@@ -72,14 +72,13 @@ public class JdbcRecipeDao implements RecipeDao {
         String sql = "INSERT INTO recipe (recipe_type_id, recipe_tag_id, recipe_name, picture_path, prep_time, instruction) "
                 + "VALUES (?, ?, ?, ?, ?, ?) RETURNING recipe_id;";
         try {
-            int newId = jdbcTemplate.queryForObject(sql, int.class, recipe.getRecipeType(), recipe.getRecipeTag(), recipe.getRecipeName(),
+            int newId = jdbcTemplate.queryForObject(sql, int.class, recipe.getRecipeTypeId(), recipe.getRecipeTagId(), recipe.getRecipeName(),
                     recipe.getPicturePath(), recipe.getPrepTime(), recipe.getInstruction());
+            recipe.setRecipeId(newId);
             if(recipe.getIngredientList() != null) {
                 for (Ingredient ingredient : recipe.getIngredientList()) {
                     ingredient = ingredientDao.createIngredient(ingredient);
                     addIngredientToRecipe(newId, ingredient.getIngId());
-                    // if we don't have recipe ID here then this ing list is just there independently
-                    // not attaching to any particular recipe
                 }
             }
         } catch (CannotGetJdbcConnectionException e) {
@@ -88,6 +87,25 @@ public class JdbcRecipeDao implements RecipeDao {
             throw new DaoException("Data integrity violation", e);
         }
         return recipe;
+    }
+
+    // TODO this method is only updating the metadata of the recipe, not the actual ingredientList of the recipe.
+    // TODO maybe we need a separate method to handle that and include it in here.
+    public boolean updateRecipeInfo(Recipe recipe){
+        int rowAffected;
+        String sql = "UPDATE recipe " +
+                "SET recipe_type_id = ?, recipe_tag_id = ?, recipe_name = ?, picture_path = ?, prep_time = ?, instruction = ? " +
+                "WHERE recipe_id = ?;";
+        try {
+            rowAffected = jdbcTemplate.update(sql, recipe.getRecipeTypeId(), recipe.getRecipeTagId(), recipe.getRecipeName(),
+                    recipe.getPicturePath(), recipe.getPrepTime(), recipe.getInstruction(), recipe.getRecipeId());
+
+        } catch (CannotGetJdbcConnectionException e) {
+            throw new DaoException("Unable to connect to server or database", e);
+        } catch (DataIntegrityViolationException e) {
+            throw new DaoException("Data integrity violation", e);
+        }
+        return rowAffected == 1;
     }
 
     // TODO is there a way to put the quantity and unit right in here and then add this into the createRecipe method up there
@@ -104,31 +122,21 @@ public class JdbcRecipeDao implements RecipeDao {
         }
         return rowsAffected;
     }
-    // TODO this method is only updating the metadata of the recipe, not the actual ingredientList of the recipe.
-    // TODO maybe we need a separate method to handle that and include it in here.
 
-    public Recipe updateRecipeInfo(Recipe recipe){
-        int rowAffected;
-        String sql = "UPDATE recipe " +
-                "SET recipe_type_id, recipe_tag_id, recipe_name, picture_path, prep_time, instruction " +
-                "WHERE recipe_id = ?;";
+    public int removeIngredientFromRecipe(int recipeId, int ingredientId) {
+        int rowsAffected;
+        String sql = "DELETE FROM recipe_ing (recipe_id, ing_id) VALUES (?, ?);";
         try {
-            rowAffected = jdbcTemplate.update(sql, recipe.getRecipeId());
-            if (rowAffected == 0) {
-                throw new DaoException("Zero rows affected, expected at least one");
-            }
-
+            rowsAffected = jdbcTemplate.update(sql, recipeId, ingredientId);
         } catch (CannotGetJdbcConnectionException e) {
             throw new DaoException("Unable to connect to server or database", e);
         } catch (DataIntegrityViolationException e) {
             throw new DaoException("Data integrity violation", e);
         }
-        return getRecipeDetailsById(recipe.getRecipeId());
+        return rowsAffected;
     }
 
-
     //this method will list the ingredients in a particular recipe by recipe Id
-
     @Override
     public List<Ingredient> getIngredientListForRecipe(int recId) {
         List<Ingredient> recIngs = new ArrayList<>();
@@ -147,7 +155,9 @@ public class JdbcRecipeDao implements RecipeDao {
                 recIngs.add(ingredient);
             }
         } catch (CannotGetJdbcConnectionException e) {
-            throw new DaoException("unable to connect to server or database");
+            throw new DaoException("Unable to connect to server or database", e);
+        } catch (DataIntegrityViolationException e) {
+            throw new DaoException("Data integrity violation", e);
         }
         return recIngs;
     }
@@ -165,7 +175,9 @@ public class JdbcRecipeDao implements RecipeDao {
                 ingNutrition = mapRowToNutrition(results);
             }
         } catch (CannotGetJdbcConnectionException e) {
-            throw new DaoException("unable to connect to server or database");
+            throw new DaoException("Unable to connect to server or database", e);
+        } catch (DataIntegrityViolationException e) {
+            throw new DaoException("Data integrity violation", e);
         }
         return ingNutrition;
     }
@@ -190,7 +202,9 @@ public class JdbcRecipeDao implements RecipeDao {
                 nutritionList.add(ingTotalNutrition);
             }
         } catch (CannotGetJdbcConnectionException e) {
-            throw new DaoException("unable to connect to server or database");
+            throw new DaoException("Unable to connect to server or database", e);
+        } catch (DataIntegrityViolationException e) {
+            throw new DaoException("Data integrity violation", e);
         }
         return nutritionList;
     }
@@ -200,7 +214,7 @@ public class JdbcRecipeDao implements RecipeDao {
     public Ingredient mapRowToIngredient(SqlRowSet rs){
         Ingredient ingredient = new Ingredient();
         ingredient.setIngId(rs.getInt("ing_id"));
-        ingredient.setIngType(rs.getString("ing_type"));
+        ingredient.setIngTypeId(rs.getInt("ing_type_id"));
         ingredient.setIngName(rs.getString("ing_name"));
         ingredient.setNutritionId(rs.getInt("nutrition_id"));
         return ingredient;
@@ -230,8 +244,8 @@ public class JdbcRecipeDao implements RecipeDao {
     public Recipe mapRowToRecipe(SqlRowSet rs){
         Recipe recipe = new Recipe();
         recipe.setRecipeId(rs.getInt("recipe_id"));
-        recipe.setRecipeType(rs.getString("recipe_type_desc"));
-        recipe.setRecipeTag(rs.getString("recipe_tag_desc"));
+        recipe.setRecipeTypeId(rs.getInt("recipe_type_id"));
+        recipe.setRecipeTagId(rs.getInt("recipe_tag_id"));
         recipe.setRecipeName(rs.getString("recipe_name"));
         recipe.setPicturePath(rs.getString("picture_path"));
         recipe.setPrepTime(rs.getInt("prep_time"));

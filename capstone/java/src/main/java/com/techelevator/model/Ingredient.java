@@ -6,7 +6,7 @@ import java.util.Objects;
 
 public class Ingredient {
     private int ingId;
-    private String ingType;
+    private int ingTypeId;
     private int nutritionId;
     private String ingName;
 
@@ -16,19 +16,12 @@ public class Ingredient {
 
     public Ingredient() {}
 
-    public Ingredient(int ingId, String ingType, int nutritionId, String ingName, Nutrition nutrition) {
+    public Ingredient(int ingId, int ingTypeId, int nutritionId, String ingName, Nutrition nutrition) {
         this.ingId = ingId;
-        this.ingType = ingType;
+        this.ingTypeId = ingTypeId;
         this.nutritionId = nutritionId;
         this.ingName = ingName;
         this.nutrition = nutrition;
-    }
-
-    public Ingredient(int ingId, String ingType, int nutritionId, String ingName) {
-        this.ingId = ingId;
-        this.ingType = ingType;
-        this.nutritionId = nutritionId;
-        this.ingName = ingName;
     }
 
     public int getIngId() {
@@ -39,12 +32,12 @@ public class Ingredient {
         this.ingId = ingId;
     }
 
-    public String getIngType() {
-        return ingType;
+    public int getIngTypeId() {
+        return ingTypeId;
     }
 
-    public void setIngType(String ingType) {
-        this.ingType = ingType;
+    public void setIngTypeId(int ingTypeId) {
+        this.ingTypeId = ingTypeId;
     }
 
     public int getNutritionId() {
@@ -76,11 +69,11 @@ public class Ingredient {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Ingredient that = (Ingredient) o;
-        return ingId == that.ingId && ingType == that.ingType && nutritionId == that.nutritionId && ingName.equals(that.ingName) && nutrition.equals(that.nutrition);
+        return ingId == that.ingId && ingTypeId == that.ingTypeId && nutritionId == that.nutritionId && Objects.equals(ingName, that.ingName) && Objects.equals(nutrition, that.nutrition);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(ingId, ingType, nutritionId, ingName, nutrition);
+        return Objects.hash(ingId, ingTypeId, nutritionId, ingName, nutrition);
     }
 }

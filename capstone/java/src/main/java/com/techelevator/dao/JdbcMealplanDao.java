@@ -36,7 +36,7 @@ public JdbcMealplanDao(JdbcTemplate jdbcTemplate, MealDao mealDao, RecipeDao rec
         try {
             SqlRowSet results = jdbcTemplate.queryForRowSet(sql);
             while (results.next()) {
-                mealplans.add(mapRowToMealPlan(results));
+                mealplans.add(mapRowToMealplan(results));
             }
         } catch (CannotGetJdbcConnectionException e){
             throw new DaoException("Unable to connect to server or database", e);
@@ -54,7 +54,7 @@ public JdbcMealplanDao(JdbcTemplate jdbcTemplate, MealDao mealDao, RecipeDao rec
         String sql = "SELECT mealplan_id, mealplan_name, mealplan_type_id FROM mealplan WHERE mealplan_id = ?;";
         SqlRowSet rowSet = jdbcTemplate.queryForRowSet(sql, mealplanId);
         if (rowSet.next()) {
-            Mealplan mealplan = mapRowToMealPlan(rowSet);
+            Mealplan mealplan = mapRowToMealplan(rowSet);
             mealplan.setMealList(getMealsForMealplanId(mealplan.getMealplanId()));
             return mealplan;
         } else {
@@ -85,27 +85,24 @@ public JdbcMealplanDao(JdbcTemplate jdbcTemplate, MealDao mealDao, RecipeDao rec
     }
 
     /** This method is first in the series of 3 methods for modifying a mealplan when user wants to update metadata
-     * of a mealplan corresponding to the PUT operation at endpoint "/mealplans/{id}/modify" **/
-    public Mealplan updateMealplanInfo(Mealplan mealplan){
+     * of a mealplan corresponding to the PUT operation at endpoint "/mealplans/{id}" **/
+    public boolean updateMealplanInfo(Mealplan mealplan){
         int rowAffected;
         String sql = "UPDATE mealplan " +
-                "SET mealplan_type_id, mealplan_name " +
+                "SET mealplan_type_id = ?, mealplan_name = ? " +
                 "WHERE mealplan_id = ?;";
         try {
-            rowAffected = jdbcTemplate.update(sql, mealplan.getMealplanId());
-            if (rowAffected == 0) {
-                throw new DaoException("Zero rows affected, expected at least one");
-            }
+            rowAffected = jdbcTemplate.update(sql, mealplan.getMealplanTypeId(), mealplan.getMealplanName(), mealplan.getMealplanId());
         } catch (CannotGetJdbcConnectionException e) {
             throw new DaoException("Unable to connect to server or database", e);
         } catch (DataIntegrityViolationException e) {
             throw new DaoException("Data integrity violation", e);
         }
-        return listMealplanById(mealplan.getMealplanId());
+        return rowAffected == 1;
     }
 
     /** This method is second in the series of 3 methods for modifying a mealplan when user wants to add a meal to a mealplan
-     * corresponding to the POST operation at endpoint "/mealplans/{id}/modify". It's also a supporting method for creating mealplan**/
+     * corresponding to the POST operation at endpoint "/mealplans/{id}/modify/{id}". It's also a supporting method for creating mealplan**/
     public int addMealToMealplan(int mealplanId, int mealId) {
         int rowsAffected;
         String sql = "INSERT INTO meal_mealplan (meal_id, mealplan_id) VALUES (?, ?);";
@@ -119,7 +116,7 @@ public JdbcMealplanDao(JdbcTemplate jdbcTemplate, MealDao mealDao, RecipeDao rec
         return rowsAffected;
     }
     /** This method is third in the series of 3 methods for modifying a mealplan when user wants to remove a meal to a mealplan
-     * corresponding to the DELETE operation at endpoint "/mealplans/{id}/modify" **/
+     * corresponding to the DELETE operation at endpoint "/mealplans/{id}/modify/{id}" **/
     public int removeMealFromMealplan(int mealplanId, int mealId) {
         int rowsAffected;
         String sql = "DELETE FROM meal_mealplan WHERE mealplan_id = ? AND meal_id = ?;";
@@ -139,12 +136,18 @@ public JdbcMealplanDao(JdbcTemplate jdbcTemplate, MealDao mealDao, RecipeDao rec
         List<Meal> result = new ArrayList<>();
         String sql = "SELECT meal_id, meal_name, meal_type_id FROM meal WHERE meal_id = " +
                 "(SELECT meal_id FROM meal_mealplan WHERE mealplan_id = ?);";
-        SqlRowSet rowSet = jdbcTemplate.queryForRowSet(sql, mealplanId);
-        while (rowSet.next()) {
-           Meal meal = mapRowToMeal(rowSet);
-           meal.setRecipeList(mealDao.listRecipesByMealId(meal.getMealId()));
-           result.add(meal);
-       }
+        try {
+            SqlRowSet rowSet = jdbcTemplate.queryForRowSet(sql, mealplanId);
+            while (rowSet.next()) {
+                Meal meal = mapRowToMeal(rowSet);
+                meal.setRecipeList(mealDao.listRecipesByMealId(meal.getMealId()));
+                result.add(meal);
+            }
+        } catch (CannotGetJdbcConnectionException e) {
+            throw new DaoException("Unable to connect to server or database", e);
+        } catch (DataIntegrityViolationException e) {
+            throw new DaoException("Data integrity violation", e);
+        }
        return result;
    }
 
@@ -157,7 +160,7 @@ public JdbcMealplanDao(JdbcTemplate jdbcTemplate, MealDao mealDao, RecipeDao rec
         return result;
     }
 
-    private Mealplan mapRowToMealPlan(SqlRowSet rowSet) {
+    private Mealplan mapRowToMealplan(SqlRowSet rowSet) {
         Mealplan result = new Mealplan();
         result.setMealplanId(rowSet.getInt("mealplan_id"));
         result.setMealplanName(rowSet.getString("mealplan_name"));
@@ -181,12 +184,12 @@ public JdbcMealplanDao(JdbcTemplate jdbcTemplate, MealDao mealDao, RecipeDao rec
     }
 
     @Override
-    public List<Mealplan> listMealPlanByTypeId(int mealplan_type_id) {
+    public List<Mealplan> listMealplanByTypeId(int mealplan_type_id) {
         List<Mealplan> result = new ArrayList<>();
         String sql = "SELECT mealplan_id, mealplan_name, mealplan_type_id FROM mealplan WHERE mealplan_type_id = ?;";
         SqlRowSet rowSet = jdbcTemplate.queryForRowSet(sql, mealplan_type_id);
         if (rowSet.next()) {
-            Mealplan mealPlan = mapRowToMealPlan(rowSet);
+            Mealplan mealPlan = mapRowToMealplan(rowSet);
             result.add(mealPlan);
         }
         return result;
