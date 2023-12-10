@@ -26,11 +26,9 @@ public class JdbcRecipeDao implements RecipeDao {
     @Override
     public List<Recipe> listAllRecipes(){
         List<Recipe> allRecipes = new ArrayList<>();
-        String sql = "SELECT r.recipe_id, r.recipe_name, ry.recipe_type_desc, ra.recipe_tag_desc, r.picture_path, " +
-                "r.prep_time, r.instruction, r.favorited " +
-                "FROM recipe r " +
-                "JOIN recipe_type ry ON r.recipe_type_id = ry.recipe_type_id " +
-                "JOIN recipe_tag ra ON r.recipe_tag_id = ra.recipe_tag_id;";
+        String sql = "SELECT recipe_id, recipe_type_id, recipe_tag_id, recipe_name, picture_path, " +
+                "prep_time, instruction, favorited " +
+                "FROM recipe;";
         try {
             SqlRowSet results = jdbcTemplate.queryForRowSet(sql);
             while (results.next()) {
@@ -49,12 +47,10 @@ public class JdbcRecipeDao implements RecipeDao {
     @Override
     public Recipe getRecipeDetailsById(int recId){
         Recipe recipe = new Recipe();
-        String sql = "SELECT r.recipe_id, r.recipe_name, ry.recipe_type_desc, ra.recipe_tag_desc, r.picture_path, " +
-                "r.prep_time, r.instruction, r.favorited " +
-                "FROM recipe r " +
-                "JOIN recipe_type ry ON r.recipe_type_id = ry.recipe_type_id " +
-                "JOIN recipe_tag ra ON r.recipe_tag_id = ra.recipe_tag_id " +
-                "WHERE r.recipe_id = ?;";
+        String sql = "SELECT recipe_id, recipe_type_id, recipe_tag_id, recipe_name, picture_path, " +
+                "prep_time, instruction, favorited " +
+                "FROM recipe " +
+                "WHERE recipe_id = ?;";
         try {
             SqlRowSet results = jdbcTemplate.queryForRowSet(sql, recId);
             if (results.next()) {

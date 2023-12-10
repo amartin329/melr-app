@@ -134,7 +134,7 @@ public JdbcMealplanDao(JdbcTemplate jdbcTemplate, MealDao mealDao, RecipeDao rec
     /** This is a supporting method to list all meals of a mealplan **/
     public List<Meal> getMealsForMealplanId(int mealplanId){
         List<Meal> result = new ArrayList<>();
-        String sql = "SELECT meal_id, meal_name, meal_type_id FROM meal WHERE meal_id = " +
+        String sql = "SELECT meal_id, meal_name, meal_type_id FROM meal WHERE meal_id IN " +
                 "(SELECT meal_id FROM meal_mealplan WHERE mealplan_id = ?);";
         try {
             SqlRowSet rowSet = jdbcTemplate.queryForRowSet(sql, mealplanId);
