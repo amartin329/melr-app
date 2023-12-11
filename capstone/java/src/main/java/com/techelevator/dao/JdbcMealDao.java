@@ -136,7 +136,7 @@ public class JdbcMealDao implements MealDao{
         List<Recipe> result = new ArrayList<>();
         String sql = "SELECT recipe_id, recipe_type_id, recipe_tag_id, recipe_name, picture_path, " +
                 "prep_time, instruction, favorited FROM recipe " +
-                "WHERE recipe_id = (SELECT recipe_id FROM recipe_meal WHERE meal_id = ?);";
+                "WHERE recipe_id IN (SELECT recipe_id FROM recipe_meal WHERE meal_id = ?);";
         try {
             SqlRowSet rowSet = jdbcTemplate.queryForRowSet(sql, meal_id);
             while (rowSet.next()) {

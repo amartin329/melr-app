@@ -107,11 +107,11 @@ public class JdbcRecipeDao implements RecipeDao {
 
     // TODO is there a way to put the quantity and unit right in here and then add this into the createRecipe method up there
     // TODO without causing a break? Should an ingredientDto be used here? If so how?
-    public int addIngredientToRecipe(int recipeId, int ingredientId) {
+    public int addIngredientToRecipe(int recipeId, int ingId) {
         int rowsAffected;
-        String sql = "INSERT INTO recipe_ing (recipe_id, ing_id) VALUES (?, ?);";
+        String sql = "INSERT INTO recipe_ing (recipe_id, ing_id, msm_id, quantity) VALUES (?, ?, 1, 0);";
         try {
-            rowsAffected = jdbcTemplate.update(sql, recipeId, ingredientId);
+            rowsAffected = jdbcTemplate.update(sql, recipeId, ingId);
             getRecipeDetailsById(recipeId).setIngredientList(getIngredientListForRecipe(recipeId));
         } catch (CannotGetJdbcConnectionException e) {
             throw new DaoException("Unable to connect to server or database", e);
@@ -138,13 +138,14 @@ public class JdbcRecipeDao implements RecipeDao {
     @Override
     public List<Ingredient> getIngredientListForRecipe(int recId) {
         List<Ingredient> recIngs = new ArrayList<>();
-        String sql = "SELECT i.ing_id, i.ing_name, it.ing_type, ri.quantity, m.msm_unit " +
+        String sql = "SELECT i.ing_id, i.ing_type_id, i.ing_name, i.nutrition_id " +
                 "FROM ingredient i " +
-                "JOIN ingredient_type it ON i.ing_type_id = it.ing_type_id " +
+                //"JOIN ingredient_type it ON i.ing_type_id = it.ing_type_id " +
+                "JOIN nutrition nu ON i.nutrition_id = nu.nutrition_id " +
                 "JOIN recipe_ing ri ON i.ing_id = ri.ing_id " +
-                "JOIN measurement m ON ri.msm_id = m.msm_id " +
+                //"JOIN measurement m ON ri.msm_id = m.msm_id " +
                 "JOIN recipe r ON r.recipe_id = ri.recipe_id " +
-                "WHERE ri.recipe_id = ?;";
+                "WHERE r.recipe_id = ?;";
         try {
             SqlRowSet results = jdbcTemplate.queryForRowSet(sql, recId);
             while (results.next()) {
@@ -163,7 +164,7 @@ public class JdbcRecipeDao implements RecipeDao {
     @Override
     public Nutrition getNutritionForIngredient(int ingId){
         Nutrition ingNutrition = null;
-        String sql = "SELECT nu.calories, nu.protein, nu.carb, nu.fat " +
+        String sql = "SELECT nu.nutrition_id, nu.calories, nu.protein, nu.carb, nu.fat " +
                 "FROM nutrition nu " +
                 "JOIN ingredient i ON i.nutrition_id = nu.nutrition_id " +
                 "WHERE i.ing_id = ?;";
@@ -215,6 +216,7 @@ public class JdbcRecipeDao implements RecipeDao {
         ingredient.setIngTypeId(rs.getInt("ing_type_id"));
         ingredient.setIngName(rs.getString("ing_name"));
         ingredient.setNutritionId(rs.getInt("nutrition_id"));
+        ingredient.setNutrition(getNutritionForIngredient(rs.getInt("ing_id")));
         return ingredient;
     }
 
