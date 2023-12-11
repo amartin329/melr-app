@@ -5,19 +5,19 @@ export default{
         return axios.get('/meals')
     },
 
-    getRecipeById(id){
+    getMealById(id){
         return axios.get(`/meals/${id}`)
     },
 
-    addRecipe(meal){
+    addMeal(meal){
         return axios.post('/meals', meal)
     },
 
-    updateRecipe(meal){
+    updateMeal(meal){
         return axios.put(`/meals/${meal.id}`, meal)
     },
 
-    deleteRecipe(id){
+    deleteMeal(id){
         return axios.delete`/meals/${id}`
     }
 }

@@ -188,6 +188,8 @@ router.beforeEach((to) => {
   if (requiresAuth && store.state.token === '') {
     return {name: "login"};
   }
+
+  store.commit('SET_FORM_VISIBLE')
   // Otherwise, do nothing and they'll go to their next destination
 });
 

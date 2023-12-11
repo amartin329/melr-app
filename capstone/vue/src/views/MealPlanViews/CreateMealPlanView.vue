@@ -1,12 +1,14 @@
 <template>
   <h1>Create New Meal Plan</h1>
   <router-link v-bind:to="{name: 'plans'}">Back to My Meal Plans</router-link>
-
+    <create-meal-plan-form />
 </template>
 
 <script>
-export default {
+import CreateMealPlanForm from "../../components/Forms/CreateMealPlanForm.vue"
 
+export default {
+  components: { CreateMealPlanForm }
 }
 </script>
 

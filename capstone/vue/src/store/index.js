@@ -22,7 +22,8 @@ export function createStore(currentToken, currentUser) {
       },
       currentMeal: {},
       currentRecipe: {},
-      currentIngredient:{}
+      currentIngredient:{},
+      formIsVisible: false
     },
     mutations: {
       SET_AUTH_TOKEN(state, token) {
@@ -46,8 +47,28 @@ export function createStore(currentToken, currentUser) {
         state.mealPlans = mealPlanList;
       },
 
+      ADD_MEALPLAN(state, mealPlan){
+        state.mealPlans.push(mealPlan);
+      },
+
+      SET_MEALS(state, mealList){
+        state.meals = mealList;
+      },
+
+      SET_RECIPES(state, recipeList){
+        state.recipes = recipeList;
+      },
+
       SET_CURRENTMEALPLAN(state, currentMealPlan){
         state.currentMealPlan = currentMealPlan;
+      },
+
+      SET_CURRENTMEAL(state, currentMeal){
+        state.currentMeal = currentMeal;
+      },
+
+      SET_CURRENTRECIPE(state, currentRecipe){
+        state.currentRecipe = currentRecipe;
       },
 
       SET_NOTIFICATION(state, notification){
@@ -79,8 +100,12 @@ export function createStore(currentToken, currentUser) {
         }
         state.notification = null;
       },
+      SET_FORM_VISIBLE(){
+        this.state.formIsVisible = false;
+      }
     },
     actions: {
+      // getters
       getMealPlans({commit}){
         mealPlanService.getMealPlans().then(response => {
           const mealPlans = response.data;
@@ -89,14 +114,72 @@ export function createStore(currentToken, currentUser) {
           commit('SET_NOTIFICATION', `Error retrieving meal plans from server.`)
         })
       },
-      getMealPlanById({commit, id}){
+      getMeals({commit}){
+        mealService.getMeals().then(response => {
+          const meals = response.data;
+          commit('SET_MEALS', meals)
+          console.log('COMMIT! YUP')
+        }).catch(error => {
+          commit('SET_NOTIFICATION', `Error retrieving meals from server.`)
+        })
+      },
+
+      getRecipes({commit}){
+        recipeService.getRecipes().then(response => {
+          const recipes = response.data;
+          commit('SET_RECIPES', recipes)
+        }).catch(error => {
+          commit('SET_NOTIFICATION', `Error retrieving recipes from server.`)
+        })
+      },
+
+      getMealPlanById({commit}, id){
         mealPlanService.getMealPlanById(id).then(response => {
           const responsePlan = response.data;
           commit('SET_CURRENTMEALPLAN', responsePlan)
         }).catch(error => {
           commit('SET_NOTIFICATION', `Whoops!`)
         })
-      }
+      },
+
+      getMealById({commit}, id){
+        mealService.getMealById(id).then(response => {
+          const responseMeal = response.data;
+          commit('SET_CURRENTMEAL', responseMeal)
+        }).catch(error => {
+          commit('SET_NOTIFICATION', `Whoops!`)
+        })
+      },
+
+      getRecipeById({commit}, id){
+        recipeService.getRecipeById(id).then(response => {
+          const responseRecipe = response.data;
+          commit('SET_CURRENTRECIPE', responseRecipe)
+        }).catch(error => {
+          commit('SET_NOTIFICATION', `Whoops!`)
+        })
+      },
+
+      createMealPlan({commit}, plan){
+        mealPlanService.addMealPlan(plan).then(response =>{
+          if(response.status === 201){
+            const newMealPlan = response.data;
+            commit('ADD_MEALPLAN', newMealPlan);
+            return newMealPlan;
+          }
+        })
+      },
+
+      addMealToPlan({commit}, {mealplanId, mealId}){
+
+        mealPlanService.addMealToMealPlan(mealplanId, mealId).then(response =>{
+         
+          if(response.status === 201){
+            this.getMealPlans();
+          }
+        })
+            }
+
     }
   });
   return store;

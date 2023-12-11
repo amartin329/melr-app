@@ -1,6 +1,6 @@
 <template>
     <h1>Add New Recipe</h1>
-    <p>Current Recipes: <em>Note: This is a remnant of the PO mockup! User's recipes won't appear here.</em></p>
+    <p>Current Recipes: <em>Under construction!</em></p>
     
     <p v-for="userRecipe in recipes" v-bind:key="userRecipe.recipeName">{{ userRecipe.recipeName }}</p>
   <form class="recipeForm">

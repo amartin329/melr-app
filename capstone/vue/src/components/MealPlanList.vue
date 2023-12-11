@@ -6,7 +6,7 @@
             <router-link v-bind:key="mealPlan.mealplanId"
             v-bind:to="{name: 'plan-details', params: {id: mealPlan.mealplanId}}"
             >
-            <p>{{ mealPlan.mealplanName }}</p>
+            <p v-on:click="currentMealPlan">{{ mealPlan.mealplanName }}</p>
         </router-link>
         
     </div>
@@ -62,6 +62,9 @@
                 this.retrievePlans();
             }
         })
+    },
+    currentMealPlan(id){
+        this.$store.dispatch('getMealPlanById', id)
     }
   },
   created(){

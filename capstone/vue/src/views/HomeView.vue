@@ -2,9 +2,6 @@
   <div class="home">
     <h1>Welcome, {{ this.$store.state.user.username }}!</h1>
     <h1>This Week's Plan</h1>
-    <h2>This will probably use our Schedule table!</h2>
-    <h3>Our table should have 7 rows - 1 per day of the week.</h3>
-    <h4>Each day of the week will be associated with a Meal Plan</h4>
     <schedule v-bind:plans="plans" />
   </div>
 </template>

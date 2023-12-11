@@ -1,7 +1,6 @@
 <template>
-  <h1>My Grocery List</h1>
-  <p>Per Chandra, users should be able to manually add/remove items from this list</p>
-  <p>Let's consider </p>
+  <h1>{{ this.$store.state.user.username}}'s Grocery List</h1>
+  <p>UNDER CONSTRUCTION: This will contain all ingredients required for a user's meal plan schedule</p>
 </template>
 
 <script>
