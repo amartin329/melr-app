@@ -34,9 +34,11 @@ public JdbcMealplanDao(JdbcTemplate jdbcTemplate, MealDao mealDao, RecipeDao rec
         List<Mealplan> mealplans = new ArrayList<>();
         String sql = "SELECT mealplan_id, mealplan_name, mealplan_type_id FROM mealplan;";
         try {
-            SqlRowSet results = jdbcTemplate.queryForRowSet(sql);
-            while (results.next()) {
-                mealplans.add(mapRowToMealplan(results));
+            SqlRowSet rowSet = jdbcTemplate.queryForRowSet(sql);
+            while (rowSet.next()) {
+                Mealplan mealplan = mapRowToMealplan(rowSet);
+                mealplan.setMealList(getMealsForMealplanId(mealplan.getMealplanId()));
+                mealplans.add(mealplan);
             }
         } catch (CannotGetJdbcConnectionException e){
             throw new DaoException("Unable to connect to server or database", e);
