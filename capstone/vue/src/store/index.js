@@ -161,9 +161,11 @@ export function createStore(currentToken, currentUser) {
       },
 
       createMealPlan({commit}, plan){
-        mealPlanService.addMealPlan(plan).then(response =>{
+        return mealPlanService.addMealPlan(plan).then(response =>{
           if(response.status === 201){
             const newMealPlan = response.data;
+            console.log("NEW MEAL PLAN: " + newMealPlan)
+            console.log("ID: " + newMealPlan.mealplanId)
             commit('ADD_MEALPLAN', newMealPlan);
             return newMealPlan;
           }
