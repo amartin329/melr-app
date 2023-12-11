@@ -1,7 +1,7 @@
 <template>
   <div id="capstone-app" class="container">
     <header>
-      Meal Plan App!
+      <h1>Meal Planner</h1>
     </header>
     <nav>
       <div id="nav" class="content">
@@ -88,6 +88,7 @@
     header {
     grid-area: header;
     background-color: #f69a00;
+    text-align: center;
     }
 
    #nav {

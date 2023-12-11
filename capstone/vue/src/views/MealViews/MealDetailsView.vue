@@ -1,23 +1,16 @@
 <template>
-  <h1>Meal Details</h1>
-  <router-link v-bind:to="{name: 'meals'}">Back to My Meals</router-link>
 
+  <router-link v-bind:to="{name: 'meals'}">Back to My Meals</router-link>
+  <mealDetails />
 </template>
 
 <script>
+import mealDetails from '../../components/MealDetails.vue';
 export default {
 components: {
-
+mealDetails
 },
-data(){
-    return{
-        meal:{
-            name: "",
-            id: 0,
-            recipes: []
-        },
-    }
-}
+
 }
 </script>
 

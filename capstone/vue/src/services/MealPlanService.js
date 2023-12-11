@@ -13,11 +13,18 @@ export default{
         return axios.post('/mealplans', mealPlan)
     },
 
-    updateRecipe(mealPlan){
+    updateMealPlan(mealPlan){
         return axios.put(`/mealplans/${mealPlan.id}`, mealPlan)
     },
 
-    deleteRecipe(id){
-        return axios.delete`/mealplans/${id}`
+    deleteMealPlan(id){
+        return axios.delete(`/mealplans/${id}`)
+    },
+
+    addMealToMealPlan(mealplanId, mealId){
+        console.log('is this even happening??? What are' + mealplanId + " and " + mealId + "?????")
+        return axios.post(`/mealplans/${mealplanId}/modify/${mealId}`, null, 
+        {params: {mealplanId, mealId}
+    });
     }
 }
