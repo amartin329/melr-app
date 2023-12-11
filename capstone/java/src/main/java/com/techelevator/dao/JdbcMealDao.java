@@ -32,7 +32,7 @@ public class JdbcMealDao implements MealDao{
         String sql = "SELECT meal_id, meal_name, meal_type_id FROM meal;";
         try {
             SqlRowSet rowSet = jdbcTemplate.queryForRowSet(sql);
-            if (rowSet.next()) {
+            while (rowSet.next()) {
                 Meal meal = mapRowToMeal(rowSet);
                 meal.setRecipeList(listRecipesByMealId(meal.getMealId()));
                 result.add(meal);

@@ -27,6 +27,7 @@
     },
     created(){
         this.getMeals();
+        console.log(this.$store.state.meals)
     },
     computed: {
         mealStoreList(){
