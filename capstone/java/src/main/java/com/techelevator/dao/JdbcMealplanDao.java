@@ -105,7 +105,7 @@ public JdbcMealplanDao(JdbcTemplate jdbcTemplate, MealDao mealDao, RecipeDao rec
      * corresponding to the POST operation at endpoint "/mealplans/{id}/modify/{id}". It's also a supporting method for creating mealplan**/
     public int addMealToMealplan(int mealplanId, int mealId) {
         int rowsAffected;
-        String sql = "INSERT INTO meal_mealplan (meal_id, mealplan_id) VALUES (?, ?);";
+        String sql = "INSERT INTO meal_mealplan (mealplan_id, meal_id) VALUES (?, ?);";
         try {
             rowsAffected = jdbcTemplate.update(sql, mealplanId, mealId);
         } catch (CannotGetJdbcConnectionException e) {

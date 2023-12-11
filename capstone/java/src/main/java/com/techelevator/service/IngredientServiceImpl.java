@@ -70,7 +70,7 @@ public class IngredientServiceImpl implements IngredientService{
         updatedIngredient.setIngId(id);
             if (ingredientDao.updateIngredient(updatedIngredient)) {
                 return updatedIngredient;
-            }else {
+            } else {
                 throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Ingredient not found to update.");
             }
     }

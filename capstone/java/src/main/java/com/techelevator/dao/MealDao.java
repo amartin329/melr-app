@@ -10,7 +10,7 @@ public interface MealDao {
     List<Meal> listAllMeals();
     Meal listMealById(int meal_id);
     Meal createMeal(Meal meal);
-    Meal updateMealInfo(Meal meal);
+    boolean updateMealInfo(Meal meal);
     int addRecipeToMeal(int mealId, int recipeId);
     int removeRecipeFromMeal(int mealId, int recipeId);
     List<Recipe> listRecipesByMealId(int recipe_id);

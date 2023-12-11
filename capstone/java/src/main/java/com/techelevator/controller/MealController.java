@@ -55,6 +55,16 @@ public class MealController {
         }
     }
 
+    @PutMapping("/{id}")
+    public Meal updateMealInfo(@PathVariable int id, @RequestBody Meal meal) {
+        Meal newMeal = mealService.updateMealInfo(id, meal);
+        if (newMeal != null) {
+            return newMeal;
+        } else {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Meal not found to update.");
+        }
+    }
+
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("/{mealId}/modify/{recipeId}")
     public int addRecipeToMeal(@PathVariable int mealId, @PathVariable int recipeId) {
