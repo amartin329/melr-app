@@ -84,7 +84,7 @@ public class RecipeController {
 
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("/{recipeId}/modify/{ingId}")
-    public int addIngredientToRecipe(@PathVariable int recipeId, int ingId) {
+    public int addIngredientToRecipe(@PathVariable int recipeId, @PathVariable int ingId) {
         int rowAffected;
         try {
             rowAffected = recipeService.addIngredientToRecipe(recipeId, ingId);
@@ -99,7 +99,7 @@ public class RecipeController {
     }
 
     @DeleteMapping("/{recipeId}/modify/{ingId}")
-    public int removeIngredientFromRecipe(@PathVariable int recipeId, int ingId) {
+    public int removeIngredientFromRecipe(@PathVariable int recipeId, @PathVariable int ingId) {
         int rowAffected;
         try {
             rowAffected = recipeService.removeIngredientFromRecipe(recipeId, ingId);

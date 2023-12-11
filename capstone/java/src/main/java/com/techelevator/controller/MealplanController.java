@@ -67,7 +67,7 @@ public class MealplanController {
 
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("/{mealplanId}/modify/{mealId}")
-    public int addMealToMealplan(@PathVariable int mealplanId, int mealId) {
+    public int addMealToMealplan(@PathVariable int mealplanId, @PathVariable int mealId) {
         int rowAffected;
         try {
              rowAffected = mealplanService.addMealToMealplan(mealplanId, mealId);
@@ -82,7 +82,7 @@ public class MealplanController {
     }
 
     @DeleteMapping("/{mealplanId}/modify/{mealId}")
-    public int removeMealFromMealplan(@PathVariable int mealplanId, int mealId) {
+    public int removeMealFromMealplan(@PathVariable int mealplanId, @PathVariable int mealId) {
         int rowAffected;
         try {
             rowAffected = mealplanService.removeMealFromMealplan(mealplanId, mealId);

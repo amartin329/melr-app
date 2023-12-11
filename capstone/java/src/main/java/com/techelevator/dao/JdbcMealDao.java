@@ -63,10 +63,11 @@ public class JdbcMealDao implements MealDao{
      * corresponding to the POST operation at endpoint "/meals" in the controller **/
     @Override
     public Meal createMeal(Meal meal) {
-        String sql = "INSERT INTO meal (meal_name, meal_type_id) VALUES (?, ?) RETURNING mealId;";
+        String sql = "INSERT INTO meal (meal_name, meal_type_id) VALUES (?, ?) RETURNING meal_id;";
         try {
             int newId = jdbcTemplate.queryForObject(sql, int.class, meal.getMealName(), meal.getMealTypeId());
             meal.setMealId(newId);
+            meal.setRecipeList(listRecipesByMealId(meal.getMealId()));
             if(meal.getRecipeList() != null) {
                 for (Recipe recipe : meal.getRecipeList()) {
                     recipe = recipeDao.createRecipe(recipe);
@@ -82,23 +83,21 @@ public class JdbcMealDao implements MealDao{
     }
 
     /** This method is first in the series of 3 methods for modifying a meal when user wants to update metadata
-     * of a meal corresponding to the PUT operation at endpoint "/meals/{id}/modify" **/
-    public Meal updateMealInfo(Meal meal){
+     * of a meal corresponding to the PUT operation at endpoint "/meals/{id}" **/
+    public boolean updateMealInfo(Meal meal){
         int rowAffected;
         String sql = "UPDATE meal " +
                 "SET meal_type_id = ?, meal_name = ? " +
                 "WHERE meal_id = ?;";
         try {
             rowAffected = jdbcTemplate.update(sql, meal.getMealTypeId(), meal.getMealName(), meal.getMealId());
-            if (rowAffected == 0) {
-                throw new DaoException("Zero rows affected, expected at least one");
-            }
+
         } catch (CannotGetJdbcConnectionException e) {
             throw new DaoException("Unable to connect to server or database", e);
         } catch (DataIntegrityViolationException e) {
             throw new DaoException("Data integrity violation", e);
         }
-        return listMealById(meal.getMealId());
+        return rowAffected == 1;
     }
 
     /** This method is second in the series of 3 methods for modifying a meal when user wants to add a recipe to a meal

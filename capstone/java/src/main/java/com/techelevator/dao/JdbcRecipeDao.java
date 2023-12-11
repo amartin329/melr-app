@@ -26,11 +26,9 @@ public class JdbcRecipeDao implements RecipeDao {
     @Override
     public List<Recipe> listAllRecipes(){
         List<Recipe> allRecipes = new ArrayList<>();
-        String sql = "SELECT r.recipe_id, r.recipe_name, ry.recipe_type_desc, ra.recipe_tag_desc, r.picture_path, " +
-                "r.prep_time, r.instruction, r.favorited " +
-                "FROM recipe r " +
-                "JOIN recipe_type ry ON r.recipe_type_id = ry.recipe_type_id " +
-                "JOIN recipe_tag ra ON r.recipe_tag_id = ra.recipe_tag_id;";
+        String sql = "SELECT recipe_id, recipe_type_id, recipe_tag_id, recipe_name, picture_path, " +
+                "prep_time, instruction, favorited " +
+                "FROM recipe;";
         try {
             SqlRowSet results = jdbcTemplate.queryForRowSet(sql);
             while (results.next()) {
@@ -49,12 +47,10 @@ public class JdbcRecipeDao implements RecipeDao {
     @Override
     public Recipe getRecipeDetailsById(int recId){
         Recipe recipe = new Recipe();
-        String sql = "SELECT r.recipe_id, r.recipe_name, ry.recipe_type_desc, ra.recipe_tag_desc, r.picture_path, " +
-                "r.prep_time, r.instruction, r.favorited " +
-                "FROM recipe r " +
-                "JOIN recipe_type ry ON r.recipe_type_id = ry.recipe_type_id " +
-                "JOIN recipe_tag ra ON r.recipe_tag_id = ra.recipe_tag_id " +
-                "WHERE r.recipe_id = ?;";
+        String sql = "SELECT recipe_id, recipe_type_id, recipe_tag_id, recipe_name, picture_path, " +
+                "prep_time, instruction, favorited " +
+                "FROM recipe " +
+                "WHERE recipe_id = ?;";
         try {
             SqlRowSet results = jdbcTemplate.queryForRowSet(sql, recId);
             if (results.next()) {
@@ -75,10 +71,11 @@ public class JdbcRecipeDao implements RecipeDao {
             int newId = jdbcTemplate.queryForObject(sql, int.class, recipe.getRecipeTypeId(), recipe.getRecipeTagId(), recipe.getRecipeName(),
                     recipe.getPicturePath(), recipe.getPrepTime(), recipe.getInstruction());
             recipe.setRecipeId(newId);
+            recipe.setIngredientList(getIngredientListForRecipe(recipe.getRecipeId()));
             if(recipe.getIngredientList() != null) {
                 for (Ingredient ingredient : recipe.getIngredientList()) {
                     ingredient = ingredientDao.createIngredient(ingredient);
-                    addIngredientToRecipe(newId, ingredient.getIngId());
+                    addIngredientToRecipe(recipe.getRecipeId(), ingredient.getIngId());
                 }
             }
         } catch (CannotGetJdbcConnectionException e) {
@@ -86,7 +83,7 @@ public class JdbcRecipeDao implements RecipeDao {
         } catch (DataIntegrityViolationException e) {
             throw new DaoException("Data integrity violation", e);
         }
-        return recipe;
+        return getRecipeDetailsById(recipe.getRecipeId());
     }
 
     // TODO this method is only updating the metadata of the recipe, not the actual ingredientList of the recipe.
@@ -99,7 +96,7 @@ public class JdbcRecipeDao implements RecipeDao {
         try {
             rowAffected = jdbcTemplate.update(sql, recipe.getRecipeTypeId(), recipe.getRecipeTagId(), recipe.getRecipeName(),
                     recipe.getPicturePath(), recipe.getPrepTime(), recipe.getInstruction(), recipe.getRecipeId());
-
+            recipe.setIngredientList(getIngredientListForRecipe(recipe.getRecipeId()));
         } catch (CannotGetJdbcConnectionException e) {
             throw new DaoException("Unable to connect to server or database", e);
         } catch (DataIntegrityViolationException e) {
@@ -115,6 +112,7 @@ public class JdbcRecipeDao implements RecipeDao {
         String sql = "INSERT INTO recipe_ing (recipe_id, ing_id) VALUES (?, ?);";
         try {
             rowsAffected = jdbcTemplate.update(sql, recipeId, ingredientId);
+            getRecipeDetailsById(recipeId).setIngredientList(getIngredientListForRecipe(recipeId));
         } catch (CannotGetJdbcConnectionException e) {
             throw new DaoException("Unable to connect to server or database", e);
         } catch (DataIntegrityViolationException e) {
@@ -125,7 +123,7 @@ public class JdbcRecipeDao implements RecipeDao {
 
     public int removeIngredientFromRecipe(int recipeId, int ingredientId) {
         int rowsAffected;
-        String sql = "DELETE FROM recipe_ing (recipe_id, ing_id) VALUES (?, ?);";
+        String sql = "DELETE FROM recipe_ing WHERE recipe_id = ? AND ing_id = ?;";
         try {
             rowsAffected = jdbcTemplate.update(sql, recipeId, ingredientId);
         } catch (CannotGetJdbcConnectionException e) {

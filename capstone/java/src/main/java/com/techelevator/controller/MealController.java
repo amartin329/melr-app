@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 import javax.validation.Valid;
+import java.security.Provider;
 import java.util.List;
 
 @RestController
@@ -49,9 +50,52 @@ public class MealController {
             } else {
                 return newMeal;
             }
-        } catch(ServiceException e){
+        } catch (ServiceException e) {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Server error encountered.");
         }
     }
 
-}
+    @PutMapping("/{id}")
+    public Meal updateMealInfo(@PathVariable int id, @RequestBody Meal meal) {
+        Meal newMeal = mealService.updateMealInfo(id, meal);
+        if (newMeal != null) {
+            return newMeal;
+        } else {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Meal not found to update.");
+        }
+    }
+
+    @ResponseStatus(HttpStatus.CREATED)
+    @PostMapping("/{mealId}/modify/{recipeId}")
+    public int addRecipeToMeal(@PathVariable int mealId, @PathVariable int recipeId) {
+        int rowAffected;
+        try {
+            rowAffected = mealService.addRecipeToMeal(mealId, recipeId);
+            if (rowAffected == 0) {
+                throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "No rows affected, expected at least 1.");
+            } else {
+                return rowAffected;
+            }
+
+        } catch (
+                ServiceException e) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Server error");
+        }
+    }
+
+
+        @DeleteMapping("/{mealId}/modify/{recipeId}")
+        public int removeRecipeFromMeal(@PathVariable int mealId, @PathVariable int recipeId){
+            int rowAffected;
+            try {
+                rowAffected = mealService.removeRecipeFromMeal(mealId, recipeId);
+                if (rowAffected == 0) {
+                    throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "No row change. Expect 1.");
+                } else {
+                    return rowAffected;
+                }
+            } catch (ServiceException e) {
+                throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Server error encountered.");
+            }
+        }
+    }

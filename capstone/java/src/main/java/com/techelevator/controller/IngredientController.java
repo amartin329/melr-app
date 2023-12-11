@@ -66,8 +66,8 @@ public class IngredientController {
     }
 
     @PutMapping("/{id}")
-    public Ingredient updateIngredient(@PathVariable int ingId, @RequestBody Ingredient ingredient) {
-            Ingredient newIngredient = ingredientService.updateIngredient(ingId, ingredient);
+    public Ingredient updateIngredient(@PathVariable int id, @RequestBody Ingredient updatedIngredient) {
+            Ingredient newIngredient = ingredientService.updateIngredient(id, updatedIngredient);
             if (newIngredient != null) {
                 return newIngredient;
             } else {
