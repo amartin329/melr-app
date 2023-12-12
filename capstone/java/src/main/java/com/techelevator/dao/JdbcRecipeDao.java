@@ -65,11 +65,11 @@ public class JdbcRecipeDao implements RecipeDao {
 
     @Override
     public Recipe createRecipe(Recipe recipe){
-        String sql = "INSERT INTO recipe (recipe_type_id, recipe_tag_id, recipe_name, picture_path, prep_time, instruction) "
-                + "VALUES (?, ?, ?, ?, ?, ?) RETURNING recipe_id;";
+        String sql = "INSERT INTO recipe (recipe_type_id, recipe_tag_id, recipe_name, picture_path, prep_time, instruction, favorited) "
+                + "VALUES (?, ?, ?, ?, ?, ?, ?) RETURNING recipe_id;";
         try {
             int newId = jdbcTemplate.queryForObject(sql, int.class, recipe.getRecipeTypeId(), recipe.getRecipeTagId(), recipe.getRecipeName(),
-                    recipe.getPicturePath(), recipe.getPrepTime(), recipe.getInstruction());
+                    recipe.getPicturePath(), recipe.getPrepTime(), recipe.getInstruction(), recipe.isFavorited());
             recipe.setRecipeId(newId);
             recipe.setIngredientList(getIngredientListForRecipe(recipe.getRecipeId()));
             if(recipe.getIngredientList() != null) {
@@ -91,11 +91,11 @@ public class JdbcRecipeDao implements RecipeDao {
     public boolean updateRecipeInfo(Recipe recipe){
         int rowAffected;
         String sql = "UPDATE recipe " +
-                "SET recipe_type_id = ?, recipe_tag_id = ?, recipe_name = ?, picture_path = ?, prep_time = ?, instruction = ? " +
+                "SET recipe_type_id = ?, recipe_tag_id = ?, recipe_name = ?, picture_path = ?, prep_time = ?, instruction = ?, favorited = ? " +
                 "WHERE recipe_id = ?;";
         try {
             rowAffected = jdbcTemplate.update(sql, recipe.getRecipeTypeId(), recipe.getRecipeTagId(), recipe.getRecipeName(),
-                    recipe.getPicturePath(), recipe.getPrepTime(), recipe.getInstruction(), recipe.getRecipeId());
+                    recipe.getPicturePath(), recipe.getPrepTime(), recipe.getInstruction(), recipe.isFavorited(), recipe.getRecipeId());
             recipe.setIngredientList(getIngredientListForRecipe(recipe.getRecipeId()));
         } catch (CannotGetJdbcConnectionException e) {
             throw new DaoException("Unable to connect to server or database", e);
