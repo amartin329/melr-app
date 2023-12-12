@@ -59,11 +59,24 @@
 
   .meal-plan{
     font-weight: 800;
-    font-color: green;
     
+  }
+
+  .home{
+    margin-top: -50px
+  }
+
+  .meal-plan > h4{
+    font-weight: 800;
+    font-family: Georgia, 'Times New Roman', Times, serif;
+  }
+
+  .meal-plan > p{
+    margin-top: 75px;
   }
 
   .meal-plans{
     display: flex;
+    margin-top: 100px
   }
   </style>
