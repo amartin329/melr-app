@@ -7,10 +7,14 @@
         class="form-control" placeholder="Meal Plan Name"/>
     </div>
     <h3>Meals:</h3>
-    <h2 v-for="pendingMeal in pendingMeals" v-bind:key="pendingMeal.mealId">{{ pendingMeal.mealName }}</h2>
+    <div class="pending-meals" v-for="pendingMeal in pendingMeals" v-bind:key="pendingMeal.mealId">
+        <h2 >{{ pendingMeal.mealName }}</h2> <button class="remove" v-on:click.prevent="removeFromPending(pendingMeal.mealId)">X</button>
+    </div>
+   
+
     <div class="form-group">
         <label for="meal-filter">Add a meal:</label>
-        <input id="meal-filter" type="text" 
+        <input id="meal-filter" type="text" autocomplete="off"
         v-model="this.filter.mealName" class="form-control"
         placeholder="Enter a meal:"/>
         <div v-if="filteredMeals.length > 0" class="autocomplete-dropdown">
@@ -51,10 +55,7 @@ export default {
         this.recipes.push(recipe);
         this.recipe = {};
     },
-    getMeals(){
-        this.$store.dispatch('getMeals');
-        this.meals = [...this.$store.state.meals];
-    },
+
     addMealToPending(meal){
         this.pendingMeals.push(meal);
         console.log(this.pendingMeals)
@@ -62,21 +63,27 @@ export default {
     },
     // NOTE: SHOULD PROBABLY LOOP ON SERVER-SIDE TO MAKE THIS A TRANSACTION.
     createMealPlan(){
-        let responsePlan = this.newMealPlan;
         this.$store.dispatch('createMealPlan', this.newMealPlan).then(response => {
-      
+      console.log("RESPONSE = " + response) 
             
                 
-                console.log("MEAL PLAN ID: " + responsePlan)
+                console.log("MEAL PLAN ID: " + response.mealplanId)
                 this.pendingMeals.forEach(pendingMeal => {
                     console.log(pendingMeal)
                     let pendingMealId = pendingMeal.mealId;
-                    this.$store.dispatch('addMealToPlan', {mealplanId: responsePlan.mealplanId, mealId: pendingMealId})
+                    this.$store.dispatch('addMealToPlan', {mealplanId: response.mealplanId, mealId: pendingMealId})
 })
             
             this.$router.push('/plans');
         })
        
+    },
+    removeFromPending(id){
+
+            this.pendingMeals = this.pendingMeals.filter(pendMeal => {
+                return pendMeal.mealId !== id;
+            });
+        
     }
   },
   computed: {
@@ -84,27 +91,24 @@ export default {
         console.log('Filter:', this.filteredMeals);
 
         let filteredMeals = [...this.meals];
-        if(this.filter.mealName != ""){
+  
             filteredMeals = filteredMeals.filter((meal) => {
-               return meal.mealName.toLowerCase()
+                if(!this.pendingMeals.includes(meal)){
+                    return meal.mealName.toLowerCase()
                 .includes(this.filter.mealName.toLowerCase())
+                }
+            
             });
             
-        }
+        
         return filteredMeals;
     }
   },
   created(){
     this.$store.dispatch('getMeals');
-    this.getMeals();
     console.log('Create!', this.meals);
     console.log('STORE!'), this.$store.state.meals;
 
-  },
-  watch: {
-    pendingMeals(newVal, oldVal){
-        this.getMeals();
-    }
   }
 
 }
@@ -178,6 +182,16 @@ select.form-control {
 
 .submit-form:hover{
     background-color: rgb(91,206,250)
+}
+
+.pending-meals{
+    display:flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.pending-meals > button{
+    margin-left: 10px;
 }
 
 </style>
