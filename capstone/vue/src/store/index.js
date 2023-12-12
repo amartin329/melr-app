@@ -23,6 +23,45 @@ export function createStore(currentToken, currentUser) {
       currentMeal: {},
       currentRecipe: {},
       currentIngredient:{},
+      schedule:
+      {
+        sunday:{
+          day: "Sunday:",
+          mealplanName: "",
+          id: 1,
+
+        },
+        monday:{
+          day: "Monday",
+          mealplanName: "",
+          id: 2
+        },
+        tuesday:{
+          day: "Tuesday",
+          mealplanName: "",
+          id: 3
+        },
+        wednesday: {
+          day: "Wednesday",
+          mealplanName: "",
+          id: 4
+        },
+        thursday: {
+          day: "Thursday",
+          mealplanName: "",
+          id: 5
+        },
+        friday: {
+          day: "Friday",
+          mealplanName: "",
+          id: 6
+        },
+        saturday: {
+          day: "Saturday",
+          mealplanName: "",
+          id: 7
+        }
+      },
       formIsVisible: false
     },
     mutations: {
@@ -49,6 +88,10 @@ export function createStore(currentToken, currentUser) {
 
       ADD_MEALPLAN(state, mealPlan){
         state.mealPlans.push(mealPlan);
+      },
+
+      ADD_MEAL(state, meal){
+        state.meals.push(meal);
       },
 
       SET_MEALS(state, mealList){
@@ -180,7 +223,32 @@ export function createStore(currentToken, currentUser) {
             this.getMealPlans();
           }
         })
-            }
+          },
+      
+          
+      createMeal({commit}, meal){
+        console.log("MEAL " + meal.mealId + meal.mealName) 
+        return mealService.addMeal(meal).then(response =>{
+          if(response.status === 201){
+            const newMeal = response.data;
+            commit('ADD_MEAL', newMeal);
+            return newMeal;
+          }
+        })
+      },
+
+      
+      addRecipeToMeal({commit}, {mealId, recipeId}){
+
+        mealService.addRecipeToMeal(mealId, recipeId).then(response =>{
+         
+          if(response.status === 201){
+            this.getMeals();
+          }
+        })
+          },
+
+          addPlanToSchedule({})
 
     }
   });
