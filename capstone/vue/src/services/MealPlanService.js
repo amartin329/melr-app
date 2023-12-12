@@ -22,7 +22,6 @@ export default{
     },
 
     addMealToMealPlan(mealplanId, mealId){
-        console.log('is this even happening??? What are' + mealplanId + " and " + mealId + "?????")
         return axios.post(`/mealplans/${mealplanId}/modify/${mealId}`, null, 
         {params: {mealplanId, mealId}
     });
