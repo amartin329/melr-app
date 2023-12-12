@@ -22,7 +22,8 @@ public class JdbcRecipeDao implements RecipeDao {
         this.jdbcTemplate = jdbcTemplate;
         this.ingredientDao = ingredientDao;
     }
-
+    /** This method will list all the recipes available for use for the authenticated user
+     * corresponding to the GET operation at endpoint "/recipes" in the RecipeController **/
     @Override
     public List<Recipe> listAllRecipes(){
         List<Recipe> allRecipes = new ArrayList<>();
@@ -42,8 +43,9 @@ public class JdbcRecipeDao implements RecipeDao {
         return allRecipes;
     }
 
-    //this method will get the details of a particular recipe by id
 
+    /** This method will give details of a recipe (by its id) including its metadata and its ingredientList
+     * corresponding to the GET operation at endpoint "/recipes/{id}" in the RecipeController **/
     @Override
     public Recipe getRecipeDetailsById(int recId){
         Recipe recipe = new Recipe();
@@ -63,13 +65,15 @@ public class JdbcRecipeDao implements RecipeDao {
         return recipe;
     }
 
+    /** This method is to create a recipe with its metadata and its ingredientList
+     * corresponding to the POST operation at endpoint "/recipes" in the RecipeController **/
     @Override
     public Recipe createRecipe(Recipe recipe){
-        String sql = "INSERT INTO recipe (recipe_type_id, recipe_tag_id, recipe_name, picture_path, prep_time, instruction) "
-                + "VALUES (?, ?, ?, ?, ?, ?) RETURNING recipe_id;";
+        String sql = "INSERT INTO recipe (recipe_type_id, recipe_tag_id, recipe_name, picture_path, prep_time, instruction, favorited) "
+                + "VALUES (?, ?, ?, ?, ?, ?, ?) RETURNING recipe_id;";
         try {
             int newId = jdbcTemplate.queryForObject(sql, int.class, recipe.getRecipeTypeId(), recipe.getRecipeTagId(), recipe.getRecipeName(),
-                    recipe.getPicturePath(), recipe.getPrepTime(), recipe.getInstruction());
+                    recipe.getPicturePath(), recipe.getPrepTime(), recipe.getInstruction(), recipe.isFavorited());
             recipe.setRecipeId(newId);
             recipe.setIngredientList(getIngredientListForRecipe(recipe.getRecipeId()));
             if(recipe.getIngredientList() != null) {
@@ -86,16 +90,17 @@ public class JdbcRecipeDao implements RecipeDao {
         return getRecipeDetailsById(recipe.getRecipeId());
     }
 
-    // TODO this method is only updating the metadata of the recipe, not the actual ingredientList of the recipe.
-    // TODO maybe we need a separate method to handle that and include it in here.
+
+    /** This method is first in the series of 3 methods for modifying a recipe, just to update metadata
+     * of a recipe corresponding to the PUT operation at endpoint "/recipes/{id}" in the RecipeController**/
     public boolean updateRecipeInfo(Recipe recipe){
         int rowAffected;
         String sql = "UPDATE recipe " +
-                "SET recipe_type_id = ?, recipe_tag_id = ?, recipe_name = ?, picture_path = ?, prep_time = ?, instruction = ? " +
+                "SET recipe_type_id = ?, recipe_tag_id = ?, recipe_name = ?, picture_path = ?, prep_time = ?, instruction = ?, favorited = ? " +
                 "WHERE recipe_id = ?;";
         try {
             rowAffected = jdbcTemplate.update(sql, recipe.getRecipeTypeId(), recipe.getRecipeTagId(), recipe.getRecipeName(),
-                    recipe.getPicturePath(), recipe.getPrepTime(), recipe.getInstruction(), recipe.getRecipeId());
+                    recipe.getPicturePath(), recipe.getPrepTime(), recipe.getInstruction(), recipe.isFavorited(), recipe.getRecipeId());
             recipe.setIngredientList(getIngredientListForRecipe(recipe.getRecipeId()));
         } catch (CannotGetJdbcConnectionException e) {
             throw new DaoException("Unable to connect to server or database", e);
@@ -105,8 +110,12 @@ public class JdbcRecipeDao implements RecipeDao {
         return rowAffected == 1;
     }
 
-    // TODO is there a way to put the quantity and unit right in here and then add this into the createRecipe method up there
-    // TODO without causing a break? Should an ingredientDto be used here? If so how?
+
+    /** This method is second in the series of 3 methods for modifying a recipe when user wants to add an ingredient to a recipe
+     * corresponding to the POST operation at endpoint "/recipes/{id}/modify/{id}" in the RecipeController. It will actually create a linkage
+     * between that ingredient with the recipe and shows up in the join table recipe_ing.
+     * Here the quantity and the measurement unit are put in as default values. They can be changed at the front end to what user likes.
+     * It's also a supporting method for creating recipe**/
     public int addIngredientToRecipe(int recipeId, int ingId) {
         int rowsAffected;
         String sql = "INSERT INTO recipe_ing (recipe_id, ing_id, msm_id, quantity) VALUES (?, ?, 1, 0);";
@@ -121,6 +130,8 @@ public class JdbcRecipeDao implements RecipeDao {
         return rowsAffected;
     }
 
+    /** This method is third in the series of 3 methods for modifying a recipe when user wants to remove an ingredient from a recipe
+     * corresponding to the DELETE operation at endpoint "/recipes/{id}/modify/{id}" **/
     public int removeIngredientFromRecipe(int recipeId, int ingredientId) {
         int rowsAffected;
         String sql = "DELETE FROM recipe_ing WHERE recipe_id = ? AND ing_id = ?;";
@@ -134,16 +145,18 @@ public class JdbcRecipeDao implements RecipeDao {
         return rowsAffected;
     }
 
-    //this method will list the ingredients in a particular recipe by recipe Id
+
+    /**Supporting methods**/
+    /** this method will list the ingredients in a particular recipe by recipe **/
     @Override
     public List<Ingredient> getIngredientListForRecipe(int recId) {
         List<Ingredient> recIngs = new ArrayList<>();
-        String sql = "SELECT i.ing_id, i.ing_type_id, i.ing_name, i.nutrition_id " +
+        String sql = "SELECT i.ing_id, i.ing_type_id, i.ing_name, i.nutrition_id, m.msm_unit, ri.quantity " +
                 "FROM ingredient i " +
-                //"JOIN ingredient_type it ON i.ing_type_id = it.ing_type_id " +
+                "JOIN ingredient_type it ON i.ing_type_id = it.ing_type_id " +
                 "JOIN nutrition nu ON i.nutrition_id = nu.nutrition_id " +
                 "JOIN recipe_ing ri ON i.ing_id = ri.ing_id " +
-                //"JOIN measurement m ON ri.msm_id = m.msm_id " +
+                "JOIN measurement m ON ri.msm_id = m.msm_id " +
                 "JOIN recipe r ON r.recipe_id = ri.recipe_id " +
                 "WHERE r.recipe_id = ?;";
         try {
@@ -161,6 +174,7 @@ public class JdbcRecipeDao implements RecipeDao {
         return recIngs;
     }
 
+    /** This method gets the nutrition facts for an ingredient**/
     @Override
     public Nutrition getNutritionForIngredient(int ingId){
         Nutrition ingNutrition = null;
@@ -181,6 +195,7 @@ public class JdbcRecipeDao implements RecipeDao {
         return ingNutrition;
     }
 
+    // not sure if this supporting method is needed
     //this method will list the total Nutrition of ingredients of a particular recipe by recipe Id
 
     @Override
@@ -209,7 +224,7 @@ public class JdbcRecipeDao implements RecipeDao {
     }
 
 
-
+    /** Mapping methods **/
     public Ingredient mapRowToIngredient(SqlRowSet rs){
         Ingredient ingredient = new Ingredient();
         ingredient.setIngId(rs.getInt("ing_id"));

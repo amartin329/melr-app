@@ -28,7 +28,7 @@ public JdbcMealplanDao(JdbcTemplate jdbcTemplate, MealDao mealDao, RecipeDao rec
 }
 
     /** This method will list all the mealplans available for use for the authenticated user
-     * corresponding to the GET operation at endpoint "/mealplans/" in the controller **/
+     * corresponding to the GET operation at endpoint "/mealplans/" in the MealplanController **/
     @Override
     public List<Mealplan> listAllMealplans() {
         List<Mealplan> mealplans = new ArrayList<>();
@@ -50,7 +50,7 @@ public JdbcMealplanDao(JdbcTemplate jdbcTemplate, MealDao mealDao, RecipeDao rec
 
 
     /** This method will give details of a mealplan (by its id) including its metadata and its mealList
-     * corresponding to the GET operation at endpoint "/mealplans/{id}" in the controller **/
+     * corresponding to the GET operation at endpoint "/mealplans/{id}" in the MealplanController **/
     @Override
     public Mealplan listMealplanById(int mealplanId) {
         String sql = "SELECT mealplan_id, mealplan_name, mealplan_type_id FROM mealplan WHERE mealplan_id = ?;";
@@ -65,7 +65,7 @@ public JdbcMealplanDao(JdbcTemplate jdbcTemplate, MealDao mealDao, RecipeDao rec
     }
 
     /** This method is to create a mealplan with its metadata and its mealList
-     * corresponding to the POST operation at endpoint "/mealplans" in the controller **/
+     * corresponding to the POST operation at endpoint "/mealplans" in the MealplanController **/
     @Override
     public Mealplan createMealplan(Mealplan mealplan) {
     String sql = "INSERT INTO mealplan (mealplan_name, mealplan_type_id) VALUES (?, ?) RETURNING mealplan_id;";
@@ -86,8 +86,8 @@ public JdbcMealplanDao(JdbcTemplate jdbcTemplate, MealDao mealDao, RecipeDao rec
       return mealplan;
     }
 
-    /** This method is first in the series of 3 methods for modifying a mealplan when user wants to update metadata
-     * of a mealplan corresponding to the PUT operation at endpoint "/mealplans/{id}" **/
+    /** This method is first in the series of 3 methods for modifying a mealplan just to update metadata
+     * of a mealplan corresponding to the PUT operation at endpoint "/mealplans/{id}" in the MealplanController**/
     public boolean updateMealplanInfo(Mealplan mealplan){
         int rowAffected;
         String sql = "UPDATE mealplan " +
@@ -104,7 +104,8 @@ public JdbcMealplanDao(JdbcTemplate jdbcTemplate, MealDao mealDao, RecipeDao rec
     }
 
     /** This method is second in the series of 3 methods for modifying a mealplan when user wants to add a meal to a mealplan
-     * corresponding to the POST operation at endpoint "/mealplans/{id}/modify/{id}". It's also a supporting method for creating mealplan**/
+     * corresponding to the POST operation at endpoint "/mealplans/{id}/modify/{id}" in the MealplanController.
+     * It's also a supporting method for creating mealplan **/
     public int addMealToMealplan(int mealplanId, int mealId) {
         int rowsAffected;
         String sql = "INSERT INTO meal_mealplan (mealplan_id, meal_id) VALUES (?, ?);";
@@ -117,8 +118,9 @@ public JdbcMealplanDao(JdbcTemplate jdbcTemplate, MealDao mealDao, RecipeDao rec
         }
         return rowsAffected;
     }
-    /** This method is third in the series of 3 methods for modifying a mealplan when user wants to remove a meal to a mealplan
-     * corresponding to the DELETE operation at endpoint "/mealplans/{id}/modify/{id}" **/
+
+    /** This method is third in the series of 3 methods for modifying a mealplan when user wants to remove a meal from a mealplan
+     * corresponding to the DELETE operation at endpoint "/mealplans/{id}/modify/{id}" in the MealplanController **/
     public int removeMealFromMealplan(int mealplanId, int mealId) {
         int rowsAffected;
         String sql = "DELETE FROM meal_mealplan WHERE mealplan_id = ? AND meal_id = ?;";
