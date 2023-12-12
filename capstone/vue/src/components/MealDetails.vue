@@ -56,4 +56,14 @@
    border: 5px solid black;
    border-radius: 5px;
   }
+
+  .meal-plan{
+    font-weight: 800;
+    font-color: green;
+    
+  }
+
+  .meal-plans{
+    display: flex;
+  }
   </style>
