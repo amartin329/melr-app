@@ -21,7 +21,8 @@ public class JdbcIngredientDao implements IngredientDao {
         this.jdbcTemplate = jdbcTemplate;
     }
 
-    //this method just lists all the ingredients that the logged-in user has in library
+    /** This method will list all the ingredients available for use for the authenticated user
+     * corresponding to the GET operation at endpoint "/ingredients/" in the IngredientController **/
     @Override
     public List<Ingredient> listAllIngredients() {
         List<Ingredient> ingredients = new ArrayList<>();
@@ -38,7 +39,8 @@ public class JdbcIngredientDao implements IngredientDao {
         return ingredients;
     }
 
-    // this method will list the details of a particular ingredient by its id
+    /** This method will give details of an ingredient (by its id) including its metadata and its nutritionList
+     * corresponding to the GET operation at endpoint "/ingredients/{id}" in the IngredientController **/
     @Override
     public Ingredient getIngredientById(int ingId) {
         Ingredient ingredient = null;
@@ -56,6 +58,8 @@ public class JdbcIngredientDao implements IngredientDao {
         return ingredient;
     }
 
+    /** This method is to create an ingredient with its metadata and its nutritionList
+     * corresponding to the POST operation at endpoint "/ingredients" in the IngredientController **/
     @Override
     public Ingredient createIngredient(Ingredient ingredient) {
         String sql = "INSERT INTO ingredient (ing_type_id, ing_name, nutrition_id) " +
@@ -72,6 +76,8 @@ public class JdbcIngredientDao implements IngredientDao {
         return getIngredientById(ingredient.getIngId());
     }
 
+    /** This method is to update metadata of an ingredient corresponding to the PUT operation
+     * at endpoint "/ingredients/{id}" in the IngredientController **/
     public boolean updateIngredient(Ingredient ingredient){
         int rowAffected;
         String sql = "UPDATE ingredient " +
@@ -88,7 +94,7 @@ public class JdbcIngredientDao implements IngredientDao {
         return rowAffected == 1;
     }
 
-
+    /** Supporting method to get the Nutrition List for an ingredient **/
     @Override
     public Nutrition getNutritionForIngredient(int ingId){
         Nutrition ingNutrition = null;
@@ -110,6 +116,7 @@ public class JdbcIngredientDao implements IngredientDao {
 
     }
 
+    /** Mapping methods **/
     public Ingredient mapRowToIngredient(SqlRowSet rs){
         Ingredient ingredient = new Ingredient();
         ingredient.setIngId(rs.getInt("ing_id"));

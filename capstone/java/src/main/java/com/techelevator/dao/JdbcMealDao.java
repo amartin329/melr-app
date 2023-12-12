@@ -44,7 +44,7 @@ public class JdbcMealDao implements MealDao{
     }
 
     /** This method will give details of a meal (by its id) including its metadata and its recipeList
-     * corresponding to the GET operation at endpoint "/meals/{id}" in the controller **/
+     * corresponding to the GET operation at endpoint "/meals/{id}" in the MealController **/
     @Override
     public Meal listMealById(int meal_id) {
         String sql = "SELECT meal_id, meal_name, meal_type_id FROM meal WHERE meal_id = ?;";
@@ -60,7 +60,7 @@ public class JdbcMealDao implements MealDao{
     }
 
     /** This method is to create a meal with its metadata and its recipeList
-     * corresponding to the POST operation at endpoint "/meals" in the controller **/
+     * corresponding to the POST operation at endpoint "/meals" in the MealController **/
     @Override
     public Meal createMeal(Meal meal) {
         String sql = "INSERT INTO meal (meal_name, meal_type_id) VALUES (?, ?) RETURNING meal_id;";
@@ -82,8 +82,8 @@ public class JdbcMealDao implements MealDao{
         return meal;
     }
 
-    /** This method is first in the series of 3 methods for modifying a meal when user wants to update metadata
-     * of a meal corresponding to the PUT operation at endpoint "/meals/{id}" **/
+    /** This method is first in the series of 3 methods for modifying a meal just to update metadata
+     * of a meal corresponding to the PUT operation at endpoint "/meals/{id}" in the MealController**/
     public boolean updateMealInfo(Meal meal){
         int rowAffected;
         String sql = "UPDATE meal " +
@@ -101,7 +101,8 @@ public class JdbcMealDao implements MealDao{
     }
 
     /** This method is second in the series of 3 methods for modifying a meal when user wants to add a recipe to a meal
-     * corresponding to the POST operation at endpoint "/meals/{id}/modify". It's also a supporting method for creating meal**/
+     * corresponding to the POST operation at endpoint "/meals/{id}/modify" in the MealController.
+     * It's also a supporting method for creating meal**/
     public int addRecipeToMeal(int mealId, int recipeId) {
         int rowsAffected;
         String sql = "INSERT INTO recipe_meal (recipe_id, meal_id) VALUES (?, ?);";
@@ -116,7 +117,7 @@ public class JdbcMealDao implements MealDao{
     }
 
     /** This method is third in the series of 3 methods for modifying a meal when user wants to remove a recipe from a meal
-     * corresponding to the DELETE operation at endpoint "/meals/{id}/modify" **/
+     * corresponding to the DELETE operation at endpoint "/meals/{id}/modify" in the MealController**/
     public int removeRecipeFromMeal(int mealId, int recipeId) {
         int rowsAffected;
         String sql = "DELETE FROM recipe_meal WHERE meal_id = ? AND recipe_id = ?;";
