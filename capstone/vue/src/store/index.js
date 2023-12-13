@@ -248,7 +248,7 @@ export function createStore(currentToken, currentUser) {
         })
           },
 
-          addPlanToSchedule({})
+         // addPlanToSchedule({})
 
     }
   });

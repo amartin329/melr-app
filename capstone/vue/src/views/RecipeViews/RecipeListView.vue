@@ -1,13 +1,40 @@
+RecipeListView
+
 <template>
-  <recipeList />
+    <div id="recipeDetail" v-for="recipe in recipes" v-bind:key="recipe.id">
+    <!-- <recipe-card v-bind:recipe="recipe" v-on:click="this.clickRecipeCard" /> can't get a click to bring me to RecipeDetailsView-->
+  </div>
+  <!--recipeList went here before I deleted it - Greg-->
 </template>
 
 <script>
 import recipeList from '../../components/RecipeList.vue'
 import recipeService from '../../services/RecipeService'
+import recipeCard from '../../components/RecipeCard.vue'
 
 export default {
-components: {recipeList},
+components: {recipeCard},
+
+  data() {
+    return {
+      recipes:[]
+    }
+  },
+
+  created() {
+    recipeService.getRecipes().then( response => {
+      this.recipes = response.data;
+    })
+  },
+
+methods: {
+  clickRecipeCard(){
+    this.$router.push({name: 'recipe-details', params:{id:this.recipe.id}})
+  }
+
+}
+
+
 }
 </script>
 
