@@ -2,7 +2,9 @@ RecipeListView
 
 <template>
     <div id="recipeDetail" v-for="recipe in recipes" v-bind:key="recipe.id">
-    <!-- <recipe-card v-bind:recipe="recipe" v-on:click="this.clickRecipeCard" /> can't get a click to bring me to RecipeDetailsView-->
+    <router-link v-bind:key="recipe.id" v-bind:to="{name: 'recipe-details', params: {id: recipe.recipeId}}">
+      <recipe-card v-bind:recipe="recipe" />
+    </router-link>
   </div>
   <!--recipeList went here before I deleted it - Greg-->
 </template>
@@ -27,12 +29,12 @@ components: {recipeCard},
     })
   },
 
-methods: {
-  clickRecipeCard(){
-    this.$router.push({name: 'recipe-details', params:{id:this.recipe.id}})
-  }
+// methods: {
+//   clickRecipeCard(){
+//     this.$router.push({name: 'recipe-details', params:{id:this.recipe.id}})
+//   }
 
-}
+// }
 
 
 }
