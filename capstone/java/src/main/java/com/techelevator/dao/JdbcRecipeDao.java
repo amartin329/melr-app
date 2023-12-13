@@ -76,12 +76,12 @@ public class JdbcRecipeDao implements RecipeDao {
                     recipe.getPicturePath(), recipe.getPrepTime(), recipe.getInstruction(), recipe.isFavorited());
             recipe.setRecipeId(newId);
             recipe.setIngredientList(getIngredientListForRecipe(recipe.getRecipeId()));
-            if(recipe.getIngredientList() != null) {
-                for (Ingredient ingredient : recipe.getIngredientList()) {
-                    ingredient = ingredientDao.createIngredient(ingredient);
-                    addIngredientToRecipe(recipe.getRecipeId(), ingredient.getIngId());
-                }
-            }
+//            if(recipe.getIngredientList() != null) {
+//                for (Ingredient ingredient : recipe.getIngredientList()) {
+//                    ingredient = ingredientDao.createIngredient(ingredient);
+//                    addIngredientToRecipe(recipe.getRecipeId(), ingredient.getIngId());
+//                }
+//            }
         } catch (CannotGetJdbcConnectionException e) {
             throw new DaoException("Unable to connect to server or database", e);
         } catch (DataIntegrityViolationException e) {
@@ -116,11 +116,11 @@ public class JdbcRecipeDao implements RecipeDao {
      * between that ingredient with the recipe and shows up in the join table recipe_ing.
      * Here the quantity and the measurement unit are put in as default values. They can be changed at the front end to what user likes.
      * It's also a supporting method for creating recipe**/
-    public int addIngredientToRecipe(int recipeId, int ingId) {
+    public int addIngredientToRecipe(int recipeId, int ingId, int msmId, double quantity) {
         int rowsAffected;
-        String sql = "INSERT INTO recipe_ing (recipe_id, ing_id, msm_id, quantity) VALUES (?, ?, 1, 0);";
+        String sql = "INSERT INTO recipe_ing (recipe_id, ing_id, msm_id, quantity) VALUES (?, ?, ?, ?);";
         try {
-            rowsAffected = jdbcTemplate.update(sql, recipeId, ingId);
+            rowsAffected = jdbcTemplate.update(sql, recipeId, ingId, msmId, quantity);
             getRecipeDetailsById(recipeId).setIngredientList(getIngredientListForRecipe(recipeId));
         } catch (CannotGetJdbcConnectionException e) {
             throw new DaoException("Unable to connect to server or database", e);

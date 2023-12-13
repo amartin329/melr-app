@@ -9,6 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
+import javax.management.ConstructorParameters;
 import javax.validation.Valid;
 import java.util.ArrayList;
 import java.util.List;
@@ -83,11 +84,12 @@ public class RecipeController {
 
 
     @ResponseStatus(HttpStatus.CREATED)
-    @PostMapping("/{recipeId}/modify/{ingId}")
-    public int addIngredientToRecipe(@PathVariable int recipeId, @PathVariable int ingId) {
+    @PostMapping("/{recipeId}/modify/{ingId}") // need to add these in Postman ?msmId={msmId}&quantity={quantity} to make it work
+    //@ResponseBody
+    public int addIngredientToRecipe(@PathVariable int recipeId, @PathVariable int ingId, @RequestParam("msmId") int msmId, @RequestParam("quantity") double quantity) {
         int rowAffected;
         try {
-            rowAffected = recipeService.addIngredientToRecipe(recipeId, ingId);
+            rowAffected = recipeService.addIngredientToRecipe(recipeId, ingId, msmId, quantity);
             if (rowAffected == 0) {
                 throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "No row change. Expect 1.");
             } else {

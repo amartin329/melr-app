@@ -9,6 +9,6 @@ public interface RecipeService {
     Recipe getRecipeById(int id);
     Recipe createRecipe(Recipe recipe);
     Recipe updateRecipeInfo(int id, Recipe recipe);
-    int addIngredientToRecipe(int recipeId, int ingId);
+    int addIngredientToRecipe(int recipeId, int ingId, int msmId, double quantity);
     int removeIngredientFromRecipe(int recipeId, int ingId);
 }
