@@ -4,8 +4,8 @@
     <h2>Add some meal plans to your schedule, and everything you need for them will auto-magically go here!</h2>
   </div>
   <div v-else class="ingredient" v-for="ingredient of this.ingredientsList" v-bind:key="ingredient.ingId">
-    <p>{{ingredient.ingName}}</p>
-    <p>{{ ingredient.quantity }}</p>
+    <p>{{ ingredient.quantity }} {{ingredient.msmUnit}} {{ingredient.ingName}}<span v-if="ingredient.ingName[-1]!='s'">s</span></p>
+    <p></p>
   </div>
 </template>
 

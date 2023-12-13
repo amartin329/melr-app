@@ -59,15 +59,16 @@ export default {
     addRecipeToPending(recipe){
         this.pendingRecipes.push(recipe);
     },
-    // NOTE: SHOULD PROBABLY LOOP ON SERVER-SIDE TO MAKE THIS A TRANSACTION.
+
     createMeal(){
         if(this.pendingRecipes.length == 0){
             return;
         }
+        //first creates meal (ie | recipe container)
         this.$store.dispatch('createMeal', this.newMeal).then(response => {
       console.log("RESPONSE = " + response) 
             
-                
+          //then, we add each pending recipe to the meal
                 console.log("MEAL ID " + response.mealId)
                 this.pendingRecipes.forEach(pendingRecipe => {
                     console.log(pendingRecipe)

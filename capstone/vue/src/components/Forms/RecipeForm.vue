@@ -16,8 +16,8 @@
         <textarea id="directions" type="textarea" v-model="recipe.instruction" class="form-control" required> </textarea>
     </div>
     <!-- <IngredientForm v-on:click.prevent/> -->
-    <new-ingredient-form v-on:click.prevent></new-ingredient-form>
-    <button v-on:click.prevent="testCreateRecipe(recipe)">Create Recipe</button>
+    <!-- <new-ingredient-form v-on:click.prevent></new-ingredient-form> -->
+    <button v-on:click.prevent="testCreateRecipe(this.recipe)">Add ingredients to recipe</button>
   </form>
  
 
@@ -28,7 +28,7 @@ import IngredientForm from './IngredientForm.vue';
 import NewIngredientForm from './NewIngredientForm.vue';
 export default {
   components: { 
-  NewIngredientForm },
+  },
   data(){
     return{
     
@@ -44,8 +44,12 @@ export default {
   },
   methods:{
     testCreateRecipe(recipe){
-        this.recipes.push(recipe);
-        this.recipe = {};
+        this.$store.dispatch('createRecipe', recipe).then(response =>{
+          if(response){
+            alert("Recipe created!")
+            this.$router.push({name: 'recipe-details', params: {id: response.recipeId}})
+          }
+        })
     }
   }
 

@@ -1,6 +1,8 @@
 RecipeListView
 
 <template>
+    <h1>{{ this.$store.state.user.username }}'s Recipes</h1>
+    <router-link v-bind:to="{name: 'create-recipe'}"><p>Create New Recipe</p></router-link>
     <div id="recipeDetail" v-for="recipe in recipes" v-bind:key="recipe.id">
     <router-link v-bind:key="recipe.id" v-bind:to="{name: 'recipe-details', params: {id: recipe.recipeId}}">
       <recipe-card v-bind:recipe="recipe" />

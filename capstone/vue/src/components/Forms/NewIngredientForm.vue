@@ -30,11 +30,11 @@
                 
                 <label :for="ingredient.id + '-unit'">Unit:
                     <select :id="ingredient.id + '-unit'"
-                    v-model="ingredient.unit">
+                    v-model="this.unit">
                     <option>------</option>
-                    <option >ounces</option>
-                    <option >pounds</option>
-                    <option >grams</option>
+                    <option>ounces</option>
+                    <option>pounds</option>
+                    <option>grams</option>
                     <option >fluid ounces</option>
                     <option >teaspoons</option>
                     <option >tablespoons</option>
@@ -45,7 +45,7 @@
                 </select>
                 </label>
                 <p></p>
-                <button v-on:click.prevent="getIngredientInformation(ingredient.id, ingredient.amount, ingredient.unit)">Add to Recipe</button>
+                <button v-on:click.prevent="getIngredientInformation(ingredient.id, ingredient.amount, this.unit)">Add to Recipe</button>
                <button v-on:click.prevent="removeIngredientFromPending(ingredient.id)">Cancel</button>
             </div>
         </div>
@@ -124,20 +124,26 @@ v-on:click.prevent="addIngredientToPending(result)">
             unitLong: "",
             unitShort: ""
           },
-          // unitToId:[
-          //   {unit: }
-          // ]
+          msmId: 0,
+          unit: '',
+          apiDown: false
          } 
         },
         methods: {
           getResults(){
             SpoonacularService.getResults().then(response => {
             this.results = response.data;
+            alert("Error retrieving ingredients from Web API.");
           });
           },
           searchResults(){
             SpoonacularService.searchResults(this.userSearch).then(response => {
-              this.userResults = response.data;
+              if(response.status == 200){
+                this.userResults = response.data;
+              }else{
+                alert("Error retrieving ingredients from Web API.");
+              }
+              
             });
           },
           getImage(image){
@@ -149,11 +155,19 @@ v-on:click.prevent="addIngredientToPending(result)">
           // },
     
           getIngredientInformation(id, amount, unit){
+            this.unitToId(unit);
+            console.warn(this.msmId)
             console.log(id, amount, unit);
             SpoonacularService.getIngredientInformation(id, unit, amount).then(response => {
+              if(response.status === 200){
               this.recipeIngredients.push(response.data);
               console.log(this.recipeIngredients)
               this.removeIngredientFromPending(id);
+              }else{
+                alert("Error retrieving ingredients from Web API.");
+                this.recipeIngredients.push(this.ingredient)
+              }
+              
             })
           },
 
@@ -169,7 +183,44 @@ v-on:click.prevent="addIngredientToPending(result)">
             this.$store.state.pendingIngredients = this.$store.state.pendingIngredients.filter(pendIngredient => {
                 return pendIngredient.id !== id;
             })
-        }
+        },
+
+        //So here, we want to add 
+
+          unitToId(unit){
+            switch(unit){
+              case "ounces":
+                this.msmId = 1;
+                break;
+              case "pounds":
+                this.msmId = 2;
+                break;
+              case "grams":
+                this.msmId = 3;
+                break;
+              case "fluid ounces":
+                this.msmId = 4;
+                break;
+              case "teaspoons":
+                this.msmId = 5;
+                break;
+              case "tablespoons":
+                this.msmId = 6;
+                break;
+              case "cups":
+                this.msmId = 7;
+                break;
+              case "pieces":
+                this.msmId = 8;
+                break;
+              case "slices":
+                this.msmId = 9;
+                break;
+              case "servings":
+                this.msmId = 11;
+                break;
+            }
+          }
     
          // getIngredientInformation(this.result.id, this.resul){
             
@@ -185,7 +236,7 @@ v-on:click.prevent="addIngredientToPending(result)">
             // }
         },
         created(){
-          this.getResults();
+          // this.getResults();
         }
       };
       </script>

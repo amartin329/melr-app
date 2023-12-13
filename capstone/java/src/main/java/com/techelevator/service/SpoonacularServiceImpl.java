@@ -1,5 +1,7 @@
 package com.techelevator.service;
 
+import com.techelevator.exception.DaoException;
+import com.techelevator.exception.ServiceException;
 import com.techelevator.model.SpoonacularModels.IngredientAmount;
 import com.techelevator.model.SpoonacularModels.IngredientInformation.IngredientInformation;
 import com.techelevator.model.SpoonacularModels.IngredientInformation.Nutrient;
@@ -28,72 +30,96 @@ public class SpoonacularServiceImpl implements SpoonacularService{
     public SpoonacularModel getSpoonacularModel(String input){
         HttpHeaders headers = new HttpHeaders();
         headers.set(API_KEY_NAME, API_KEY);
-        ResponseEntity<SpoonacularModel> responseEntity = restTemplate.exchange(
-                BASE_URL+" /search?sortDirection=asc&sort=calories&query={input}&offset=0&number=10&intolerances=none",
-                HttpMethod.GET,
-                new HttpEntity<>(headers),
-                SpoonacularModel.class,
-                input
-        );
+        try{
+            ResponseEntity<SpoonacularModel> responseEntity = restTemplate.exchange(
+                    BASE_URL+" /search?sortDirection=asc&sort=calories&query={input}&offset=0&number=10&intolerances=none",
+                    HttpMethod.GET,
+                    new HttpEntity<>(headers),
+                    SpoonacularModel.class,
+                    input);
 
-        SpoonacularModel spoonModel = responseEntity.getBody();
-        return spoonModel;
+            SpoonacularModel spoonModel = responseEntity.getBody();
+            return spoonModel;
+        }catch(DaoException e){
+            throw new ServiceException("Error connecting to Web API: " + e.getMessage());
+        }
+
     }
 
     public Result getIngredientName(){
-        Result resultModel = restTemplate.getForObject(BASE_URL+" /search?sortDirection=asc&sort=calories&query=potato&offset=0&number=10&intolerances=none", Result.class);
-        ResponseEntity response = restTemplate.getForEntity(BASE_URL+" /search?sortDirection=asc&sort=calories&query=potato&offset=0&number=10&intolerances=none", Result.class);
-        String ingredientName = "Hello!";
-        return resultModel;
+        try{
+            Result resultModel = restTemplate.getForObject(BASE_URL+" /search?sortDirection=asc&sort=calories&query=potato&offset=0&number=10&intolerances=none", Result.class);
+            ResponseEntity response = restTemplate.getForEntity(BASE_URL+" /search?sortDirection=asc&sort=calories&query=potato&offset=0&number=10&intolerances=none", Result.class);
+            return resultModel;
+        }catch(DaoException e){
+            throw new ServiceException("Error connecting to Web API: " + e.getMessage());
+        }
+
+
     }
 
     public Result getResult(){
         HttpHeaders headers = new HttpHeaders();
         headers.set(API_KEY_NAME, API_KEY);
-        ResponseEntity<Result> responseEntity = restTemplate.exchange(
-                BASE_URL+" /search?sortDirection=asc&sort=calories&query=potato&offset=0&number=10&intolerances=none",
-                HttpMethod.GET,
-                new HttpEntity<>(headers),
-                Result.class
-        );
-        Result resultModel = responseEntity.getBody();
+        try{
+            ResponseEntity<Result> responseEntity = restTemplate.exchange(
+                    BASE_URL+" /search?sortDirection=asc&sort=calories&query=potato&offset=0&number=10&intolerances=none",
+                    HttpMethod.GET,
+                    new HttpEntity<>(headers),
+                    Result.class
+            );
+            Result resultModel = responseEntity.getBody();
 
-        //Result resultModel = restTemplate.getForObject(BASE_URL+" /search?sortDirection=asc&sort=calories&query=potato&offset=0&number=10&intolerances=none", Result.class);
-       // ResponseEntity response = restTemplate.getForEntity(BASE_URL+" /search?sortDirection=asc&sort=calories&query=potato&offset=0&number=10&intolerances=none", Result.class);
-        //String ingredientName = "Hello!";
-        return resultModel;
+            //Result resultModel = restTemplate.getForObject(BASE_URL+" /search?sortDirection=asc&sort=calories&query=potato&offset=0&number=10&intolerances=none", Result.class);
+            // ResponseEntity response = restTemplate.getForEntity(BASE_URL+" /search?sortDirection=asc&sort=calories&query=potato&offset=0&number=10&intolerances=none", Result.class);
+            //String ingredientName = "Hello!";
+            return resultModel;
+        }catch(DaoException e){
+            throw new ServiceException("Error connecting to Web API: " + e.getMessage());
+        }
+
     }
 
     public IngredientAmount getIngredientAmount(int id){
         HttpHeaders headers = new HttpHeaders();
         headers.set(API_KEY_NAME, API_KEY);
-        ResponseEntity<IngredientAmount> responseEntity = restTemplate.exchange(
-                BASE_URL + "/{id}/amount?unit=oz&target=100&nutrient=calories",
-                HttpMethod.GET,
-                new HttpEntity<>(headers),
-                IngredientAmount.class,
-                id
-        );
-        IngredientAmount ingredientAmount = responseEntity.getBody();
-        return ingredientAmount;
+        try{
+            ResponseEntity<IngredientAmount> responseEntity = restTemplate.exchange(
+                    BASE_URL + "/{id}/amount?unit=oz&target=100&nutrient=calories",
+                    HttpMethod.GET,
+                    new HttpEntity<>(headers),
+                    IngredientAmount.class,
+                    id
+            );
+            IngredientAmount ingredientAmount = responseEntity.getBody();
+            return ingredientAmount;
+        }catch(DaoException e){
+            throw new ServiceException("Error connecting to Web API: " + e.getMessage());
+        }
+
     }
 
     public IngredientDTO getIngredientInformation(int id, String unit, double amount){
         HttpHeaders headers = new HttpHeaders();
         headers.set(API_KEY_NAME, API_KEY);
-        ResponseEntity<IngredientInformation> responseEntity = restTemplate.exchange(
-                BASE_URL + "/{id}/information?unit={unit}&amount={amount}",
-                HttpMethod.GET,
-                new HttpEntity<>(headers),
-                IngredientInformation.class,
-                id,
-                unit,
-                amount
-        );
-        IngredientInformation ingredientInformation = responseEntity.getBody();
+        try{
+            ResponseEntity<IngredientInformation> responseEntity = restTemplate.exchange(
+                    BASE_URL + "/{id}/information?unit={unit}&amount={amount}",
+                    HttpMethod.GET,
+                    new HttpEntity<>(headers),
+                    IngredientInformation.class,
+                    id,
+                    unit,
+                    amount
+            );
+            IngredientInformation ingredientInformation = responseEntity.getBody();
 
-        IngredientDTO ingredientDTO = apiMapper(ingredientInformation);
-        return ingredientDTO;
+            IngredientDTO ingredientDTO = apiMapper(ingredientInformation);
+            return ingredientDTO;
+        }catch(DaoException e){
+            throw new ServiceException("Error connecting to Web API: " + e.getMessage());
+        }
+
     }
 
 public IngredientDTO apiMapper(IngredientInformation apiCall){

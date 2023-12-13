@@ -241,11 +241,21 @@ export function createStore(currentToken, currentUser) {
         })
       },
 
+      createRecipe({commit}, recipe){
+        return recipeService.addRecipe(recipe).then(response => {
+          if(response.status === 201){
+            const newRecipe = response.data;
+            commit('ADD_RECIPE', newRecipe);
+            return newRecipe;
+          }
+        })
+      },
+
       
       addRecipeToMeal({commit}, {mealId, recipeId}){
 
         mealService.addRecipeToMeal(mealId, recipeId).then(response =>{
-         
+          
         })
           },
 
@@ -267,6 +277,8 @@ export function createStore(currentToken, currentUser) {
               this.getRecipeById(recipeId);
             })
           },
+
+         
 
           updateSchedule({commit}, schedule){
             commit('UPDATE_SCHEDULE', schedule)
