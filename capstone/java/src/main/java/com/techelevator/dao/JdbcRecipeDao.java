@@ -114,7 +114,8 @@ public class JdbcRecipeDao implements RecipeDao {
     /** This method is second in the series of 3 methods for modifying a recipe when user wants to add an ingredient to a recipe
      * corresponding to the POST operation at endpoint "/recipes/{id}/modify/{id}" in the RecipeController. It will actually create a linkage
      * between that ingredient with the recipe and shows up in the join table recipe_ing.
-     * Here the quantity and the measurement unit are put in as default values. They can be changed at the front end to what user likes.
+     * Here the quantity and the measurement unit are put in as params, that means when working with Postman we should add these params in the request
+     * like this "/recipes/{id}/modify/{id}?msmId={msmId}&quantity={quantity}". They can be changed at the front end to what user likes.
      * It's also a supporting method for creating recipe**/
     public int addIngredientToRecipe(int recipeId, int ingId, int msmId, double quantity) {
         int rowsAffected;
@@ -195,33 +196,7 @@ public class JdbcRecipeDao implements RecipeDao {
         return ingNutrition;
     }
 
-    // not sure if this supporting method is needed
-    //this method will list the total Nutrition of ingredients of a particular recipe by recipe Id
 
-    @Override
-    public List<Nutrition> getNutritionForRecipe(int recId){
-        List<Nutrition> nutritionList = new ArrayList<>();
-        String sql = "SELECT i.ing_id, i.ing_name, it.ing_type, nu.calories, nu.protein, nu.carb, nu.fat, ri.quantity, m.msm_unit " +
-                "FROM ingredient i " +
-                "JOIN ingredient_type it ON i.ing_type_id = it.ing_type_id " +
-                "JOIN nutrition nu ON i.nutrition_id = nu.nutrition_id" +
-                "JOIN recipe_ing ri ON i.ing_id = ri.ing_id" +
-                "JOIN measurement m ON ri.msm_id = m.msm_id" +
-                "JOIN recipe r ON r.recipe_id = ri.recipe_id" +
-                "WHERE ri.recipe_id = ?;";
-        try {
-            SqlRowSet results = jdbcTemplate.queryForRowSet(sql, recId);
-            if (results.next()) {
-                Nutrition ingTotalNutrition = mapRowToTotalNutrition(results);
-                nutritionList.add(ingTotalNutrition);
-            }
-        } catch (CannotGetJdbcConnectionException e) {
-            throw new DaoException("Unable to connect to server or database", e);
-        } catch (DataIntegrityViolationException e) {
-            throw new DaoException("Data integrity violation", e);
-        }
-        return nutritionList;
-    }
 
 
     /** Mapping methods **/
@@ -283,6 +258,34 @@ public class JdbcRecipeDao implements RecipeDao {
             throw new DaoException("Data integrity violation", e);
         }
         return rowsAffected;
+    }
+
+    // not sure if this supporting method is needed
+    //this method will list the total Nutrition of ingredients of a particular recipe by recipe Id
+
+    @Override
+    public List<Nutrition> getNutritionForRecipe(int recId){
+        List<Nutrition> nutritionList = new ArrayList<>();
+        String sql = "SELECT i.ing_id, i.ing_name, it.ing_type, nu.calories, nu.protein, nu.carb, nu.fat, ri.quantity, m.msm_unit " +
+                "FROM ingredient i " +
+                "JOIN ingredient_type it ON i.ing_type_id = it.ing_type_id " +
+                "JOIN nutrition nu ON i.nutrition_id = nu.nutrition_id" +
+                "JOIN recipe_ing ri ON i.ing_id = ri.ing_id" +
+                "JOIN measurement m ON ri.msm_id = m.msm_id" +
+                "JOIN recipe r ON r.recipe_id = ri.recipe_id" +
+                "WHERE ri.recipe_id = ?;";
+        try {
+            SqlRowSet results = jdbcTemplate.queryForRowSet(sql, recId);
+            if (results.next()) {
+                Nutrition ingTotalNutrition = mapRowToTotalNutrition(results);
+                nutritionList.add(ingTotalNutrition);
+            }
+        } catch (CannotGetJdbcConnectionException e) {
+            throw new DaoException("Unable to connect to server or database", e);
+        } catch (DataIntegrityViolationException e) {
+            throw new DaoException("Data integrity violation", e);
+        }
+        return nutritionList;
     }
 
 
