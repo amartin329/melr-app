@@ -77,9 +77,9 @@ public class RecipeServiceImpl implements RecipeService {
     }
 
 
-    public int addIngredientToRecipe(int recipeId, int ingId) {
+    public int addIngredientToRecipe(int recipeId, int ingId, int msmId, double quantity) {
         try {
-            return recipeDao.addIngredientToRecipe(recipeId, ingId);
+            return recipeDao.addIngredientToRecipe(recipeId, ingId, msmId, quantity);
         } catch (DaoException e) {
             throw new ServiceException("An error has occurred: " + e.getMessage());
         }
