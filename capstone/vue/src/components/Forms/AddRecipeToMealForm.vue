@@ -1,17 +1,17 @@
 <template>
-  <h2>Add Meal to {{ this.$store.state.currentMealPlan.mealplanName }}</h2>
+  <h2>Add Recipe to {{ this.$store.state.currentMeal.mealName }}</h2>
   <!-- Populate list of user's meal plans -->
   <!-- For each, have checkbox that allows a user to add it to plan -->
   <form>
-    <select id="meal-dropdown"
-    v-model="this.addedMeal">
+    <select id="recipe-dropdown"
+    v-model="this.addedRecipe">
     <option>--------</option>
-    <option v-for="meal in this.$store.state.meals" v-bind:key="meal.mealId"
-    :value="meal">
-        {{meal.mealName}}
+    <option v-for="recipe in this.$store.state.recipes" v-bind:key="recipe.recipeId"
+    :value="recipe">
+        {{recipe.recipeName}}
     </option>
   </select>
-  <button v-on:click.prevent="addMealToPlan(this.planId, this.addedMeal.mealId)">Add Meal</button>
+  <button v-on:click.prevent="addRecipeToMeal(this.mealId, this.addedRecipe.recipeId)">Add Recipe</button>
   </form>
   
 
@@ -23,35 +23,30 @@ export default {
     data(){
         return{
             formIsVisible: true,
-            planId: this.$route.params.id,
-            addedMeal: {}
+            mealId: this.$route.params.id,
+            addedRecipe: {}
         }
     },
 
 
     methods:{
-        getMeals(){
-            this.$store.dispatch('getMeals')
+        getRecipes(){
+            this.$store.dispatch('getRecipes')
         },
-        forceUpdate() {
-   
-            this.$forceUpdate(); 
-   
-    },
 
-        addMealToPlan(planId, mealId){
-            console.warn("CHECK OUT THESE PARAMETERS!" + planId + " " + mealId);
-            this.$store.dispatch('addMealToPlan', {mealplanId: planId, mealId: mealId})
-            this.$router.replace({ path: '/home' })        
+        addRecipeToMeal(mealId, recipeId){
+            console.warn("CHECK OUT THESE PARAMETERS!" + mealId + " " + recipeId);
+            this.$store.dispatch('addRecipeToMeal', {mealId: mealId, recipeId: recipeId})
+            this.formIsVisible = !this.formIsVisible      
         },
 
     },
     created(){
-        this.getMeals()
+        this.getRecipes()
     },
 
     computed(){
-        return 
+       
     }
 }
 </script>

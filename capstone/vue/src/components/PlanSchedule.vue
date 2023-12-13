@@ -1,27 +1,38 @@
 <template>
   <div class="meal-plans">
-      <form v-for="day in storeSchedule" @submit.prevent="addPlanToSchedule(day)" 
+      <form>
+
+       <div v-for="day in storeSchedule"
         v-bind:key="day.day">
         <div class="day">
             <h4>{{ day.day }}</h4>  
-            <router-link v-if="day.mealplanName!=''" v-bind:to="{name: 'plan-details', params: {id: day.id}}">
+            <router-link v-if="!isEditable" v-bind:to="{name: 'plan-details', params: {id: day.mealplanId}}">
                 <p>{{ day.mealplanName }}</p>
             </router-link>
             <div v-else>
                 
-            <select id="options" v-model="chosenPlan">    
-                    <option value="-">Pick A Meal Plan</option>
-                    <option v-for="storePlan in storePlans" v-bind:key="storePlan.mealPlanId" value="storePlan.mealplanId">{{ storePlan.mealplanName }}</option>
+            <select id="options" v-model="this.selectedPlan[day.day]"
+            @change="setMealPlan(day.day, selectedPlan)">    
+                    <option value="-" disabled>Pick A Meal Plan</option>
+                    <option v-for="storePlan in storePlans" v-bind:key="storePlan.mealPlanId" :value="storePlan">{{ storePlan.mealplanName }}</option>
             </select>
-            <button>Add Plan to Schedule</button>
+            
 
 
             </div>
            <!-- <add-meal-to-schedule class="add-plan" v-if="this.$store.state.formIsVisible"></add-meal-to-schedule> -->
             
         </div>
-          
+    </div>
     </form>
+    <div class="update-schedule-confirm" v-if="isEditable">
+            <button v-on:click.prevent="addPlanToSchedule(this.pendingSchedule)">Confirm Changes</button>
+            <button v-on:click.prevent="flagEditable">Cancel</button>
+        </div>
+        <div class="update-schedule" v-if="!isEditable">
+            <button v-on:click.prevent="flagEditable">Edit Schedule</button>
+        </div>
+        
         
     </div>
 </template>
@@ -32,92 +43,100 @@ export default {
     return{
         mealPlans:[],
         chosenPlan: {},
+        isEditable: false,
         pendingSchedule: 
         {
         sunday:{
-          day: "Sunday:",
+          day: "sunday",
           mealplanName: "",
-          id: 1,
+          mealplanId: 1,
 
         },
         monday:{
-          day: "Monday",
+          day: "monday",
           mealplanName: "",
-          id: 2
+          mealplanId: 2
         },
         tuesday:{
-          day: "Tuesday",
+          day: "tuesday",
           mealplanName: "",
-          id: 3
+          mealplanId: 3
         },
         wednesday: {
-          day: "Wednesday",
+          day: "wednesday",
           mealplanName: "",
-          id: 4
+          mealplanId: 4
         },
         thursday: {
-          day: "Thursday",
+          day: "thursday",
           mealplanName: "",
-          id: 5
+          mealplanId: 5
         },
         friday: {
-          day: "Friday",
+          day: "friday",
           mealplanName: "",
-          id: 6
+          mealplanId: 6
         },
         saturday: {
-          day: "Saturday",
+          day: "saturday",
           mealplanName: "",
-          id: 7
+          mealplanId: 7
         }
       },
-    //   schedule: [
-    //     {
-    //     id: 1,
-    //     name: "Spaghetti Sunday",
-    //     day: "Sunday"
-    //     },
-    //     {
-    //       id: 2,
-    //       name: 'Marinade Monday',
-    //       day: "Monday"
-    //     },
-    //     {
-    //     id: 3,
-    //     name: "Taco Tuesday",
-    //     day: "Tuesday"
-    //     },
-    //     {
-    //     id: 4,
-    //     name: "Wild-Wings Wednesday",
-    //     day: "Wednesday"
-    //     },
-    //     {
-    //     id: 5,
-    //     name: "Three-Bean Thursday",
-    //     day: "Thursday"
-    //     },
-    //     {
-    //     id: 6,
-    //     name: "Fajita Friday",
-    //     day: "Friday"
-    //     },
-    //     {
-    //     id: 7,
-    //     name: "Sugary Saturday",
-    //     day: "Saturday"
-    //     },
-    // ],
+
+      selectedPlan: {
+        sunday:{
+        
+        },
+        monday:{
+      
+        },
+        tuesday:{
+
+        },
+        wednesday:{
+
+        },
+        thursday:{
+
+        },
+        friday:{
+
+        },
+        saturday:{
+
+        }
+
+      }
     }
 
     },
     methods:{
+        flagEditable(){
+            this.isEditable = !this.isEditable;
+        },
         getPlans(){
             this.$store.dispatch('getMealPlans');
       
         },
-        addPlanToSchedule(plan){
-            this.$store.commit('updateSchedule', {day: plan.day, mealplanId: chosenPlanId})
+        addPlanToSchedule(schedule){
+            console.log("PENDING SCHEDULE: " + this.pendingSchedule)
+            console.log(schedule.monday);
+          
+            console.log(this.pendingSchedule);
+            this.$store.dispatch('updateSchedule', schedule);
+            this.isEditable = !this.isEditable;
+            console.warn(this.$store.state.schedule);
+
+      
+        },
+        setMealPlan(day, plan){
+            console.warn(plan)
+            console.log(this.pendingSchedule[day])
+            this.pendingSchedule[day].mealplanName = plan[day].mealplanName;
+            this.pendingSchedule[day].mealplanId = plan[day].mealplanId;
+            this.pendingSchedule[day].mealList = plan[day].mealList;
+            console.log(this.pendingSchedule[day])
         }
     },
     computed: {
@@ -144,13 +163,13 @@ export default {
         flex-direction: row;
         justify-content: space-between; */
        
-        display: grid;
+        /* display: grid;
         grid-template-areas:
         "meal-plan meal-plan meal-plan meal-plan"
-        "space meal-plan meal-plan meal-plan";
+        "space meal-plan meal-plan meal-plan"; */
         grid-template-rows: 1fr 1fr;
         grid-template-columns: 1fr 1fr 1fr 1fr;
-        height: 40vh;
+   
       
     }
     .day{

@@ -26,40 +26,40 @@ export function createStore(currentToken, currentUser) {
       schedule:
       {
         sunday:{
-          day: "Sunday:",
+          day: "sunday",
           mealplanName: "",
-          id: 1,
+          mealplanId: 1,
 
         },
         monday:{
-          day: "Monday",
+          day: "monday",
           mealplanName: "",
-          id: 2
+          mealplanId: 2
         },
         tuesday:{
-          day: "Tuesday",
+          day: "tuesday",
           mealplanName: "",
-          id: 3
+          mealplanId: 3
         },
         wednesday: {
-          day: "Wednesday",
+          day: "wednesday",
           mealplanName: "",
-          id: 4
+          mealplanId: 4
         },
         thursday: {
-          day: "Thursday",
+          day: "thursday",
           mealplanName: "",
-          id: 5
+          mealplanId: 5
         },
         friday: {
-          day: "Friday",
+          day: "friday",
           mealplanName: "",
-          id: 6
+          mealplanId: 6
         },
         saturday: {
-          day: "Saturday",
+          day: "saturday",
           mealplanName: "",
-          id: 7
+          mealplanId: 7
         }
       },
       formIsVisible: false
@@ -112,6 +112,10 @@ export function createStore(currentToken, currentUser) {
 
       SET_CURRENTRECIPE(state, currentRecipe){
         state.currentRecipe = currentRecipe;
+      },
+
+      UPDATE_SCHEDULE(state, schedule){
+        state.schedule = schedule;
       },
 
       SET_NOTIFICATION(state, notification){
@@ -220,7 +224,7 @@ export function createStore(currentToken, currentUser) {
         mealPlanService.addMealToMealPlan(mealplanId, mealId).then(response =>{
          
           if(response.status === 201){
-            this.getMealPlans();
+            // this.getMealPlans();
           }
         })
           },
@@ -242,13 +246,26 @@ export function createStore(currentToken, currentUser) {
 
         mealService.addRecipeToMeal(mealId, recipeId).then(response =>{
          
-          if(response.status === 201){
-            this.getMeals();
-          }
         })
           },
 
-          addPlanToSchedule({})
+          removeMealFromPlan({commit}, {mealplanId, mealId}){
+            mealPlanService.removeMealFromPlan(mealplanId, mealId).then(response =>{
+              
+              this.getMealPlanById(mealplanId);
+            })
+          },
+
+          removeRecipeFromMeal({commit}, {mealId, recipeId}){
+            mealService.removeRecipeFromMeal(mealId, recipeId).then(response => {
+              this.actions.getMealById(mealId)
+            })
+          },
+
+          updateSchedule({commit}, schedule){
+            commit('UPDATE_SCHEDULE', schedule)
+          },
+          
 
     }
   });
