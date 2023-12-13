@@ -1,7 +1,7 @@
 <template>
   <div id="capstone-app" class="container">
     <header>
-      <h1>Meal Planner</h1>
+      <img src="public\melr.png">
     </header>
     <nav>
       <div id="nav" class="content">
@@ -20,12 +20,12 @@
     </main>
     <aside>
       <div class="content">
-        Sidebar/Info
       </div>
     </aside>
     <footer>
       <div class="content">
-        Application created by Alex Martin, Hannah Pham, and Greg Van Giezen
+        <p></p>
+        
       </div>
     </footer>
    
@@ -87,8 +87,14 @@
 
     header {
     grid-area: header;
-    background-color: #f69a00;
+    background-color: #ffffff;
     text-align: center;
+    border-bottom: 2px solid black;
+    }
+
+    
+    header > img {
+      height:100%;
     }
 
    #nav {
@@ -105,7 +111,7 @@
 
     main {
         grid-area: content;
-        background-color: #f9f5f0;
+        background-color: #95e0b7
         /* background-image: url("https://lh4.googleusercontent.com/Vrf5VUD-g3nJgSJc29YXKEJ7UomJhNi3qkXo6Cie6m-9Mq1GsluJJ6LC9_R2WCqd2_yAXN82MS9xhaTBV5n2OEQu485rPwFOiHdkh4F2ETeINj0Vwrl8e6loHOBy15d1n9L3CZ_8");
         background-repeat:repeat-y;
         background-size: 100%; */
@@ -125,8 +131,19 @@
         color: #ffffff;
     }
     nav, main, aside {
-        color: #74889a;
+        color:#00ff75;
     }
+
+    h1, h2 {
+  -webkit-text-stroke-width: 3px;
+  -webkit-text-stroke-color: black;
+    }
+
+  h3, h4 {
+    -webkit-text-stroke-width: 1px;
+  -webkit-text-stroke-color: black;
+  
+}
     header, footer, nav, main, aside {
         font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         font-size: 24px;

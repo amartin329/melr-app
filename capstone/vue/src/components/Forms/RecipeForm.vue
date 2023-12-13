@@ -1,22 +1,22 @@
 <template>
     <h1>Add New Recipe</h1>
-    <p>Current Recipes: <em>Note: This is a remnant of the PO mockup! User's recipes won't appear here.</em></p>
-    
-    <p v-for="userRecipe in recipes" v-bind:key="userRecipe.recipeName">{{ userRecipe.recipeName }}</p>
-  <form class="recipeForm">
+    <!-- <p>Current Recipes:</p>
+    <p v-for="userRecipe in recipes" v-bind:key="userRecipe.recipeName">{{ userRecipe.recipeName }}</p> -->
+  <form class="recipeForm" @submit.prevent="createRecipe">
     <div class="form-group">
         <label for="recipe-name">Recipe name:</label>
-        <input id="recipe-name" v-model="recipe.recipeName" type="text" class="form-control"/>
+        <input id="recipe-name" v-model="recipe.recipeName" type="text" class="form-control" required/>
     </div>
     <div class="form-group">
         <label for="prep-time">Prep time in minutes:</label>
-        <input id="prep-time" type="number" v-model="recipe.prepTime" class="form-control"/>
+        <input id="prep-time" type="number" v-model="recipe.prepTime" class="form-control" required/>
     </div>
     <div class="form-group">
         <label for="directions">Directions:</label>
-        <textarea id="directions" type="textarea" v-model="recipe.instruction" class="form-control"> </textarea>
+        <textarea id="directions" type="textarea" v-model="recipe.instruction" class="form-control" required> </textarea>
     </div>
-    <IngredientForm v-on:click.prevent/>
+    <!-- <IngredientForm v-on:click.prevent/> -->
+    <new-ingredient-form v-on:click.prevent></new-ingredient-form>
     <button v-on:click.prevent="testCreateRecipe(recipe)">Create Recipe</button>
   </form>
  
@@ -25,10 +25,13 @@
 
 <script>
 import IngredientForm from './IngredientForm.vue';
+import NewIngredientForm from './NewIngredientForm.vue';
 export default {
-  components: { IngredientForm },
+  components: { 
+  NewIngredientForm },
   data(){
     return{
+    
         recipe:{
             recipeName: "",
             instruction: "",

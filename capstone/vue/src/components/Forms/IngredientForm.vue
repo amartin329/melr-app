@@ -9,11 +9,12 @@
         </div>
     </div>
       <h3>Add ingredient:</h3>
-      <div v-for="(result, name) in userResults" v-bind:key="name" id="ingredientList">
-        <img v-bind:src="getImage(result.image)">
+      <div v-for="(result, name) in userResults" v-bind:key="name" class="pending-ingredients">
+        <div class="pending-ingredient">
+          <img v-bind:src="getImage(result.image)">
         {{ result.name }}
-        <label for="amount">
-            <input type="text" id="amount" placeholder="amount" v-model="this.result.amount">
+        <label :for="'amount-' + result.name">
+            <input type="text" :id="'amount-' + result.name" placeholder="amount" v-model="this.result.amount">
         </label>
         <label for="unit">
             <select name="units" id="units" v-model="this.result.unit">
@@ -25,6 +26,8 @@
             </select>
         </label>
         <button v-on:click="getIngredientInformation(result)">Add Ingredient to Recipe</button>
+        </div>
+       
       </div>
       
       <input type="text" v-model="this.userSearch" id="userSearch"/>
@@ -34,7 +37,7 @@
   </template>
   
   <script>
-import SpoonacularService from '../services/SpoonacularService';
+import SpoonacularService from '../../services/SpoonacularService';
   export default {
     props: ['ingredients'],
     data(){
@@ -117,7 +120,9 @@ import SpoonacularService from '../services/SpoonacularService';
   </script>
   
   <style scoped>
-    #ingredientList{
+    .pending-ingredient{
+      background-color: hotpink;
+      width: 1000px;
 
     }
   </style>
