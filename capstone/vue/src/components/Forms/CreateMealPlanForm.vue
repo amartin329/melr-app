@@ -1,9 +1,9 @@
 <template>
 
-  <form class="plan-form">
+  <form class="plan-form" @submit.prevent="createMealPlan">
     <div class="form-group">
         <label for="plan-name">Meal Plan Name:</label>
-        <input id="plan-name" v-model="newMealPlan.mealplanName" type="text" 
+        <input id="plan-name" v-model="newMealPlan.mealplanName" type="text" required
         class="form-control" placeholder="Meal Plan Name"/>
     </div>
     <h3>Meals:</h3>
@@ -24,7 +24,7 @@
             </div>
         </div>
     </div>
-    <button class="submit-form" v-on:click.prevent="createMealPlan">CREATE MEAL PLAN</button>
+    <button type="submit" class="submit-form">CREATE MEAL PLAN</button>
   </form>
  
 
@@ -63,6 +63,9 @@ export default {
     },
     // NOTE: SHOULD PROBABLY LOOP ON SERVER-SIDE TO MAKE THIS A TRANSACTION.
     createMealPlan(){
+        if(this.pendingMeals.length == 0){
+            return;
+        }
         this.$store.dispatch('createMealPlan', this.newMealPlan).then(response => {
       console.log("RESPONSE = " + response) 
             
