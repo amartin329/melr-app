@@ -19,5 +19,10 @@ export default{
 
     deleteRecipe(id){
         return axios.delete`/recipes/${id}`
+    },
+
+    addIngredientToRecipe(recipeId, ingredientId, msmId, quantity){
+        return axios.post(`/recipes/${recipeId}/modify/${ingredientId}`, null,
+        {params: {msmId, quantity}})
     }
 }

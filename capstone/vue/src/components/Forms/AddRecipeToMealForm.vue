@@ -34,15 +34,20 @@ export default {
             this.$store.dispatch('getRecipes')
         },
 
+        getCurrentMeal(mealId){
+          this.$store.dispatch('getMealById', mealId)
+        },
+
         addRecipeToMeal(mealId, recipeId){
             console.warn("CHECK OUT THESE PARAMETERS!" + mealId + " " + recipeId);
             this.$store.dispatch('addRecipeToMeal', {mealId: mealId, recipeId: recipeId})
+            this.getCurrentMeal(mealId);
             this.formIsVisible = !this.formIsVisible      
         },
 
     },
     created(){
-        this.getRecipes()
+        this.getCurrentMeal(this.mealId);
     },
 
     computed(){

@@ -5,6 +5,8 @@
       <!-- <router-link v-bind:key="ingredient.ingId"
       v-bind:to="{name: 'recipe-details', params: {id: recipe.recipeId}}"> -->
           <p>{{ ingredient.ingName }}</p>
+          <p>{{ ingredient.quantity }}</p>
+          <p>{{ ingredient.msmUnit }}</p>
       <!-- </router-link> -->
     </div>
     <h2>DIRECTIONS:</h2>
@@ -57,5 +59,9 @@
    margin-top:-250px;
    border: 5px solid black;
    border-radius: 5px;
+  }
+
+  p {
+    color:black;
   }
   </style>

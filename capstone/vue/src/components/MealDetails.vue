@@ -40,6 +40,7 @@ import AddRecipeToMealForm from './Forms/AddRecipeToMealForm.vue';
           removeRecipeFromMeal(mealId, recipeId){
             this.$store.dispatch('removeRecipeFromMeal', {mealId: mealId, recipeId: recipeId})
             this.toggleEdit();
+            this.getCurrentMeal(mealId);
           }
         //   toggleAddMeal() {
         //       this.addMealIsVisible = !this.addMealIsVisible

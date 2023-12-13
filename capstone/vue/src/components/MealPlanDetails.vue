@@ -39,6 +39,7 @@ export default {
         removeMealFromPlan(planId, mealId){
             this.$store.dispatch('removeMealFromPlan', {mealplanId: planId, mealId: mealId})
             this.toggleEdit();
+            this.getCurrentMealPlan(planId);
         }
 
     

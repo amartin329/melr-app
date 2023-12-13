@@ -207,6 +207,8 @@ public class JdbcRecipeDao implements RecipeDao {
         ingredient.setIngName(rs.getString("ing_name"));
         ingredient.setNutritionId(rs.getInt("nutrition_id"));
         ingredient.setNutrition(getNutritionForIngredient(rs.getInt("ing_id")));
+        ingredient.setMsmUnit(rs.getString("msm_unit"));
+        ingredient.setQuantity(rs.getDouble("quantity"));
         return ingredient;
     }
 
