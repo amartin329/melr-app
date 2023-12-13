@@ -5,7 +5,7 @@
         <div class="recipe" v-for="recipe in recipeStoreList" v-bind:key="recipe">
             <router-link v-bind:key="recipe.recipeId"
             v-bind:to="{name: 'recipe-details', params: {id: recipe.recipeId}}">
-            <p>RECIPE NAME: {{ recipe.recipeName }}</p>
+            <p>{{ recipe.recipeName }}</p>
       </router-link>
         </div>
      

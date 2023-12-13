@@ -11,7 +11,7 @@ public interface RecipeDao {
     Recipe getRecipeDetailsById(int recId);
     Recipe createRecipe(Recipe recipe);
     boolean updateRecipeInfo(Recipe recipe);
-    int addIngredientToRecipe(int recipeId, int ingId);
+    int addIngredientToRecipe(int recipeId, int ingId, int msmId, double quantity);
     int removeIngredientFromRecipe(int recipeId, int ingId);
     List<Ingredient> getIngredientListForRecipe(int recId);
     Nutrition getNutritionForIngredient(int ingId);

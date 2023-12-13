@@ -11,7 +11,7 @@
         <h2 >{{ pendingMeal.mealName }}</h2> <button class="remove" v-on:click.prevent="removeFromPending(pendingMeal.mealId)">X</button>
     </div>
    
-
+    
     <div class="form-group">
         <label for="meal-filter">Add a meal:</label>
         <input id="meal-filter" type="text" autocomplete="off"

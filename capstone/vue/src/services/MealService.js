@@ -18,12 +18,16 @@ export default{
     },
 
     deleteMeal(id){
-        return axios.delete`/meals/${id}`
+        return axios.delete(`/meals/${id}`)
     },
 
     addRecipeToMeal(mealId, recipeId){
         return axios.post(`/meals/${mealId}/modify/${recipeId}`, null, 
         {params: {mealId, recipeId}
     });
+    },
+
+    removeRecipeFromMeal(mealId, recipeId){
+        return axios.delete(`/meals/${mealId}/modify/${recipeId}`)
     }
 }
