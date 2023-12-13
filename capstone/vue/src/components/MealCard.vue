@@ -1,7 +1,6 @@
 <template>
-  <div class="card">
-    <h2>{{ recipe.recipeName }}</h2>
-    <img v-bind:src="recipe.picturePath" />
+  <div class="mealcard">
+    <h2>{{ meal.mealName }}</h2>        
   </div>
 </template>
 
@@ -9,7 +8,7 @@
 export default {
 
   props: {
-    recipe: { type: Object, required: true }
+    meal: { type: Object, required: true }
   }
 
 }
@@ -17,10 +16,11 @@ export default {
 
 <style>
 
-.card {  
+.mealcard {
+
   text-align: center;
   border: 2px solid black;
-  background-color:rgb(200,250, 400);
+  background-color: orange;
   border-radius: 10px;
   margin: 20px;
   padding: 10px;

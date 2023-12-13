@@ -1,5 +1,3 @@
-RecipeListView
-
 <template>
     <h1>{{ this.$store.state.user.username }}'s Recipes</h1>
     <router-link v-bind:to="{name: 'create-recipe'}"><p>Create New Recipe</p></router-link>
@@ -30,14 +28,6 @@ components: {recipeCard},
       this.recipes = response.data;
     })
   },
-
-// methods: {
-//   clickRecipeCard(){
-//     this.$router.push({name: 'recipe-details', params:{id:this.recipe.id}})
-//   }
-
-// }
-
 
 }
 </script>
