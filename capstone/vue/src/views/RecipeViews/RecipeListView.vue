@@ -29,14 +29,6 @@ components: {recipeCard},
     })
   },
 
-// methods: {
-//   clickRecipeCard(){
-//     this.$router.push({name: 'recipe-details', params:{id:this.recipe.id}})
-//   }
-
-// }
-
-
 }
 </script>
 
