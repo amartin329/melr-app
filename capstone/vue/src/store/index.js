@@ -224,7 +224,7 @@ export function createStore(currentToken, currentUser) {
         mealPlanService.addMealToMealPlan(mealplanId, mealId).then(response =>{
          
           if(response.status === 201){
-            this.getMealPlans();
+            // this.getMealPlans();
           }
         })
           },
@@ -246,15 +246,25 @@ export function createStore(currentToken, currentUser) {
 
         mealService.addRecipeToMeal(mealId, recipeId).then(response =>{
          
-          if(response.status === 201){
-            this.getMeals();
-          }
         })
+          },
+
+          removeMealFromPlan({commit}, {mealplanId, mealId}){
+            mealPlanService.removeMealFromPlan(mealplanId, mealId).then(response =>{
+              
+              this.getMealPlanById(mealplanId);
+            })
+          },
+
+          removeRecipeFromMeal({commit}, {mealId, recipeId}){
+            mealService.removeRecipeFromMeal(mealId, recipeId).then(response => {
+              this.actions.getMealById(mealId)
+            })
           },
 
           updateSchedule({commit}, schedule){
             commit('UPDATE_SCHEDULE', schedule)
-          }
+          },
           
 
     }

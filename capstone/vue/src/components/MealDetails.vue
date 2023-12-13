@@ -1,24 +1,31 @@
 <template>
     <h1>{{ this.$store.state.currentMeal.mealName}}</h1>
+
     <div class="recipe" v-for="recipe in this.$store.state.currentMeal.recipeList" v-bind:key="recipe.recipeId">
-      <router-link v-bind:key="recipe.recipeId"
+      <router-link v-if="!addRecipeIsVisible" v-bind:key="recipe.recipeId"
       v-bind:to="{name: 'recipe-details', params: {id: recipe.recipeId}}">
           <p>{{ recipe.recipeName }}</p>
       </router-link>
+      <div class="recipe-delete" v-else>
+        <p>{{ recipe.recipeName }}</p>
+        <button v-on:click.prevent="removeRecipeFromMeal(this.mealId, recipe.recipeId)">Remove Recipe</button>
+      </div>
     </div>
-    <!-- <addMealToPlanForm v-if="addMealIsVisible" class="popup"></addMealToPlanForm>
-    <button v-if="!addMealIsVisible" v-on:click.prevent="toggleAddMeal">Add Meal to Meal Plan</button>
-    <button v-if="addMealIsVisible" v-on:click.prevent="toggleAddMeal">Exit without saving</button>
-   -->
+    <add-recipe-to-meal-form v-if="addRecipeIsVisible" class="popup"></add-recipe-to-meal-form>
+    <button v-if="!addRecipeIsVisible" v-on:click.prevent="toggleEdit">Edit Meal</button>
+    <button v-if="addRecipeIsVisible" v-on:click.prevent="toggleEdit">Cancel</button>
+
   </template>
   
   <script>
+import AddRecipeToMealForm from './Forms/AddRecipeToMealForm.vue';
 
   
   export default {
+  components: { AddRecipeToMealForm },
       data() {
           return {
-              addMealIsVisible: false,
+              addRecipeIsVisible: false,
               mealId: this.$route.params.id
           };
       },
@@ -26,6 +33,14 @@
           getCurrentMeal(mealId) {
               this.$store.dispatch('getMealById', mealId);
           },
+          toggleEdit(){
+            this.addRecipeIsVisible = !this.addRecipeIsVisible;
+          },
+
+          removeRecipeFromMeal(mealId, recipeId){
+            this.$store.dispatch('removeRecipeFromMeal', {mealId: mealId, recipeId: recipeId})
+            this.toggleEdit();
+          }
         //   toggleAddMeal() {
         //       this.addMealIsVisible = !this.addMealIsVisible
         //   },
@@ -35,6 +50,7 @@
       created() {
           console.log(this.mealId);
           this.getCurrentMeal(this.mealId);
+          this.addRecipeIsVisible = false;
       }
       // props: ['mealPlan']
       ,

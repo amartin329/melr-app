@@ -1,6 +1,12 @@
 <!-- NOTE: THIS IS A MOCK-UP. 
     MUCH OF THIS WILL BE CHANGED WHEN DATABASE IS AVAILABLE. -->
     <template>
+      <h1>TODO: ADD PARAMS! TO SEVICE METHODS</h1>
+      <h1>addMealToMealPlan(mealplanId, mealId){
+        return axios.post(`/mealplans/${mealplanId}/modify/${mealId}`, null, 
+        {params: {mealplanId, mealId}
+    });
+    },</h1>
         <div>
             <div v-for="ingredient in recipeIngredients"
             v-bind:key="ingredient.id">

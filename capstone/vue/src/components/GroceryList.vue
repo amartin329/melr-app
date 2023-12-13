@@ -1,5 +1,9 @@
 <template>
-  <div class="ingredient" v-for="ingredient of this.ingredientsList" v-bind:key="ingredient.ingId">
+  <div v-if="this.ingredientsList.length == 0">
+    <h1>Your grocery list is looking mighty lonesome...</h1>
+    <h2>Add some meal plans to your schedule, and everything you need for them will auto-magically go here!</h2>
+  </div>
+  <div v-else class="ingredient" v-for="ingredient of this.ingredientsList" v-bind:key="ingredient.ingId">
     <p>{{ingredient.ingName}}</p>
   </div>
 </template>

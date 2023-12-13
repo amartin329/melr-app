@@ -1,7 +1,7 @@
 <template>
   <div id="capstone-app" class="container">
     <header>
-      <img src="public\melr.png">
+      <img src="resources\melr.png">
     </header>
     <nav>
       <div id="nav" class="content">
@@ -135,12 +135,12 @@
     }
 
     h1, h2 {
-  -webkit-text-stroke-width: 3px;
+  -webkit-text-stroke-width: 2.4px;
   -webkit-text-stroke-color: black;
     }
 
   h3, h4 {
-    -webkit-text-stroke-width: 1px;
+    -webkit-text-stroke-width: 1.3px;
   -webkit-text-stroke-color: black;
   
 }

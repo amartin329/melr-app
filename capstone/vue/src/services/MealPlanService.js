@@ -25,5 +25,9 @@ export default{
         return axios.post(`/mealplans/${mealplanId}/modify/${mealId}`, null, 
         {params: {mealplanId, mealId}
     });
+    },
+
+    removeMealFromPlan(mealplanId, mealId){
+        return axios.delete(`/mealplans/${mealplanId}/modify/${mealId}`)
     }
 }
