@@ -17,8 +17,7 @@ export default {
 
 <style>
 
-.card {
-  
+.card {  
   text-align: center;
   border: 2px solid black;
   background-color:rgb(200,250, 400);
