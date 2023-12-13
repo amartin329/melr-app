@@ -17,12 +17,12 @@ export function createStore(currentToken, currentUser) {
       meals: [],
       recipes: [],
       ingredients: [],
-      currentMealPlan: 
-      {
-      },
+      currentMealPlan: {},
       currentMeal: {},
       currentRecipe: {},
       currentIngredient:{},
+      pendingIngredients: [],
+      recipeIngredients: [],
       schedule:
       {
         sunday:{
@@ -251,7 +251,7 @@ export function createStore(currentToken, currentUser) {
 
           removeMealFromPlan({commit}, {mealplanId, mealId}){
             mealPlanService.removeMealFromPlan(mealplanId, mealId).then(response =>{
-              
+              //Check mealplanId
               this.getMealPlanById(mealplanId);
             })
           },
@@ -259,6 +259,12 @@ export function createStore(currentToken, currentUser) {
           removeRecipeFromMeal({commit}, {mealId, recipeId}){
             mealService.removeRecipeFromMeal(mealId, recipeId).then(response => {
               this.actions.getMealById(mealId)
+            })
+          },
+
+          addIngredientToRecipe({commit}, {recipeId, ingredientId, msmId, quantity}){
+            recipeService.addIngredientToRecipe(recipeId, ingredientId, msmId, quantity).then(response =>{
+              this.getRecipeById(recipeId);
             })
           },
 

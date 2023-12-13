@@ -12,16 +12,25 @@ public class Ingredient {
 
     private Nutrition nutrition;
 
+    private double quantity;
+    private int msmId;
+
+    private String msmUnit;
+
+
+
 
 
     public Ingredient() {}
 
-    public Ingredient(int ingId, int ingTypeId, int nutritionId, String ingName, Nutrition nutrition) {
+    public Ingredient(int ingId, int ingTypeId, int nutritionId, String ingName, Nutrition nutrition, double quantity, int msmId) {
         this.ingId = ingId;
         this.ingTypeId = ingTypeId;
         this.nutritionId = nutritionId;
         this.ingName = ingName;
         this.nutrition = nutrition;
+        this.quantity = quantity;
+        this.msmId = msmId;
     }
 
     public int getIngId() {
@@ -62,6 +71,30 @@ public class Ingredient {
 
     public void setNutrition(Nutrition nutrition) {
         this.nutrition = nutrition;
+    }
+
+    public double getQuantity() {
+        return quantity;
+    }
+
+    public void setQuantity(double quantity) {
+        this.quantity = quantity;
+    }
+
+    public int getMsmId() {
+        return msmId;
+    }
+
+    public void setMsmId(int msmId) {
+        this.msmId = msmId;
+    }
+
+    public String getMsmUnit() {
+        return msmUnit;
+    }
+
+    public void setMsmUnit(String msmUnit) {
+        this.msmUnit = msmUnit;
     }
 
     @Override

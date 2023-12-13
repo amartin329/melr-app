@@ -1,7 +1,7 @@
 <template>
   <div id="capstone-app" class="container">
     <header>
-      <img src="resources\melr.png">
+      <img src="assets/melr.png">
     </header>
     <nav>
       <div id="nav" class="content">
@@ -10,7 +10,7 @@
         <router-link v-bind:to="{name: 'meals'}">My Meals</router-link>
         <router-link v-bind:to="{name: 'plans'}">My Meal Plans</router-link>
         <router-link v-bind:to="{name: 'grocery-list'}">My Grocery List</router-link>
-        <router-link v-bind:to="{ name: 'logout' }" v-if="$store.state.token != ''">Logout</router-link>
+        <router-link v-bind:to="{ name: 'logout' }" v-if="this.$store.state.token != ''">Logout</router-link>
       </div>
     </nav>
     <main>
@@ -25,7 +25,6 @@
     <footer>
       <div class="content">
         <p></p>
-        
       </div>
     </footer>
    
@@ -94,7 +93,6 @@
 
     
     header > img {
-      height:100%;
     }
 
    #nav {

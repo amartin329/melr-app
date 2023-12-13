@@ -41,8 +41,7 @@ export default {
 
         addMealToPlan(planId, mealId){
             console.warn("CHECK OUT THESE PARAMETERS!" + planId + " " + mealId);
-            this.$store.dispatch('addMealToPlan', {mealplanId: planId, mealId: mealId})
-            this.$router.replace({ path: '/home' })        
+            this.$store.dispatch('addMealToPlan', {mealplanId: planId, mealId: mealId})   
         },
 
     },

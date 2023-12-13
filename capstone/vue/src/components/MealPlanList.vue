@@ -68,6 +68,7 @@
     }
   },
   created(){
+    // alert("Retrieving plans from Created");
     this.retrievePlans();
   },
     //   props: ['plans'],

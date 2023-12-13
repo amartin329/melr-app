@@ -5,6 +5,7 @@
   </div>
   <div v-else class="ingredient" v-for="ingredient of this.ingredientsList" v-bind:key="ingredient.ingId">
     <p>{{ingredient.ingName}}</p>
+    <p>{{ ingredient.quantity }}</p>
   </div>
 </template>
 

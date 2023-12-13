@@ -1,7 +1,5 @@
-<!-- NOTE: THIS IS A MOCK-UP. 
-    MUCH OF THIS WILL BE CHANGED WHEN DATABASE IS AVAILABLE. -->
     <template>
-      <h1>TODO: ADD PARAMS! TO SEVICE METHODS</h1>
+      <h1>TODO: ADD PARAMS! TO SERVICE METHODS</h1>
       <h1>addMealToMealPlan(mealplanId, mealId){
         return axios.post(`/mealplans/${mealplanId}/modify/${mealId}`, null, 
         {params: {mealplanId, mealId}
@@ -22,8 +20,8 @@
                 </div>
 
             </div>
-        <div class="pending-ingredients" v-if="pendingIngredients.length>0">
-            <div class="pending-ingredient" v-for="ingredient in pendingIngredients" v-bind:key="ingredient.id">
+        <div class="pending-ingredients" v-if="this.$store.state.pendingIngredients.length>0">
+            <div class="pending-ingredient" v-for="ingredient in this.$store.state.pendingIngredients" v-bind:key="ingredient.id">
                 <p>{{ ingredient.name }}</p>
                 <label :for="ingredient.id + '-amount'">Amount:
                     <input type="number" :id="ingredient.id + '-amount'" 
@@ -34,10 +32,16 @@
                     <select :id="ingredient.id + '-unit'"
                     v-model="ingredient.unit">
                     <option>------</option>
-                    <option>ounces</option>
-                    <option>grams</option>
-                    <option>pounds</option>
-                    <option>pieces</option>
+                    <option >ounces</option>
+                    <option >pounds</option>
+                    <option >grams</option>
+                    <option >fluid ounces</option>
+                    <option >teaspoons</option>
+                    <option >tablespoons</option>
+                    <option >cups</option>
+                    <option >pieces</option>
+                    <option >slices</option>
+                    <option >servings</option>
                 </select>
                 </label>
                 <p></p>
@@ -73,7 +77,7 @@ v-on:click.prevent="addIngredientToPending(result)">
     </select>
 </label> -->
 
-<button v-on:click="searchResults">Search for ingredient</button>
+<button v-on:click.prevent="searchResults">Search for ingredient</button>
 
 
 <!-- <button v-on:click="getIngredientInformation(result)">Add Ingredient to Recipe</button> -->
@@ -90,7 +94,7 @@ v-on:click.prevent="addIngredientToPending(result)">
         data(){
          return {
           userSearch: "",
-          pendingIngredients: [],
+          // pendingIngredients: [],
           userResults: [],
           result: 
             {
@@ -119,7 +123,10 @@ v-on:click.prevent="addIngredientToPending(result)">
             unit: "",
             unitLong: "",
             unitShort: ""
-          }
+          },
+          // unitToId:[
+          //   {unit: }
+          // ]
          } 
         },
         methods: {
@@ -151,15 +158,15 @@ v-on:click.prevent="addIngredientToPending(result)">
           },
 
           addIngredientToPending(ingredient){
-            if(!this.pendingIngredients.includes(ingredient)){
-                this.pendingIngredients.push(ingredient);
-        console.log(this.pendingIngredients)
+            if(!this.$store.state.pendingIngredients.includes(ingredient)){
+                this.$store.state.pendingIngredients.push(ingredient);
+        console.log(this.$store.state.pendingIngredients)
         console.log('Are ya seeing pendingMeals?')
             }
 
     },
         removeIngredientFromPending(id){
-            this.pendingIngredients = this.pendingIngredients.filter(pendIngredient => {
+            this.$store.state.pendingIngredients = this.$store.state.pendingIngredients.filter(pendIngredient => {
                 return pendIngredient.id !== id;
             })
         }
