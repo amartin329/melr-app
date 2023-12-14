@@ -25,13 +25,13 @@ public class MealController {
 
     @GetMapping()
     public List<Meal> getMeals() throws InterruptedException {
-        Thread.sleep(1000); //Simulated loading time
+//        Thread.sleep(1000); //Simulated loading time
         return mealService.getMeals();
     }
 
     @GetMapping("/{id}")
     public Meal getMealById(@PathVariable int id) throws InterruptedException {
-        Thread.sleep(1000); //Simulated loading time
+//        Thread.sleep(1000); //Simulated loading time
         Meal result = mealService.getMealById(id);
         if (result == null) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No mealPlan with that id.");

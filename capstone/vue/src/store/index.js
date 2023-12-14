@@ -4,6 +4,7 @@ import mealPlanService from '../services/MealPlanService';
 import mealService from '../services/MealService';
 import recipeService from '../services/RecipeService';
 import spoonacularService from '../services/SpoonacularService';
+import IngredientService from '../services/IngredientService';
 
 
 const NOTIFICATION_TIMEOUT = 5000;
@@ -93,6 +94,13 @@ export function createStore(currentToken, currentUser) {
       ADD_MEAL(state, meal){
         state.meals.push(meal);
       },
+      ADD_RECIPE(state, recipe){
+        state.recipes.push(recipe);
+      },
+
+      ADD_INGREDIENT(state, ingredient){
+        state.ingredients.push(ingredient);
+      },
 
       SET_MEALS(state, mealList){
         state.meals = mealList;
@@ -100,6 +108,10 @@ export function createStore(currentToken, currentUser) {
 
       SET_RECIPES(state, recipeList){
         state.recipes = recipeList;
+      },
+
+      SET_INGREDIENTS(state, ingredientsList){
+        state.ingredients = ingredientsList;
       },
 
       SET_CURRENTMEALPLAN(state, currentMealPlan){
@@ -180,6 +192,15 @@ export function createStore(currentToken, currentUser) {
         })
       },
 
+      getIngredients({commit}){
+        IngredientService.getIngredients().then(response => {
+          const ingredients = response.data;
+          commit('SET_INGREDIENTS', ingredients)
+        }).catch(error =>{
+          commit('SET_NOTIFICATION', `Error retrieving recipes from server.`)
+        })
+      },
+
       getMealPlanById({commit}, id){
         mealPlanService.getMealPlanById(id).then(response => {
           const responsePlan = response.data;
@@ -224,7 +245,7 @@ export function createStore(currentToken, currentUser) {
         mealPlanService.addMealToMealPlan(mealplanId, mealId).then(response =>{
          
           if(response.status === 201){
-            // this.getMealPlans();
+            this.getMealPlanById(mealplanId);
           }
         })
           },
@@ -250,6 +271,15 @@ export function createStore(currentToken, currentUser) {
           }
         })
       },
+      createIngredient({commit}, ingredient){
+        return IngredientService.addIngredient(ingredient).then(response =>{
+          if(response.status===201){
+            const newIngredient = response.data;
+            commit('ADD_INGREDIENT', newIngredient);
+            return newIngredient
+          }
+        })
+      },
 
       
       addRecipeToMeal({commit}, {mealId, recipeId}){
@@ -272,9 +302,15 @@ export function createStore(currentToken, currentUser) {
             })
           },
 
+          removeIngredientFromRecipe({commit}, {recipeId, ingId}){
+            recipeService.removeIngredientFromRecipe(recipeId, ingId).then(response =>{
+              // this.actions.getRecipeById(recipeId);
+            })
+          },
+
           addIngredientToRecipe({commit}, {recipeId, ingredientId, msmId, quantity}){
             recipeService.addIngredientToRecipe(recipeId, ingredientId, msmId, quantity).then(response =>{
-              this.getRecipeById(recipeId);
+              // this.actions.getRecipeById(recipeId);
             })
           },
 

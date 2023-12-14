@@ -61,7 +61,7 @@ public class JdbcIngredientDao implements IngredientDao {
     /** This method is to create an ingredient with its metadata and its nutritionList
      * corresponding to the POST operation at endpoint "/ingredients" in the IngredientController **/
     @Override
-    public Ingredient createIngredient(Ingredient ingredient) {
+        public Ingredient createIngredient(Ingredient ingredient) {
         String sql = "INSERT INTO ingredient (ing_type_id, ing_name, nutrition_id) " +
                 "VALUES (?, ?, ?) RETURNING ing_id;";
         try {

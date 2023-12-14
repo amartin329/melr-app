@@ -32,7 +32,7 @@ public class SpoonacularServiceImpl implements SpoonacularService{
         headers.set(API_KEY_NAME, API_KEY);
         try{
             ResponseEntity<SpoonacularModel> responseEntity = restTemplate.exchange(
-                    BASE_URL+" /search?sortDirection=asc&sort=calories&query={input}&offset=0&number=10&intolerances=none",
+                    BASE_URL+" /search?sortDirection=desc&sort=calories&query={input}&offset=0&number=25&intolerances=none",
                     HttpMethod.GET,
                     new HttpEntity<>(headers),
                     SpoonacularModel.class,

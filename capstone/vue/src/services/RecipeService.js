@@ -23,6 +23,10 @@ export default{
 
     addIngredientToRecipe(recipeId, ingredientId, msmId, quantity){
         return axios.post(`/recipes/${recipeId}/modify/${ingredientId}`, null,
-        {params: {msmId, quantity}})
+        {params: {msmId, quantity}});
+    },
+
+    removeIngredientFromRecipe(recipeId, ingId){
+        return axios.delete(`/recipes/${recipeId}/modify/${ingId}`)
     }
 }

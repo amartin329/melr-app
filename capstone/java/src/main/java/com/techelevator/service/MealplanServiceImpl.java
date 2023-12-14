@@ -30,13 +30,13 @@ public class MealplanServiceImpl implements MealplanService{
     }
 
     public List<Mealplan> getMealplans() throws InterruptedException {
-        Thread.sleep(1000); //Simulated loading time
+//        Thread.sleep(1000); //Simulated loading time
         return mealplanDao.listAllMealplans();
     }
 
 
     public Mealplan getMealplanById(int id) throws InterruptedException {
-        Thread.sleep(1000); //Simulated loading time
+//        Thread.sleep(1000); //Simulated loading time
         Mealplan result = mealplanDao.listMealplanById(id);
         if (result == null) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No mealplan with that id.");

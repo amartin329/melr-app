@@ -13,7 +13,7 @@ export default{
         try{
             return axios.get(`/ingredients/search/${search}`);
         }catch(error){
-            alert("Error: No response from Web API.")
+            window.alert("Error: No response from Web API.")
         }
         
     },

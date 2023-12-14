@@ -17,7 +17,7 @@
     </div>
     <!-- <IngredientForm v-on:click.prevent/> -->
     <!-- <new-ingredient-form v-on:click.prevent></new-ingredient-form> -->
-    <button v-on:click.prevent="testCreateRecipe(this.recipe)">Add ingredients to recipe</button>
+    <button v-on:click.prevent="testCreateRecipe(this.recipe)">Next</button>
   </form>
  
 

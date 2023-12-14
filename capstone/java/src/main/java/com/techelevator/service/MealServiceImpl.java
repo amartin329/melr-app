@@ -33,14 +33,14 @@ public class MealServiceImpl implements MealService {
 
 
     public List<Meal> getMeals() throws InterruptedException {
-        Thread.sleep(2000); //Simulated loading time
+//        Thread.sleep(2000); //Simulated loading time
 
         return mealDao.listAllMeals();
     }
 
 
     public Meal getMealById(int id) throws InterruptedException {
-        Thread.sleep(1000); //Simulated loading time
+//        Thread.sleep(1000); //Simulated loading time
 
         Meal result = mealDao.listMealById(id);
         if (result == null) {

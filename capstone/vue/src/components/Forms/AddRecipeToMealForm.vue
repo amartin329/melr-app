@@ -48,6 +48,7 @@ export default {
     },
     created(){
         this.getCurrentMeal(this.mealId);
+        this.getRecipes();
     },
 
     computed(){

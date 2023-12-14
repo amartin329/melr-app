@@ -38,10 +38,15 @@ export default {
             this.$forceUpdate(); 
    
     },
+        getCurrentPlan(planId){
+          this.$store.dispatch('getMealPlanById', planId)
+        },
 
         addMealToPlan(planId, mealId){
             console.warn("CHECK OUT THESE PARAMETERS!" + planId + " " + mealId);
             this.$store.dispatch('addMealToPlan', {mealplanId: planId, mealId: mealId})   
+            this.getCurrentPlan(planId);
+            this.formIsVisible = !this.formIsVisible;
         },
 
     },
