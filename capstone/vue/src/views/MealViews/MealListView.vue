@@ -1,6 +1,6 @@
 <template>
       <h1>{{ this.$store.state.user.username }}'s Meals</h1>
-      <div class="d-grid gap-2">
+      <div class="d-grid">
       <router-link class= "btn btn-primary" v-bind:to="{name: 'create-meal'}"><p>Create New Meal</p></router-link>
     </div>
 <div class="meal-list">

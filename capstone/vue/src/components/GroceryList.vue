@@ -1,14 +1,11 @@
 <template>
   <div v-if="this.ingredientsList.length == 0">
-    <h1>Your grocery list is looking mighty lonesome...</h1>
-    <h2>Add some meal plans to your schedule, and everything you need for them will auto-magically go here!</h2>
-  </div>
+    <h3>Add some meal plans to your schedule to get their ingredients!</h3>
+    </div>
   <div v-else class="ingredient" v-for="ingredient of this.ingredientsList" v-bind:key="ingredient.ingId">
     <p>{{ ingredient.quantity }} {{ingredient.msmUnit}} {{ingredient.ingName}}<span v-if="ingredient.ingName[-1]!='s'">s</span></p>
     <p></p>
   </div>
-  {{ this.ingredientsList }}
-
 </template>
 
 <script>

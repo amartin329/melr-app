@@ -1,7 +1,8 @@
 <template>
+      <h1>Welcome, {{ this.$store.state.user.username }}!</h1>
+      <h1>This week's plan:</h1>
   <div class="home">
-    <h1>Welcome, {{ this.$store.state.user.username }}!</h1>
-    <h1>This Week's Plan</h1>
+
     <schedule></schedule>
   </div>
 </template>

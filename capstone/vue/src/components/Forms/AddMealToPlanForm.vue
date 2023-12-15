@@ -5,9 +5,10 @@
   <form>
     <select id="meal-dropdown"
     v-model="this.addedMeal">
-    <option>--------</option>
+    <!-- <option>--------</option> -->
     <option v-for="meal in this.$store.state.meals" v-bind:key="meal.mealId"
-    :value="meal">
+    :value="meal"
+    class="form-select">
         {{meal.mealName}}
     </option>
   </select>

@@ -2,7 +2,7 @@
 
   <form class="plan-form" @submit.prevent="createMealPlan">
     <div class="form-group">
-        <label for="plan-name">Meal Plan Name:</label>
+        <label for="plan-name"><h2>Meal Plan Name:</h2></label>
         <input id="plan-name" v-model="newMealPlan.mealplanName" type="text" required
         class="form-control" placeholder="Meal Plan Name"/>
     </div>
@@ -10,16 +10,20 @@
     <div class="pending-meals" v-for="pendingMeal in pendingMeals" v-bind:key="pendingMeal.mealId">
         <h2 >{{ pendingMeal.mealName }}</h2> <button class="remove" v-on:click.prevent="removeFromPending(pendingMeal.mealId)">X</button>
     </div>
-   
+   <div class="add-meal">
+    <h4>Add New Meal</h4>
     <select id="meal-dropdown"
     v-model="this.chosenMeal">
-    <option>--------</option>
-    <option v-for="meal in this.$store.state.meals" v-bind:key="meal.mealId"
+      <!-- <option>--------</option> -->
+      <option v-for="meal in this.$store.state.meals" v-bind:key="meal.mealId"
     :value="meal">
         {{meal.mealName}}
     </option>
   </select>
   <button v-on:click.prevent="addMealToPending(this.chosenMeal)">Add Meal</button>
+
+   </div>
+    
 
   <!--TODO: FIX FILTER-->
     <!-- <div class="form-group">
@@ -207,6 +211,13 @@ select.form-control {
 
 .pending-meals > button{
     margin-left: 10px;
+}
+
+.add-meal{
+  /* display:flex; */
+  /* justify-content: space-between; */
+  margin-top: 50px;
+  margin-bottom: 50px;
 }
 
 </style>

@@ -1,7 +1,7 @@
 <template>
   <div id="capstone-app" class="container">
     <header>
-      <img src="../assets/melr.png">
+      <img src="./assets/melr.png">
     </header>
     
     <nav id="nav" class="d-flex align-items-start">
@@ -38,6 +38,9 @@
 @import url("https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.2/font/bootstrap-icons.min.css");
     body {
         margin: 0;
+    }
+    *{
+      /* font-family: 'Trebuchet MS', sans-serif; */
     }
 
     /* Add CSS Grid here  background colors: Header - #f69a00;  Nav - #f2ead2;  
@@ -128,7 +131,7 @@
     main {
         grid-area: content;
         background-color: white;
-        margin-top: 50px;
+        /* margin-top: 50px; */
         /* background-image: url("https://lh4.googleusercontent.com/Vrf5VUD-g3nJgSJc29YXKEJ7UomJhNi3qkXo6Cie6m-9Mq1GsluJJ6LC9_R2WCqd2_yAXN82MS9xhaTBV5n2OEQu485rPwFOiHdkh4F2ETeINj0Vwrl8e6loHOBy15d1n9L3CZ_8");
         background-repeat:repeat-y;
         background-size: 100%; */
@@ -148,7 +151,7 @@
         /* color: #ffffff; */
     }
     nav, main, aside {
-        color:#00ff75;
+        /* color:#00ff75; */
     }
 
     h1, h2 {
