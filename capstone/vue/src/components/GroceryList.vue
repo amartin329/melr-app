@@ -3,7 +3,7 @@
     <h3>Add some meal plans to your schedule to get their ingredients!</h3>
     </div>
   <div v-else class="ingredient" v-for="ingredient of this.ingredientsList" v-bind:key="ingredient.ingId">
-    <p>{{ ingredient.quantity }} {{ingredient.msmUnit}} {{ingredient.ingName}}<span v-if="ingredient.ingName[-1]!='s'">s</span></p>
+    <p>{{ ingredient.quantity }} {{ingredient.msmUnit}} {{ingredient.ingName}}</p>
     <p></p>
   </div>
 </template>
@@ -24,6 +24,41 @@ methods: {
     }
   }
 }
+
+if (this.storeSchedule.sunday?.mealList?.[0]?.recipeList?.[1]?.ingredientList) {
+  for (let ingredient of this.storeSchedule.sunday.mealList[0].recipeList[1].ingredientList) {
+    if (ingredient) {
+      this.ingredientsList.push(ingredient);
+    }
+  }
+}
+if (this.storeSchedule.sunday?.mealList?.[0]?.recipeList?.[2]?.ingredientList) {
+  for (let ingredient of this.storeSchedule.sunday.mealList[0].recipeList[2].ingredientList) {
+    if (ingredient) {
+      this.ingredientsList.push(ingredient);
+    }
+  }
+}
+if (this.storeSchedule.sunday?.mealList?.[1]?.recipeList?.[0]?.ingredientList) {
+  for (let ingredient of this.storeSchedule.sunday.mealList[1].recipeList[0].ingredientList) {
+    if (ingredient) {
+      this.ingredientsList.push(ingredient);
+    }
+  }
+}
+
+if (this.storeSchedule.sunday?.mealList?.[2]?.recipeList?.[0]?.ingredientList) {
+  for (let ingredient of this.storeSchedule.sunday.mealList[2].recipeList[0].ingredientList) {
+    if (ingredient) {
+      this.ingredientsList.push(ingredient);
+    }
+  }
+}
+
+
+
+
+
 
     if (this.storeSchedule.monday?.mealList?.[0]?.recipeList?.[0]?.ingredientList) {
   for (let ingredient of this.storeSchedule.monday.mealList[0].recipeList[0].ingredientList) {

@@ -1,5 +1,6 @@
     <template>
   <div>
+    
     <div v-for="ingredient in recipeIngredients" v-bind:key="ingredient.id">
       <!-- {{ ingredient }} -->
       <div class="ingredient-info">
@@ -240,7 +241,7 @@ export default {
                 ingredientId: createResponse.ingId,
                 msmId: this.ingredientDTO.msmId,
                 quantity: this.ingredientDTO.quantity
-                
+
               });
               }
               

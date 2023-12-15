@@ -17,7 +17,7 @@
     </div>
     <!-- <IngredientForm v-on:click.prevent/> -->
     <!-- <new-ingredient-form v-on:click.prevent></new-ingredient-form> -->
-    <button type="submit" class="submit-form">Next</button>
+    <button type="submit" class="submit-form">Go To Ingredients</button>
 
     <!-- <button v-on:click.prevent="testCreateRecipe(this.recipe)">Next</button> -->
   </form>
