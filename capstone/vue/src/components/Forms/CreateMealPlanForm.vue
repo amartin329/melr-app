@@ -11,8 +11,18 @@
         <h2 >{{ pendingMeal.mealName }}</h2> <button class="remove" v-on:click.prevent="removeFromPending(pendingMeal.mealId)">X</button>
     </div>
    
-    
-    <div class="form-group">
+    <select id="meal-dropdown"
+    v-model="this.chosenMeal">
+    <option>--------</option>
+    <option v-for="meal in this.$store.state.meals" v-bind:key="meal.mealId"
+    :value="meal">
+        {{meal.mealName}}
+    </option>
+  </select>
+  <button v-on:click.prevent="addMealToPending(this.chosenMeal)">Add Meal</button>
+
+  <!--TODO: FIX FILTER-->
+    <!-- <div class="form-group">
         <label for="meal-filter">Add a meal:</label>
         <input id="meal-filter" type="text" autocomplete="off"
         v-model="this.filter.mealName" class="form-control"
@@ -23,7 +33,9 @@
                 {{ meal.mealName }}
             </div>
         </div>
-    </div>
+    </div> -->
+
+
     <button type="submit" class="submit-form">CREATE MEAL PLAN</button>
   </form>
  
@@ -47,7 +59,7 @@ export default {
         },
         meals: [...this.$store.state.meals],
         pendingMeals: [],
-
+        chosenMeal:{}
     }
   },
   methods:{

@@ -16,6 +16,9 @@
         </div>
       </div>
     </div>
+
+
+    <!--PENDING INGREDIENTS-->
     <div
       class="pending-ingredients"
       v-if="this.$store.state.pendingIngredients.length > 0"
@@ -231,12 +234,18 @@ export default {
             this.ingredientDTO.ingName = response.data.name;
             this.ingredientDTO.quantity = response.data.amount;
             this.$store.dispatch('createIngredient', this.ingredientDTO).then(createResponse => {
-              this.$store.dispatch('addIngredientToRecipe', {
+              if(confirm("Are you sure you want to add this ingredient?")){
+                this.$store.dispatch('addIngredientToRecipe', {
                 recipeId: this.$store.state.currentRecipe.recipeId,
                 ingredientId: createResponse.ingId,
                 msmId: this.ingredientDTO.msmId,
                 quantity: this.ingredientDTO.quantity
+                
               });
+              }
+              
+              window.alert("Successfully added ingredient.");
+
               this.getCurrentRecipe(this.$store.state.currentRecipe.recipeId)
               
               // this.getCurrentRecipe(this.$store.state.currentRecipe.recipeId);

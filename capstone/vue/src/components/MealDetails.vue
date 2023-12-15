@@ -38,9 +38,15 @@ import AddRecipeToMealForm from './Forms/AddRecipeToMealForm.vue';
           },
 
           removeRecipeFromMeal(mealId, recipeId){
-            this.$store.dispatch('removeRecipeFromMeal', {mealId: mealId, recipeId: recipeId})
+            if(confirm("Are you sure you want to remove this recipe?")){
+
+            
+            this.$store.dispatch('removeRecipeFromMeal', {mealId: mealId, recipeId: recipeId}).then(response =>{
+              window.alert("Successfully removed recipe.")
             this.toggleEdit();
             this.getCurrentMeal(mealId);
+            });
+          }
           }
         //   toggleAddMeal() {
         //       this.addMealIsVisible = !this.addMealIsVisible

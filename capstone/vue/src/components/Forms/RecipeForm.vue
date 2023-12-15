@@ -2,7 +2,7 @@
     <h1>Add New Recipe</h1>
     <!-- <p>Current Recipes:</p>
     <p v-for="userRecipe in recipes" v-bind:key="userRecipe.recipeName">{{ userRecipe.recipeName }}</p> -->
-  <form class="recipeForm" @submit.prevent="createRecipe">
+  <form class="recipeForm" @submit.prevent="createRecipe(this.recipe)">
     <div class="form-group">
         <label for="recipe-name">Recipe name:</label>
         <input id="recipe-name" v-model="recipe.recipeName" type="text" class="form-control" required/>
@@ -17,7 +17,9 @@
     </div>
     <!-- <IngredientForm v-on:click.prevent/> -->
     <!-- <new-ingredient-form v-on:click.prevent></new-ingredient-form> -->
-    <button v-on:click.prevent="testCreateRecipe(this.recipe)">Next</button>
+    <button type="submit" class="submit-form">Next</button>
+
+    <!-- <button v-on:click.prevent="testCreateRecipe(this.recipe)">Next</button> -->
   </form>
  
 
@@ -43,7 +45,7 @@ export default {
     }
   },
   methods:{
-    testCreateRecipe(recipe){
+    createRecipe(recipe){
         this.$store.dispatch('createRecipe', recipe).then(response =>{
           if(response){
             alert("Recipe created!")

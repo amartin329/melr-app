@@ -8,14 +8,18 @@
     </router-link>
     <div class="meal-delete" v-else>
         <p>{{ meal.mealName }}</p>
-        <button v-on:click.prevent="removeMealFromPlan(this.planId, meal.mealId)">Remove Meal</button>
+        <button class="btn btn-primary" v-on:click.prevent="removeMealFromPlan(this.planId, meal.mealId)">Remove Meal</button>
     </div>
+  </div>
+
+  <div>
+
+    <h1 class="bi bi-cart3"></h1>
   </div>
   
   <addMealToPlanForm v-if="addMealIsVisible" class="popup"></addMealToPlanForm>
   <button v-if="!addMealIsVisible" v-on:click.prevent="toggleEdit">Edit Meal Plan</button>
   <button v-if="addMealIsVisible" v-on:click.prevent="toggleEdit">Cancel</button>
-
 </template>
 
 <script>
@@ -37,9 +41,20 @@ export default {
         },
 
         removeMealFromPlan(planId, mealId){
-            this.$store.dispatch('removeMealFromPlan', {mealplanId: planId, mealId: mealId})
-            this.toggleEdit();
+            if(confirm("Are you sure you want to delete this meal?")){
+                    
+            this.$store.dispatch('removeMealFromPlan', {mealplanId: planId, mealId: mealId}).then(response =>{
+                window.alert("Successfully removed meal.")
+                // window.alert(response.data)
+                this.toggleEdit();
+            
             this.getCurrentMealPlan(planId);
+            });
+            }
+
+     
+            
+
         }
 
     
@@ -68,5 +83,9 @@ export default {
  margin-top:-250px;
  border: 5px solid black;
  border-radius: 5px;
+}
+
+.p{
+    color:black;
 }
 </style>

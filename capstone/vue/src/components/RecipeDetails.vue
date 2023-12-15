@@ -56,6 +56,7 @@ import CreateIngredientForm from './Forms/CreateIngredientForm.vue';
           },
           removeIngredientFromRecipe(recipeId, ingId){
             this.$store.dispatch('removeIngredientFromRecipe', {recipeId: recipeId, ingId: ingId})
+            window.alert("Successfully removed ingredient.")
             this.toggleApiForm();
             this.getCurrentRecipe(recipeId);
           },

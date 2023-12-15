@@ -7,6 +7,8 @@
     <p>{{ ingredient.quantity }} {{ingredient.msmUnit}} {{ingredient.ingName}}<span v-if="ingredient.ingName[-1]!='s'">s</span></p>
     <p></p>
   </div>
+  {{ this.ingredientsList }}
+
 </template>
 
 <script>

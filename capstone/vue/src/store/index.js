@@ -291,19 +291,26 @@ export function createStore(currentToken, currentUser) {
 
           removeMealFromPlan({commit}, {mealplanId, mealId}){
             mealPlanService.removeMealFromPlan(mealplanId, mealId).then(response =>{
+              // window.alert("I'm in the store")
+              return response;
               //Check mealplanId
-              this.getMealPlanById(mealplanId);
-            })
+              // this.actions.getMealPlanById(mealplanId);
+            });
           },
 
           removeRecipeFromMeal({commit}, {mealId, recipeId}){
-            mealService.removeRecipeFromMeal(mealId, recipeId).then(response => {
-              this.actions.getMealById(mealId)
+            mealService.removeRecipeFromMeal(mealId, recipeId).then(response =>{
+              return response;
             })
+              // window.alert("We're in the store!")
+              // this.actions.getMealById(mealId)
+              // return response;
+   
           },
 
           removeIngredientFromRecipe({commit}, {recipeId, ingId}){
             recipeService.removeIngredientFromRecipe(recipeId, ingId).then(response =>{
+              // window.alert(response.data)
               // this.actions.getRecipeById(recipeId);
             })
           },

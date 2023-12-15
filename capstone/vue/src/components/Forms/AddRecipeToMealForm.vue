@@ -41,6 +41,8 @@ export default {
         addRecipeToMeal(mealId, recipeId){
             console.warn("CHECK OUT THESE PARAMETERS!" + mealId + " " + recipeId);
             this.$store.dispatch('addRecipeToMeal', {mealId: mealId, recipeId: recipeId})
+            window.alert("Successfully added recipe.")
+
             this.getCurrentMeal(mealId);
             this.formIsVisible = !this.formIsVisible      
         },

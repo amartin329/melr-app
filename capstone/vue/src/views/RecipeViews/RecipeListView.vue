@@ -1,11 +1,16 @@
 <template>
     <h1>{{ this.$store.state.user.username }}'s Recipes</h1>
-    <router-link v-bind:to="{name: 'create-recipe'}"><p>Create New Recipe</p></router-link>
-    <div id="recipeDetail" v-for="recipe in recipes" v-bind:key="recipe.id">
-    <router-link v-bind:key="recipe.id" v-bind:to="{name: 'recipe-details', params: {id: recipe.recipeId}}">
-      <recipe-card v-bind:recipe="recipe" />
-    </router-link>
-  </div>
+    <div class="d-grid gap-1">
+      <router-link class="btn btn-primary" v-bind:to="{name: 'create-recipe'}"><p>Create New Recipe</p></router-link>
+
+    </div>
+
+    <div class="recipe-list">
+      <div id="recipeDetail" v-for="recipe in recipes" v-bind:key="recipe.id" class="recipe-container">
+        <recipe-card v-bind:recipe="recipe" />
+      </div>
+    </div>
+
   <!--recipeList went here before I deleted it - Greg-->
 </template>
 
@@ -33,5 +38,20 @@ components: {recipeCard},
 </script>
 
 <style>
+.recipe-container{
+  width: 48%;
+  margin-bottom: 10px;
+ /* margin-bottom: 10px; */
+ /* display:flex;
+ flex-direction: column; */
+}
+
+.recipe-list{
+  display: flex;
+  flex-wrap:wrap;
+  justify-content: space-between;
+ 
+}
+
 
 </style>

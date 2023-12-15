@@ -1,16 +1,17 @@
 <template>
   <div id="capstone-app" class="container">
     <header>
-      <img src="assets/melr.png">
+      <img src="../assets/melr.png">
     </header>
-    <nav>
-      <div id="nav" class="content">
-        <router-link v-bind:to="{ name: 'home' }">Home</router-link>
-        <router-link v-bind:to="{name: 'recipes'}">My Recipes</router-link>
-        <router-link v-bind:to="{name: 'meals'}">My Meals</router-link>
-        <router-link v-bind:to="{name: 'plans'}">My Meal Plans</router-link>
-        <router-link v-bind:to="{name: 'grocery-list'}">My Grocery List</router-link>
-        <router-link v-bind:to="{ name: 'logout' }" v-if="this.$store.state.token != ''">Logout</router-link>
+    
+    <nav id="nav" class="d-flex align-items-start">
+      <div id="nav-list" class="nav nav-underline flex-column" aria-orientation="vertical">
+        <router-link class="nav-link" v-bind:to="{ name: 'home' }">Home</router-link>
+        <router-link class="nav-link" v-bind:to="{name: 'recipes'}">My Recipes</router-link>
+        <router-link class="nav-link" v-bind:to="{name: 'meals'}">My Meals</router-link>
+        <router-link class="nav-link" v-bind:to="{name: 'plans'}">My Meal Plans</router-link>
+        <router-link class="nav-link" v-bind:to="{name: 'grocery-list'}">My Grocery List</router-link>
+        <router-link class="nav-link" v-bind:to="{ name: 'logout' }" v-if="this.$store.state.token != ''">Logout</router-link>
       </div>
     </nav>
     <main>
@@ -24,7 +25,7 @@
     </aside>
     <footer>
       <div class="content">
-        <p></p>
+        <p>Application by Alex Martin, Hannah Pham, and Greg Van Giezen</p>
       </div>
     </footer>
    
@@ -33,6 +34,8 @@
 
 
 <style>
+@import 'bootstrap/dist/css/bootstrap.min.css';
+@import url("https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.2/font/bootstrap-icons.min.css");
     body {
         margin: 0;
     }
@@ -93,23 +96,39 @@
 
     
     header > img {
+
+      height: 100%;
     }
 
    #nav {
         grid-area: nav;        
-        background-color: #f2ead2;
+        background-color:  #95E0B7;
         display:flex;
-        flex-direction: column;
         height: 100%;
+        
+    }
+
+
+    #nav-list{
+      display:flex;
+      flex-direction: column;
+      justify-content: space-evenly;
+      align-content: space-around;
+     
     }
     #nav > a{
       padding: 10px;
     }
 
+    router-link {
+      /* text-decoration: none; */
+    }
+
 
     main {
         grid-area: content;
-        background-color: #95e0b7
+        background-color: white;
+        margin-top: 50px;
         /* background-image: url("https://lh4.googleusercontent.com/Vrf5VUD-g3nJgSJc29YXKEJ7UomJhNi3qkXo6Cie6m-9Mq1GsluJJ6LC9_R2WCqd2_yAXN82MS9xhaTBV5n2OEQu485rPwFOiHdkh4F2ETeINj0Vwrl8e6loHOBy15d1n9L3CZ_8");
         background-repeat:repeat-y;
         background-size: 100%; */
@@ -117,16 +136,16 @@
 
     aside {
         grid-area: side;        
-        background-color: #f2ead2;
+        background-color:  #95E0B7;
     }
 
     footer {
         grid-area: footer;
-        background-color: #331312;
+        background-color:  #95E0B7;
     }
 
     header, footer {
-        color: #ffffff;
+        /* color: #ffffff; */
     }
     nav, main, aside {
         color:#00ff75;
@@ -151,5 +170,21 @@
     div.content {
         text-align: center;
         padding-top: 20px;
+        /* display:flex;
+        flex-direction: row;
+        align-items: center; */
     }
+
+    .nav-link{
+      /* background-color: white; */
+      color: rgb(60, 60, 60);
+      text-align: center;
+      margin-top: 15px;
+      width:100%;
+      /* border: 3px solid black; */
+    }
+    /* #nav-list{
+      display: flex;
+      flex-direction: column;
+    } */
 </style>

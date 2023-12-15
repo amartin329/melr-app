@@ -1,39 +1,33 @@
 <template>
-  <div class="meal-plans">
+  <div class="schedule-container">
       <form>
-
+        <div class="meal-plans">
        <div v-for="day in storeSchedule"
-        v-bind:key="day.day">
-        <div class="day">
+        v-bind:key="day.day" class="card schedule" id="schedule">
+        <div class="card-body">
             <h4>{{ day.day }}</h4>  
             <router-link v-if="!isEditable" v-bind:to="{name: 'plan-details', params: {id: day.mealplanId}}">
-                <p>{{ day.mealplanName }}</p>
+                <h5 class="card-title">{{ day.mealplanName }}</h5>
             </router-link>
             <div v-else>
-                
             <select id="options" v-model="this.selectedPlan[day.day]"
             @change="setMealPlan(day.day, selectedPlan)">    
                     <option value="-" disabled>Pick A Meal Plan</option>
                     <option v-for="storePlan in storePlans" v-bind:key="storePlan.mealPlanId" :value="storePlan">{{ storePlan.mealplanName }}</option>
             </select>
-            
-
-
             </div>
            <!-- <add-meal-to-schedule class="add-plan" v-if="this.$store.state.formIsVisible"></add-meal-to-schedule> -->
-            
         </div>
     </div>
-    </form>
-    <div class="update-schedule-confirm" v-if="isEditable">
+    <div class="update-schedule-confirm card" id="schedule" v-if="isEditable">
             <button v-on:click.prevent="addPlanToSchedule(this.pendingSchedule)">Confirm Changes</button>
             <button v-on:click.prevent="flagEditable">Cancel</button>
         </div>
-        <div class="update-schedule" v-if="!isEditable">
+        <div class="update-schedule card" id="schedule" v-if="!isEditable">
             <button v-on:click.prevent="flagEditable">Edit Schedule</button>
         </div>
-        
-        
+    </div>
+    </form>    
     </div>
 </template>
 
@@ -159,26 +153,43 @@ export default {
 
 <style>
     .meal-plans{
-        /* display:flex;
-        flex-direction: row;
-        justify-content: space-between; */
+        display:flex;
+        /* flex-direction: column; */
+        justify-content: space-between;
+        flex-wrap: wrap;
+        width: 100%;
        
         /* display: grid;
         grid-template-areas:
         "meal-plan meal-plan meal-plan meal-plan"
         "space meal-plan meal-plan meal-plan"; */
-        grid-template-rows: 1fr 1fr;
-        grid-template-columns: 1fr 1fr 1fr 1fr;
+        /* grid-template-rows: 1fr 1fr;
+        grid-template-columns: 1fr 1fr 1fr 1fr; */
    
       
     }
-    .day{
+    /* .day{
         background-color: lightcoral;
         border: 3px black solid;
-        height:100%;
+        height:5%;
         grid-area: meal-plan;
         width: 99%;
       
+    } */
+
+    .schedule-container{
+      width: 100%;
+
+    }
+
+    #schedule{
+      width: 48%;
+      margin-bottom: 10px;
+
+      height: 115px;
+    }
+    form{
+      /* width: 100%; */
     }
 
 </style>
