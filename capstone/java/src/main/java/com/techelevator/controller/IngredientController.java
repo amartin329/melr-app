@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 import javax.validation.Valid;
+import java.security.Principal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,10 +24,10 @@ public class IngredientController {
     }
 
     @GetMapping()
-    public List<Ingredient> getIngredients() {
+    public List<Ingredient> getIngredients(Principal user) {
         List<Ingredient> allIngredients = new ArrayList<>();
         try{
-            allIngredients = ingredientService.getIngredients();
+            allIngredients = ingredientService.getIngredients(user);
             if (allIngredients == null) {
                 throw new ServiceException("Ingredients not found.");
             } else {
@@ -38,9 +39,9 @@ public class IngredientController {
     }
 
     @GetMapping("/{id}")
-    public Ingredient getIngredientById(@PathVariable int id) {
+    public Ingredient getIngredientById(@PathVariable int id, Principal user) {
         try{
-            Ingredient ingredient = ingredientService.getIngredientById(id);
+            Ingredient ingredient = ingredientService.getIngredientById(id, user);
             if (ingredient == null) {
                 throw new ServiceException("Ingredient id: " + id + " was not found.");
             } else {
@@ -52,9 +53,9 @@ public class IngredientController {
     }
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping()
-    public Ingredient addIngredient(@Valid @RequestBody Ingredient ingredient) {
+    public Ingredient addIngredient(@Valid @RequestBody Ingredient ingredient, Principal user) {
         try {
-            Ingredient newIngredient = ingredientService.createIngredient(ingredient);
+            Ingredient newIngredient = ingredientService.createIngredient(ingredient, user);
             if (newIngredient == null) {
                 throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Server error encountered.");
             } else {

@@ -15,6 +15,8 @@ public class Recipe {
 
     private List<Ingredient> ingredientList;
 
+    private int userId;
+
 
 
     public Recipe(){}
@@ -102,6 +104,14 @@ public class Recipe {
 
     public void setIngredientList(List<Ingredient> ingredientList) {
         this.ingredientList = ingredientList;
+    }
+
+    public int getUserId() {
+        return userId;
+    }
+
+    public void setUserId(int userId) {
+        this.userId = userId;
     }
 
     @Override

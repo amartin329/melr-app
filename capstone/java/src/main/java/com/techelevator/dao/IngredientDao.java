@@ -7,8 +7,8 @@ import com.techelevator.model.Recipe;
 import java.util.List;
 
 public interface IngredientDao {
-    List<Ingredient> listAllIngredients();
-    Ingredient getIngredientById(int ingId);
+    List<Ingredient> listAllIngredients(int userId);
+    Ingredient getIngredientById(int ingId, int userId);
     Ingredient createIngredient(Ingredient ingredient);
     boolean updateIngredient(Ingredient ingredient);
     Nutrition getNutritionForIngredient(int ingId);

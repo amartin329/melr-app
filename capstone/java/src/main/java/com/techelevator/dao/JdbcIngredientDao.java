@@ -24,11 +24,11 @@ public class JdbcIngredientDao implements IngredientDao {
     /** This method will list all the ingredients available for use for the authenticated user
      * corresponding to the GET operation at endpoint "/ingredients/" in the IngredientController **/
     @Override
-    public List<Ingredient> listAllIngredients() {
+    public List<Ingredient> listAllIngredients(int userId) {
         List<Ingredient> ingredients = new ArrayList<>();
-        String sql = "SELECT ing_id, ing_name, ing_type_id, nutrition_id FROM ingredient;";
+        String sql = "SELECT ing_id, ing_name, ing_type_id, nutrition_id FROM ingredient WHERE user_id = ?;";
         try {
-            SqlRowSet results = jdbcTemplate.queryForRowSet(sql);
+            SqlRowSet results = jdbcTemplate.queryForRowSet(sql, userId);
             while (results.next()) {
                 Ingredient ingredient = mapRowToIngredient(results);
                 ingredients.add(ingredient);
@@ -42,13 +42,13 @@ public class JdbcIngredientDao implements IngredientDao {
     /** This method will give details of an ingredient (by its id) including its metadata and its nutritionList
      * corresponding to the GET operation at endpoint "/ingredients/{id}" in the IngredientController **/
     @Override
-    public Ingredient getIngredientById(int ingId) {
+    public Ingredient getIngredientById(int ingId, int userId) {
         Ingredient ingredient = null;
         String sql = "SELECT ing_id, ing_type_id, ing_name, nutrition_id " +
                 "FROM ingredient " +
-                "WHERE ing_id = ?;";
+                "WHERE ing_id = ? AND user_id = ?;";
         try {
-            SqlRowSet results = jdbcTemplate.queryForRowSet(sql, ingId);
+            SqlRowSet results = jdbcTemplate.queryForRowSet(sql, ingId, userId);
             if (results.next()) {
                 ingredient = mapRowToIngredient(results);
             }
@@ -62,10 +62,10 @@ public class JdbcIngredientDao implements IngredientDao {
      * corresponding to the POST operation at endpoint "/ingredients" in the IngredientController **/
     @Override
         public Ingredient createIngredient(Ingredient ingredient) {
-        String sql = "INSERT INTO ingredient (ing_type_id, ing_name, nutrition_id) " +
-                "VALUES (?, ?, ?) RETURNING ing_id;";
+        String sql = "INSERT INTO ingredient (ing_type_id, ing_name, nutrition_id, user_id) " +
+                "VALUES (?, ?, ?, ?) RETURNING ing_id;";
         try {
-            int newId = jdbcTemplate.queryForObject(sql, int.class, ingredient.getIngTypeId(), ingredient.getIngName(), ingredient.getNutritionId());
+            int newId = jdbcTemplate.queryForObject(sql, int.class, ingredient.getIngTypeId(), ingredient.getIngName(), ingredient.getNutritionId(), ingredient.getUserId());
             ingredient.setIngId(newId);
             ingredient.setNutrition(getNutritionForIngredient(ingredient.getIngId()));
         } catch (CannotGetJdbcConnectionException e) {
@@ -73,7 +73,7 @@ public class JdbcIngredientDao implements IngredientDao {
         } catch (DataIntegrityViolationException e) {
             throw new DaoException("Data integrity violation", e);
         }
-        return getIngredientById(ingredient.getIngId());
+        return getIngredientById(ingredient.getIngId(), ingredient.getUserId());
     }
 
     /** This method is to update metadata of an ingredient corresponding to the PUT operation

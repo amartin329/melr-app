@@ -27,11 +27,11 @@ public class JdbcMealDao implements MealDao{
     /** This method will list all the meals available for use for the authenticated user
      * corresponding to the GET operation at endpoint "/meals/" in the controller **/
     @Override
-    public List<Meal> listAllMeals() {
+    public List<Meal> listAllMeals(int userId) {
         List<Meal> result = new ArrayList<>();
-        String sql = "SELECT meal_id, meal_name, meal_type_id FROM meal;";
+        String sql = "SELECT meal_id, meal_name, meal_type_id FROM meal WHERE user_id = ?;";
         try {
-            SqlRowSet rowSet = jdbcTemplate.queryForRowSet(sql);
+            SqlRowSet rowSet = jdbcTemplate.queryForRowSet(sql, userId);
             while (rowSet.next()) {
                 Meal meal = mapRowToMeal(rowSet);
                 meal.setRecipeList(listRecipesByMealId(meal.getMealId()));
@@ -46,9 +46,9 @@ public class JdbcMealDao implements MealDao{
     /** This method will give details of a meal (by its id) including its metadata and its recipeList
      * corresponding to the GET operation at endpoint "/meals/{id}" in the MealController **/
     @Override
-    public Meal listMealById(int meal_id) {
-        String sql = "SELECT meal_id, meal_name, meal_type_id FROM meal WHERE meal_id = ?;";
-        SqlRowSet rowSet = jdbcTemplate.queryForRowSet(sql, meal_id);
+    public Meal listMealById(int meal_id, int userId) {
+        String sql = "SELECT meal_id, meal_name, meal_type_id FROM meal WHERE meal_id = ? AND user_id = ?;";
+        SqlRowSet rowSet = jdbcTemplate.queryForRowSet(sql, meal_id, userId);
         if (rowSet.next()) {
             Meal meal = mapRowToMeal(rowSet);
             meal.setRecipeList(listRecipesByMealId(meal.getMealId()));
@@ -63,9 +63,9 @@ public class JdbcMealDao implements MealDao{
      * corresponding to the POST operation at endpoint "/meals" in the MealController **/
     @Override
     public Meal createMeal(Meal meal) {
-        String sql = "INSERT INTO meal (meal_name, meal_type_id) VALUES (?, ?) RETURNING meal_id;";
+        String sql = "INSERT INTO meal (meal_name, meal_type_id, user_id) VALUES (?, ?, ?) RETURNING meal_id;";
         try {
-            int newId = jdbcTemplate.queryForObject(sql, int.class, meal.getMealName(), meal.getMealTypeId());
+            int newId = jdbcTemplate.queryForObject(sql, int.class, meal.getMealName(), meal.getMealTypeId(), meal.getUserId());
             meal.setMealId(newId);
             meal.setRecipeList(listRecipesByMealId(meal.getMealId()));
             if(meal.getRecipeList() != null) {
@@ -84,13 +84,13 @@ public class JdbcMealDao implements MealDao{
 
     /** This method is first in the series of 3 methods for modifying a meal just to update metadata
      * of a meal corresponding to the PUT operation at endpoint "/meals/{id}" in the MealController**/
-    public boolean updateMealInfo(Meal meal){
+    public boolean updateMealInfo(Meal meal, int userId){
         int rowAffected;
         String sql = "UPDATE meal " +
                 "SET meal_type_id = ?, meal_name = ? " +
-                "WHERE meal_id = ?;";
+                "WHERE meal_id = ? AND user_id = ?;";
         try {
-            rowAffected = jdbcTemplate.update(sql, meal.getMealTypeId(), meal.getMealName(), meal.getMealId());
+            rowAffected = jdbcTemplate.update(sql, meal.getMealTypeId(), meal.getMealName(), meal.getMealId(), userId);
 
         } catch (CannotGetJdbcConnectionException e) {
             throw new DaoException("Unable to connect to server or database", e);

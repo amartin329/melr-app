@@ -7,11 +7,11 @@ import com.techelevator.model.Recipe;
 import java.util.List;
 
 public interface RecipeDao {
-    List<Recipe> listAllRecipes();
-    Recipe getRecipeDetailsById(int recId);
+    List<Recipe> listAllRecipes(int userId);
+    Recipe getRecipeDetailsById(int recId, int userId);
     Recipe createRecipe(Recipe recipe);
-    boolean updateRecipeInfo(Recipe recipe);
-    int addIngredientToRecipe(int recipeId, int ingId, int msmId, double quantity);
+    boolean updateRecipeInfo(Recipe recipe, int userId);
+    int addIngredientToRecipe(int recipeId, int ingId, int msmId, double quantity, int userId);
     int removeIngredientFromRecipe(int recipeId, int ingId);
     List<Ingredient> getIngredientListForRecipe(int recId);
     Nutrition getNutritionForIngredient(int ingId);

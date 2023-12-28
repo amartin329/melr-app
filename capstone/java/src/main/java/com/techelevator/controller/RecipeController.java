@@ -11,6 +11,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 import javax.management.ConstructorParameters;
 import javax.validation.Valid;
+import java.security.Principal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,10 +27,10 @@ public class RecipeController {
 
 
     @GetMapping()
-    public List<Recipe> getRecipes() {
+    public List<Recipe> getRecipes(Principal user) {
         List<Recipe> allRecipes = new ArrayList<>();
         try{
-            allRecipes = recipeService.getRecipes();
+            allRecipes = recipeService.getRecipes(user);
             if (allRecipes == null) {
                 throw new ServiceException("Recipes not found.");
             } else {
@@ -41,9 +42,9 @@ public class RecipeController {
     }
 
     @GetMapping("/{id}")
-    public Recipe getRecipeById(@PathVariable int id) {
+    public Recipe getRecipeById(@PathVariable int id, Principal user) {
         try{
-            Recipe recipe = recipeService.getRecipeById(id);
+            Recipe recipe = recipeService.getRecipeById(id, user);
             if (recipe == null) {
                 throw new ServiceException("Recipe id: " + id + " was not found.");
             } else {
@@ -57,23 +58,23 @@ public class RecipeController {
 
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping()
-    public Recipe createRecipe(@Valid @RequestBody Recipe recipe) {
+    public Recipe createRecipe(@Valid @RequestBody Recipe recipe, Principal user) {
         try {
-            Recipe newRecipe = recipeService.createRecipe(recipe);
+            Recipe newRecipe = recipeService.createRecipe(recipe, user);
             if (newRecipe == null) {
-                throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Server error encountered.");
+                throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Controller error: newRecipe == null");
             } else {
                 return newRecipe;
             }
         } catch(ServiceException e){
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Server error encountered.");
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Misc Controller error.");
         }
     }
 
 
     @PutMapping("/{id}")
-    public Recipe updateRecipeInfo(@PathVariable int id, @RequestBody Recipe updatedRecipe) {
-            Recipe newRecipe = recipeService.updateRecipeInfo(id, updatedRecipe);
+    public Recipe updateRecipeInfo(@PathVariable int id, @RequestBody Recipe updatedRecipe, Principal user) {
+            Recipe newRecipe = recipeService.updateRecipeInfo(id, updatedRecipe, user);
             if (newRecipe != null) {
                 return newRecipe;
             } else {
@@ -86,10 +87,10 @@ public class RecipeController {
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("/{recipeId}/modify/{ingId}") // need to add these in Postman ?msmId={msmId}&quantity={quantity} to make it work
     //@ResponseBody
-    public int addIngredientToRecipe(@PathVariable int recipeId, @PathVariable int ingId, @RequestParam("msmId") int msmId, @RequestParam("quantity") double quantity) {
+    public int addIngredientToRecipe(@PathVariable int recipeId, @PathVariable int ingId, @RequestParam("msmId") int msmId, @RequestParam("quantity") double quantity, Principal user) {
         int rowAffected;
         try {
-            rowAffected = recipeService.addIngredientToRecipe(recipeId, ingId, msmId, quantity);
+            rowAffected = recipeService.addIngredientToRecipe(recipeId, ingId, msmId, quantity, user);
             if (rowAffected == 0) {
                 throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "No row change. Expect 1.");
             } else {
@@ -101,10 +102,10 @@ public class RecipeController {
     }
 
     @DeleteMapping("/{recipeId}/modify/{ingId}")
-    public int removeIngredientFromRecipe(@PathVariable int recipeId, @PathVariable int ingId) {
+    public int removeIngredientFromRecipe(@PathVariable int recipeId, @PathVariable int ingId, Principal user) {
         int rowAffected;
         try {
-            rowAffected = recipeService.removeIngredientFromRecipe(recipeId, ingId);
+            rowAffected = recipeService.removeIngredientFromRecipe(recipeId, ingId, user);
             if (rowAffected == 0) {
                 throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "No row change. Expect 1.");
             } else {

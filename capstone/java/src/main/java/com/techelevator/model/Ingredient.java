@@ -17,6 +17,8 @@ public class Ingredient {
 
     private String msmUnit;
 
+    private int userId;
+
 
 
 
@@ -95,6 +97,14 @@ public class Ingredient {
 
     public void setMsmUnit(String msmUnit) {
         this.msmUnit = msmUnit;
+    }
+
+    public int getUserId() {
+        return userId;
+    }
+
+    public void setUserId(int userId) {
+        this.userId = userId;
     }
 
     @Override

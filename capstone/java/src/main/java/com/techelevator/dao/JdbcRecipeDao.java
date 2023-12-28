@@ -25,13 +25,13 @@ public class JdbcRecipeDao implements RecipeDao {
     /** This method will list all the recipes available for use for the authenticated user
      * corresponding to the GET operation at endpoint "/recipes" in the RecipeController **/
     @Override
-    public List<Recipe> listAllRecipes(){
+    public List<Recipe> listAllRecipes(int userId){
         List<Recipe> allRecipes = new ArrayList<>();
         String sql = "SELECT recipe_id, recipe_type_id, recipe_tag_id, recipe_name, picture_path, " +
                 "prep_time, instruction, favorited " +
-                "FROM recipe;";
+                "FROM recipe WHERE user_id = ?;";
         try {
-            SqlRowSet results = jdbcTemplate.queryForRowSet(sql);
+            SqlRowSet results = jdbcTemplate.queryForRowSet(sql, userId);
             while (results.next()) {
                 Recipe recipe = mapRowToRecipe(results);
                 recipe.setIngredientList(getIngredientListForRecipe(recipe.getRecipeId()));
@@ -47,14 +47,14 @@ public class JdbcRecipeDao implements RecipeDao {
     /** This method will give details of a recipe (by its id) including its metadata and its ingredientList
      * corresponding to the GET operation at endpoint "/recipes/{id}" in the RecipeController **/
     @Override
-    public Recipe getRecipeDetailsById(int recId){
+    public Recipe getRecipeDetailsById(int recId, int userId){
         Recipe recipe = new Recipe();
         String sql = "SELECT recipe_id, recipe_type_id, recipe_tag_id, recipe_name, picture_path, " +
                 "prep_time, instruction, favorited " +
                 "FROM recipe " +
-                "WHERE recipe_id = ?;";
+                "WHERE recipe_id = ? AND user_id = ?;";
         try {
-            SqlRowSet results = jdbcTemplate.queryForRowSet(sql, recId);
+            SqlRowSet results = jdbcTemplate.queryForRowSet(sql, recId, userId);
             if (results.next()) {
                 recipe = mapRowToRecipe(results);
                 recipe.setIngredientList(getIngredientListForRecipe(recipe.getRecipeId()));
@@ -69,13 +69,13 @@ public class JdbcRecipeDao implements RecipeDao {
      * corresponding to the POST operation at endpoint "/recipes" in the RecipeController **/
     @Override
     public Recipe createRecipe(Recipe recipe){
-        String sql = "INSERT INTO recipe (recipe_type_id, recipe_tag_id, recipe_name, picture_path, prep_time, instruction, favorited) "
-                + "VALUES (?, ?, ?, ?, ?, ?, ?) RETURNING recipe_id;";
+        String sql = "INSERT INTO recipe (recipe_type_id, recipe_tag_id, recipe_name, picture_path, prep_time, instruction, favorited, user_id) "
+                + "VALUES (?, ?, ?, ?, ?, ?, ?, ?) RETURNING recipe_id;";
         try {
             int newId = jdbcTemplate.queryForObject(sql, int.class, recipe.getRecipeTypeId(), recipe.getRecipeTagId(), recipe.getRecipeName(),
-                    recipe.getPicturePath(), recipe.getPrepTime(), recipe.getInstruction(), recipe.isFavorited());
+                    recipe.getPicturePath(), recipe.getPrepTime(), recipe.getInstruction(), recipe.isFavorited(), recipe.getUserId());
             recipe.setRecipeId(newId);
-            recipe.setIngredientList(getIngredientListForRecipe(recipe.getRecipeId()));
+//            recipe.setIngredientList(getIngredientListForRecipe(recipe.getRecipeId()));
 //            if(recipe.getIngredientList() != null) {
 //                for (Ingredient ingredient : recipe.getIngredientList()) {
 //                    ingredient = ingredientDao.createIngredient(ingredient);
@@ -87,20 +87,20 @@ public class JdbcRecipeDao implements RecipeDao {
         } catch (DataIntegrityViolationException e) {
             throw new DaoException("Data integrity violation", e);
         }
-        return getRecipeDetailsById(recipe.getRecipeId());
+        return getRecipeDetailsById(recipe.getRecipeId(), recipe.getUserId());
     }
 
 
     /** This method is first in the series of 3 methods for modifying a recipe, just to update metadata
      * of a recipe corresponding to the PUT operation at endpoint "/recipes/{id}" in the RecipeController**/
-    public boolean updateRecipeInfo(Recipe recipe){
+    public boolean updateRecipeInfo(Recipe recipe, int userId){
         int rowAffected;
         String sql = "UPDATE recipe " +
                 "SET recipe_type_id = ?, recipe_tag_id = ?, recipe_name = ?, picture_path = ?, prep_time = ?, instruction = ?, favorited = ? " +
-                "WHERE recipe_id = ?;";
+                "WHERE recipe_id = ? AND user_id = ?;";
         try {
             rowAffected = jdbcTemplate.update(sql, recipe.getRecipeTypeId(), recipe.getRecipeTagId(), recipe.getRecipeName(),
-                    recipe.getPicturePath(), recipe.getPrepTime(), recipe.getInstruction(), recipe.isFavorited(), recipe.getRecipeId());
+                    recipe.getPicturePath(), recipe.getPrepTime(), recipe.getInstruction(), recipe.isFavorited(), recipe.getRecipeId(), userId);
             recipe.setIngredientList(getIngredientListForRecipe(recipe.getRecipeId()));
         } catch (CannotGetJdbcConnectionException e) {
             throw new DaoException("Unable to connect to server or database", e);
@@ -117,12 +117,12 @@ public class JdbcRecipeDao implements RecipeDao {
      * Here the quantity and the measurement unit are put in as params, that means when working with Postman we should add these params in the request
      * like this "/recipes/{id}/modify/{id}?msmId={msmId}&quantity={quantity}". They can be changed at the front end to what user likes.
      * It's also a supporting method for creating recipe**/
-    public int addIngredientToRecipe(int recipeId, int ingId, int msmId, double quantity) {
+    public int addIngredientToRecipe(int recipeId, int ingId, int msmId, double quantity, int userId) {
         int rowsAffected;
         String sql = "INSERT INTO recipe_ing (recipe_id, ing_id, msm_id, quantity) VALUES (?, ?, ?, ?);";
         try {
             rowsAffected = jdbcTemplate.update(sql, recipeId, ingId, msmId, quantity);
-            getRecipeDetailsById(recipeId).setIngredientList(getIngredientListForRecipe(recipeId));
+            getRecipeDetailsById(recipeId, userId).setIngredientList(getIngredientListForRecipe(recipeId));
         } catch (CannotGetJdbcConnectionException e) {
             throw new DaoException("Unable to connect to server or database", e);
         } catch (DataIntegrityViolationException e) {
