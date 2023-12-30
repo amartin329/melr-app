@@ -65,7 +65,9 @@ public class JdbcIngredientDao implements IngredientDao {
         String sql = "INSERT INTO ingredient (ing_type_id, ing_name, nutrition_id, user_id) " +
                 "VALUES (?, ?, ?, ?) RETURNING ing_id;";
         try {
+            System.out.printf("TYPEID: " + ingredient.getIngTypeId(), " NAME: " + ingredient.getIngName(), "NUTRITIONID: " + ingredient.getNutritionId(), " USERID: " + ingredient.getUserId());
             int newId = jdbcTemplate.queryForObject(sql, int.class, ingredient.getIngTypeId(), ingredient.getIngName(), ingredient.getNutritionId(), ingredient.getUserId());
+            System.out.println("We made it!");
             ingredient.setIngId(newId);
             ingredient.setNutrition(getNutritionForIngredient(ingredient.getIngId()));
         } catch (CannotGetJdbcConnectionException e) {

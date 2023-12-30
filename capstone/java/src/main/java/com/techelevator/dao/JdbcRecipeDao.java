@@ -122,7 +122,7 @@ public class JdbcRecipeDao implements RecipeDao {
         String sql = "INSERT INTO recipe_ing (recipe_id, ing_id, msm_id, quantity) VALUES (?, ?, ?, ?);";
         try {
             rowsAffected = jdbcTemplate.update(sql, recipeId, ingId, msmId, quantity);
-            getRecipeDetailsById(recipeId, userId).setIngredientList(getIngredientListForRecipe(recipeId));
+//            getRecipeDetailsById(recipeId, userId).setIngredientList(getIngredientListForRecipe(recipeId));
         } catch (CannotGetJdbcConnectionException e) {
             throw new DaoException("Unable to connect to server or database", e);
         } catch (DataIntegrityViolationException e) {
