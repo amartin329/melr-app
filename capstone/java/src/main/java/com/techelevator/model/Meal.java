@@ -10,15 +10,17 @@ public class Meal {
 
     private List<Recipe> recipeList;
 
+    private int userId;
 
 
     public Meal() {}
 
-    public Meal(int mealId, int mealTypeId, String mealName, List<Recipe> recipeList) {
+    public Meal(int mealId, int mealTypeId, String mealName, List<Recipe> recipeList, int userId) {
         this.mealId = mealId;
         this.mealTypeId = mealTypeId;
         this.mealName = mealName;
         this.recipeList = recipeList;
+        this.userId = userId;
     }
 
     public Meal(int mealId, int mealTypeId, String mealName) {
@@ -57,6 +59,14 @@ public class Meal {
 
     public void setRecipeList(List<Recipe> recipeList) {
         this.recipeList = recipeList;
+    }
+
+    public int getUserId() {
+        return userId;
+    }
+
+    public void setUserId(int userId) {
+        this.userId = userId;
     }
 
     @Override

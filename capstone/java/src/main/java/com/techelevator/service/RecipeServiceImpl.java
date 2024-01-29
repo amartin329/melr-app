@@ -6,10 +6,12 @@ import com.techelevator.exception.DaoException;
 import com.techelevator.exception.ServiceException;
 import com.techelevator.model.Mealplan;
 import com.techelevator.model.Recipe;
+import com.techelevator.model.User;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.security.Principal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -31,23 +33,22 @@ public class RecipeServiceImpl implements RecipeService {
 
     }
 
-    public List<Recipe> getRecipes() {
-        List<Recipe> allRecipes = new ArrayList<>();
+    public List<Recipe> getRecipes(Principal user) {
+        User authUser = userDao.getUserByUsername(user.getName());
+        int userId = authUser.getId();
         try{
-            allRecipes = recipeDao.listAllRecipes();
-            if (allRecipes == null) {
-                throw new ServiceException("Recipes not found.");
-            } else {
-                return allRecipes;
-            }
+           return recipeDao.listAllRecipes(userId);
+
         } catch(DaoException e) {
             throw new ServiceException("An error has occurred: " + e.getMessage());
         }
     }
 
-    public Recipe getRecipeById(int id) {
+    public Recipe getRecipeById(int id, Principal user) {
         try{
-            Recipe recipe = recipeDao.getRecipeDetailsById(id);
+            User authUser = userDao.getUserByUsername(user.getName());
+            int userId = authUser.getId();
+            Recipe recipe = recipeDao.getRecipeDetailsById(id, userId);
             if (recipe == null) {
                 throw new ServiceException("Recipe id: " + id + " was not found.");
             } else {
@@ -58,8 +59,10 @@ public class RecipeServiceImpl implements RecipeService {
         }
     }
 
-    public Recipe createRecipe(Recipe recipe) {
+    public Recipe createRecipe(Recipe recipe, Principal user) {
         try {
+            User authUser = userDao.getUserByUsername(user.getName());
+            recipe.setUserId(authUser.getId());
             return recipeDao.createRecipe(recipe);
         } catch (DaoException e) {
             throw new ServiceException("An error has occurred: " + e.getMessage());
@@ -67,9 +70,11 @@ public class RecipeServiceImpl implements RecipeService {
     }
 
 
-    public Recipe updateRecipeInfo(int id, Recipe updatedRecipe) {
+    public Recipe updateRecipeInfo(int id, Recipe updatedRecipe, Principal user) {
         updatedRecipe.setRecipeId(id);
-            if(recipeDao.updateRecipeInfo(updatedRecipe)){
+        User authUser = userDao.getUserByUsername(user.getName());
+        int userId = authUser.getId();
+            if(recipeDao.updateRecipeInfo(updatedRecipe, userId)){
                 return updatedRecipe;
             } else {
                 throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Recipe not found to update.");
@@ -77,17 +82,32 @@ public class RecipeServiceImpl implements RecipeService {
     }
 
 
-    public int addIngredientToRecipe(int recipeId, int ingId, int msmId, double quantity) {
+    public int addIngredientToRecipe(int recipeId, int ingId, int msmId, double quantity, Principal user) {
         try {
-            return recipeDao.addIngredientToRecipe(recipeId, ingId, msmId, quantity);
+            User authUser = userDao.getUserByUsername(user.getName());
+            int userId = authUser.getId();
+            Recipe result = recipeDao.getRecipeDetailsById(recipeId, userId);
+            if(result !=null){
+                return recipeDao.addIngredientToRecipe(recipeId, ingId, msmId, quantity, userId);
+            }else{
+                throw new DaoException("Error: Cannot edit recipe.");
+            }
         } catch (DaoException e) {
             throw new ServiceException("An error has occurred: " + e.getMessage());
         }
     }
 
-    public int removeIngredientFromRecipe(int recipeId, int ingId) {
+    public int removeIngredientFromRecipe(int recipeId, int ingId, Principal user) {
         try {
-            return recipeDao.removeIngredientFromRecipe(recipeId, ingId);
+            User authUser = userDao.getUserByUsername(user.getName());
+            int userId = authUser.getId();
+            Recipe result = recipeDao.getRecipeDetailsById(recipeId, userId);
+            if(result!=null){
+                return recipeDao.removeIngredientFromRecipe(recipeId, ingId);
+
+            }else{
+                throw new DaoException("Error: Cannot edit recipe.");
+            }
         } catch (DaoException e) {
             throw new ServiceException("An error has occurred: " + e.getMessage());
         }

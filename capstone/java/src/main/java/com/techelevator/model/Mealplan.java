@@ -12,13 +12,16 @@ public class Mealplan {
 
     private List<Meal> mealList;
 
+    private int userId;
+
     public Mealplan(){}
 
-    public Mealplan(int mealplanId, int mealplanTypeId, String mealplanName, List<Meal> mealList) {
+    public Mealplan(int mealplanId, int mealplanTypeId, String mealplanName, List<Meal> mealList, int userId) {
         this.mealplanId = mealplanId;
         this.mealplanTypeId = mealplanTypeId;
         this.mealplanName = mealplanName;
         this.mealList = mealList;
+        this.userId = userId;
     }
 
     public Mealplan(int mealplanId, int mealplanTypeId, String mealplanName) {
@@ -57,6 +60,14 @@ public class Mealplan {
 
     public void setMealList(List<Meal> mealList) {
         this.mealList = mealList;
+    }
+
+    public int getUserId() {
+        return userId;
+    }
+
+    public void setUserId(int userId) {
+        this.userId = userId;
     }
 
     @Override
