@@ -6,10 +6,10 @@ import java.util.List;
 
 public interface MealplanDao {
 
-    List<Mealplan> listAllMealplans(int userId);
-    Mealplan listMealplanById(int mealplan_id, int userId);
+    List<Mealplan> listAllMealplans();
+    Mealplan listMealplanById(int mealplan_id);
     Mealplan createMealplan(Mealplan mealplan);
-    boolean updateMealplanInfo(Mealplan mealplan, int userId);
+    boolean updateMealplanInfo(Mealplan mealplan);
     int addMealToMealplan(int mealplanId, int mealId);
     int removeMealFromMealplan(int mealplanId, int mealId);
 

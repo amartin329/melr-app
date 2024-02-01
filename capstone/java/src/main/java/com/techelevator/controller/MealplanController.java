@@ -8,7 +8,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 import javax.validation.Valid;
-import java.security.Principal;
 import java.util.List;
 
 @RestController
@@ -23,15 +22,15 @@ public class MealplanController {
 
 
     @GetMapping()
-    public List<Mealplan> getMealPlans(Principal user) throws InterruptedException {
+    public List<Mealplan> getMealPlans() throws InterruptedException {
 //        Thread.sleep(1000); //Simulated loading time
-        return mealplanService.getMealplans(user);
+        return mealplanService.getMealplans();
     }
 
     @GetMapping("/{id}")
-    public Mealplan getMealplanById(@PathVariable int id, Principal user) throws InterruptedException {
+    public Mealplan getMealplanById(@PathVariable int id) throws InterruptedException {
 //        Thread.sleep(1000); //Simulated loading time
-        Mealplan result = mealplanService.getMealplanById(id, user);
+        Mealplan result = mealplanService.getMealplanById(id);
         if (result == null) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No mealPlan with that id.");
         } else {
@@ -41,9 +40,9 @@ public class MealplanController {
 
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping()
-    public Mealplan createMealplan(@Valid @RequestBody Mealplan mealplan, Principal user) {
+    public Mealplan createMealplan(@Valid @RequestBody Mealplan mealplan) {
         try {
-            Mealplan newMealplan = mealplanService.createMealplan(mealplan, user);
+            Mealplan newMealplan = mealplanService.createMealplan(mealplan);
             if (newMealplan == null) {
                 throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Server error encountered.");
             } else {
@@ -55,8 +54,8 @@ public class MealplanController {
     }
 
     @PutMapping("/{id}")
-    public Mealplan updateMealplanInfo(@PathVariable int id, @RequestBody Mealplan mealplan, Principal user) {
-            Mealplan newMealplan = mealplanService.updateMealplanInfo(id, mealplan, user);
+    public Mealplan updateMealplanInfo(@PathVariable int id, @RequestBody Mealplan mealplan) {
+            Mealplan newMealplan = mealplanService.updateMealplanInfo(id, mealplan);
             if (newMealplan != null) {
                 return newMealplan;
             } else {
@@ -68,10 +67,10 @@ public class MealplanController {
 
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("/{mealplanId}/modify/{mealId}")
-    public int addMealToMealplan(@PathVariable int mealplanId, @PathVariable int mealId, Principal user) {
+    public int addMealToMealplan(@PathVariable int mealplanId, @PathVariable int mealId) {
         int rowAffected;
         try {
-             rowAffected = mealplanService.addMealToMealplan(mealplanId, mealId, user);
+             rowAffected = mealplanService.addMealToMealplan(mealplanId, mealId);
             if (rowAffected == 0) {
                 throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "No row change. Expect 1.");
             } else {
@@ -83,10 +82,10 @@ public class MealplanController {
     }
 
     @DeleteMapping("/{mealplanId}/modify/{mealId}")
-    public int removeMealFromMealplan(@PathVariable int mealplanId, @PathVariable int mealId, Principal user) {
+    public int removeMealFromMealplan(@PathVariable int mealplanId, @PathVariable int mealId) {
         int rowAffected;
         try {
-            rowAffected = mealplanService.removeMealFromMealplan(mealplanId, mealId, user);
+            rowAffected = mealplanService.removeMealFromMealplan(mealplanId, mealId);
             if (rowAffected == 0) {
                 throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "No row change. Expect 1.");
             } else {

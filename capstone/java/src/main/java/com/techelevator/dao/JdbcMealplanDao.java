@@ -30,11 +30,11 @@ public JdbcMealplanDao(JdbcTemplate jdbcTemplate, MealDao mealDao, RecipeDao rec
     /** This method will list all the mealplans available for use for the authenticated user
      * corresponding to the GET operation at endpoint "/mealplans/" in the MealplanController **/
     @Override
-    public List<Mealplan> listAllMealplans(int userId) {
+    public List<Mealplan> listAllMealplans() {
         List<Mealplan> mealplans = new ArrayList<>();
-        String sql = "SELECT mealplan_id, mealplan_name, mealplan_type_id FROM mealplan WHERE user_id = ?;";
+        String sql = "SELECT mealplan_id, mealplan_name, mealplan_type_id FROM mealplan;";
         try {
-            SqlRowSet rowSet = jdbcTemplate.queryForRowSet(sql, userId);
+            SqlRowSet rowSet = jdbcTemplate.queryForRowSet(sql);
             while (rowSet.next()) {
                 Mealplan mealplan = mapRowToMealplan(rowSet);
                 mealplan.setMealList(getMealsForMealplanId(mealplan.getMealplanId()));
@@ -52,9 +52,9 @@ public JdbcMealplanDao(JdbcTemplate jdbcTemplate, MealDao mealDao, RecipeDao rec
     /** This method will give details of a mealplan (by its id) including its metadata and its mealList
      * corresponding to the GET operation at endpoint "/mealplans/{id}" in the MealplanController **/
     @Override
-    public Mealplan listMealplanById(int mealplanId, int userId) {
-        String sql = "SELECT mealplan_id, mealplan_name, mealplan_type_id FROM mealplan WHERE mealplan_id = ? AND user_id = ?;";
-        SqlRowSet rowSet = jdbcTemplate.queryForRowSet(sql, mealplanId, userId);
+    public Mealplan listMealplanById(int mealplanId) {
+        String sql = "SELECT mealplan_id, mealplan_name, mealplan_type_id FROM mealplan WHERE mealplan_id = ?;";
+        SqlRowSet rowSet = jdbcTemplate.queryForRowSet(sql, mealplanId);
         if (rowSet.next()) {
             Mealplan mealplan = mapRowToMealplan(rowSet);
             mealplan.setMealList(getMealsForMealplanId(mealplan.getMealplanId()));
@@ -68,9 +68,9 @@ public JdbcMealplanDao(JdbcTemplate jdbcTemplate, MealDao mealDao, RecipeDao rec
      * corresponding to the POST operation at endpoint "/mealplans" in the MealplanController **/
     @Override
     public Mealplan createMealplan(Mealplan mealplan) {
-    String sql = "INSERT INTO mealplan (mealplan_name, mealplan_type_id, user_id) VALUES (?, ?, ?) RETURNING mealplan_id;";
+    String sql = "INSERT INTO mealplan (mealplan_name, mealplan_type_id) VALUES (?, ?) RETURNING mealplan_id;";
     try {
-        int newId = jdbcTemplate.queryForObject(sql, int.class, mealplan.getMealplanName(), mealplan.getMealplanTypeId(), mealplan.getUserId());
+        int newId = jdbcTemplate.queryForObject(sql, int.class, mealplan.getMealplanName(), mealplan.getMealplanTypeId());
         mealplan.setMealplanId(newId);
         if(mealplan.getMealList() != null) {
             for (Meal meal : mealplan.getMealList()) {
@@ -88,13 +88,13 @@ public JdbcMealplanDao(JdbcTemplate jdbcTemplate, MealDao mealDao, RecipeDao rec
 
     /** This method is first in the series of 3 methods for modifying a mealplan just to update metadata
      * of a mealplan corresponding to the PUT operation at endpoint "/mealplans/{id}" in the MealplanController**/
-    public boolean updateMealplanInfo(Mealplan mealplan, int userId){
+    public boolean updateMealplanInfo(Mealplan mealplan){
         int rowAffected;
         String sql = "UPDATE mealplan " +
                 "SET mealplan_type_id = ?, mealplan_name = ? " +
-                "WHERE mealplan_id = ? AND user_id = ?;";
+                "WHERE mealplan_id = ?;";
         try {
-            rowAffected = jdbcTemplate.update(sql, mealplan.getMealplanTypeId(), mealplan.getMealplanName(), mealplan.getMealplanId(), userId);
+            rowAffected = jdbcTemplate.update(sql, mealplan.getMealplanTypeId(), mealplan.getMealplanName(), mealplan.getMealplanId());
         } catch (CannotGetJdbcConnectionException e) {
             throw new DaoException("Unable to connect to server or database", e);
         } catch (DataIntegrityViolationException e) {
